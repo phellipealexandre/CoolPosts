@@ -1,9 +1,10 @@
-package com.phellipesilva.coolposts
+package com.phellipesilva.coolposts.postlist.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.phellipesilva.coolposts.R
 
-class MainActivity : AppCompatActivity() {
+class PostListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
