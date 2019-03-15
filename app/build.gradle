@@ -61,8 +61,8 @@ dependencies {
     //JUnit
     testImplementation 'junit:junit:4.12'
 
-    //RestMock
-    testImplementation 'com.github.andrzejchm:RESTMock:0.3.3'
+    //Mock web server
+    testImplementation "com.squareup.okhttp3:mockwebserver:3.13.1"
 
     //Core testing
     androidTestImplementation "androidx.test:core:1.1.0"
