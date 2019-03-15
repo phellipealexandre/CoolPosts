@@ -5,15 +5,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.phellipesilva.coolposts.postlist.entities.UserEntity
+import com.phellipesilva.coolposts.postlist.entities.CommentEntity
 import io.reactivex.Completable
 
 @Dao
-interface UserDAO {
+interface CommentDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveUsers(users: List<UserEntity>): Completable
+    fun saveComments(comments: List<CommentEntity>): Completable
 
-    @Query("SELECT * FROM userEntity")
-    fun getAllUsers(): LiveData<List<UserEntity>>
+    @Query("SELECT * FROM commentEntity WHERE postId = :postId")
+    fun getAllCommentsFromPost(postId: Int): LiveData<List<CommentEntity>>
 }

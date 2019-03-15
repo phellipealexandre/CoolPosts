@@ -1,8 +1,8 @@
 package com.phellipesilva.coolposts.postlist.service
 
-import com.phellipesilva.coolposts.postlist.service.entities.CommentRemoteEntity
-import com.phellipesilva.coolposts.postlist.service.entities.PostRemoteEntity
-import com.phellipesilva.coolposts.postlist.service.entities.UserRemoteEntity
+import com.phellipesilva.coolposts.postlist.entities.CommentEntity
+import com.phellipesilva.coolposts.postlist.entities.PostEntity
+import com.phellipesilva.coolposts.postlist.entities.UserEntity
 import okhttp3.OkHttpClient
 import org.junit.Before
 import retrofit2.Retrofit
@@ -41,7 +41,7 @@ class PostServiceTest {
 
     @Test
     fun shouldParsePostsCorrectlyWhenRequestingAllPostsFromService() {
-        val testObserver = TestObserver<List<PostRemoteEntity>>()
+        val testObserver = TestObserver<List<PostEntity>>()
         val json = readJsonFromResources("json/posts_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
@@ -52,7 +52,7 @@ class PostServiceTest {
         testObserver.assertNoErrors()
         testObserver.assertValue { it.size == 2 }
         testObserver.assertValue {
-            it[0] == PostRemoteEntity(
+            it[0] == PostEntity(
                 userId = 1,
                 id = 1,
                 title = "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
@@ -60,7 +60,7 @@ class PostServiceTest {
             )
         }
         testObserver.assertValue {
-            it[1] == PostRemoteEntity(
+            it[1] == PostEntity(
                 userId = 1,
                 id = 2,
                 title = "qui est esse",
@@ -71,7 +71,7 @@ class PostServiceTest {
 
     @Test
     fun shouldParseUsersCorrectlyWhenRequestingAllUsersFromService() {
-        val testObserver = TestObserver<List<UserRemoteEntity>>()
+        val testObserver = TestObserver<List<UserEntity>>()
         val json = readJsonFromResources("json/users_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
@@ -82,14 +82,14 @@ class PostServiceTest {
         testObserver.assertNoErrors()
         testObserver.assertValue { it.size == 2 }
         testObserver.assertValue {
-            it[0] == UserRemoteEntity(
+            it[0] == UserEntity(
                 id = 1,
                 name = "Leanne Graham",
                 website = "hildegard.org"
             )
         }
         testObserver.assertValue {
-            it[1] == UserRemoteEntity(
+            it[1] == UserEntity(
                 id = 2,
                 name = "Ervin Howell",
                 website = "anastasia.net"
@@ -99,7 +99,7 @@ class PostServiceTest {
 
     @Test
     fun shouldParseCommentsCorrectlyWhenRequestingCommentsOfSpecificPostFromService() {
-        val testObserver = TestObserver<List<CommentRemoteEntity>>()
+        val testObserver = TestObserver<List<CommentEntity>>()
         val json = readJsonFromResources("json/comments_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
@@ -110,7 +110,7 @@ class PostServiceTest {
         testObserver.assertNoErrors()
         testObserver.assertValue { it.size == 2 }
         testObserver.assertValue {
-            it[0] == CommentRemoteEntity(
+            it[0] == CommentEntity(
                 postId = 1,
                 id = 1,
                 name = "id labore ex et quam laborum",
@@ -119,7 +119,7 @@ class PostServiceTest {
             )
         }
         testObserver.assertValue {
-            it[1] == CommentRemoteEntity(
+            it[1] == CommentEntity(
                 postId = 1,
                 id = 2,
                 name = "quo vero reiciendis velit similique earum",

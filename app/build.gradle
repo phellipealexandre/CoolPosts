@@ -38,8 +38,9 @@ dependencies {
 
     //Architecture Components
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
-    kapt "androidx.room:room-compiler:2.0.0"
-    implementation "androidx.room:room-runtime:2.0.0"
+    implementation "androidx.room:room-runtime:2.1.0-alpha04"
+    implementation "androidx.room:room-rxjava2:2.1.0-alpha04"
+    kapt "androidx.room:room-compiler:2.1.0-alpha04"
 
     //RX
     implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
@@ -63,6 +64,13 @@ dependencies {
     //RestMock
     testImplementation 'com.github.andrzejchm:RESTMock:0.3.3'
 
+    //Core testing
+    androidTestImplementation "androidx.test:core:1.1.0"
+    androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+
+    //Espresso
     androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
+    androidTestImplementation "androidx.test:rules:1.1.2-alpha02"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'
 }
