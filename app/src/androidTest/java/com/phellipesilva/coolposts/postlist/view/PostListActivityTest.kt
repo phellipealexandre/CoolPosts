@@ -1,18 +1,26 @@
 package com.phellipesilva.coolposts.postlist.view
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.swipeDown
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.phellipesilva.coolposts.R
+import com.phellipesilva.coolposts.utils.SwipeLayoutRefreshingIdlingResource
 import io.appflate.restmock.RESTMockServer
 import io.appflate.restmock.utils.RequestMatchers.pathContains
+import kotlinx.android.synthetic.main.activity_main.*
 import org.hamcrest.CoreMatchers.allOf
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
 
 @RunWith(AndroidJUnit4::class)
 class PostListActivityTest {
@@ -20,6 +28,11 @@ class PostListActivityTest {
     @Rule
     @JvmField
     var activityRule: ActivityTestRule<PostListActivity> = ActivityTestRule(PostListActivity::class.java, false, false)
+
+    @Before
+    fun setUp() {
+        RESTMockServer.reset()
+    }
 
     @Test
     fun shouldFetchPostsWhenOpenActivityForTheFirstTime() {
@@ -35,5 +48,53 @@ class PostListActivityTest {
                 hasSibling(withText("Leanne Graham"))
             )
         ).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldUpdateSecondPostTitleWhenOpenActivityAndRefreshAgain() {
+        RESTMockServer.whenGET(pathContains("posts"))
+            .thenReturnFile(200, "json/posts_response.json", "json/posts_updated_response.json")
+        RESTMockServer.whenGET(pathContains("users"))
+            .thenReturnFile(200, "json/users_response.json")
+
+        val activity = activityRule.launchActivity(Intent())
+        val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
+        IdlingRegistry.getInstance().register(idlingResource)
+
+        onView(withText("qui est esse")).check(matches(isDisplayed()))
+
+        onView(withId(com.phellipesilva.coolposts.R.id.swipeRefreshLayout)).perform(swipeDown())
+        onView(withText("qui est esse")).check(doesNotExist())
+        onView(withText("Updated Title")).check(matches(isDisplayed()))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
+    @Test
+    fun shouldScrollToBottomPosition() {
+        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+
+        val activity = activityRule.launchActivity(Intent())
+        val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
+        IdlingRegistry.getInstance().register(idlingResource)
+
+        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(99))
+
+        onView(withText("at nam consequatur ea labore ea harum")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldMaintainScrollPositionAfterScreenOrientationChanges() {
+        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+
+        val activity = activityRule.launchActivity(Intent())
+
+        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(9))
+
+        onView(withText("dolorem dolore est ipsam")).check(matches(isDisplayed()))
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        onView(withText("dolorem dolore est ipsam")).check(matches(isDisplayed()))
     }
 }
