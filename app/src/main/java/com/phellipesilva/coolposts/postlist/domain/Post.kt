@@ -1,8 +1,13 @@
 package com.phellipesilva.coolposts.postlist.domain
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Post(
-    val id: Int,
+    @PrimaryKey val id: Int,
     val title: String,
     val body: String,
-    val user: User
+    @Embedded val user: User
 )

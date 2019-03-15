@@ -5,15 +5,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.phellipesilva.coolposts.postlist.entities.PostEntity
+import com.phellipesilva.coolposts.postlist.domain.Post
 import io.reactivex.Completable
 
 @Dao
 interface PostDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun savePosts(posts: List<PostEntity>): Completable
+    fun savePosts(posts: List<Post>): Completable
 
-    @Query("SELECT * FROM postEntity")
-    fun getAllPosts(): LiveData<List<PostEntity>>
+    @Query("SELECT * FROM post")
+    fun getAllPosts(): LiveData<List<Post>>
 }

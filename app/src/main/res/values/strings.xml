@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CoolPosts</string>
+    <string name="author_avatar_content_description">Author Avatar</string>
 </resources>

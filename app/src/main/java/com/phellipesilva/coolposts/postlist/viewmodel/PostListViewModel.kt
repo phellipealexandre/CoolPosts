@@ -11,6 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class PostListViewModel(
     private val postListRepository: PostListRepository,
@@ -30,7 +31,10 @@ class PostListViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onError = { viewState.value = Event(ViewState.UNEXPECTED_ERROR) },
+                onError = {
+                    Timber.e(it)
+                    viewState.value = Event(ViewState.UNEXPECTED_ERROR)
+                },
                 onComplete = { viewState.value = Event(ViewState.IDLE) }
             )
             .addTo(compositeDisposable)

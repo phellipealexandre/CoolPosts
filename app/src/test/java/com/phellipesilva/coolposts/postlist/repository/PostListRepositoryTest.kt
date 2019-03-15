@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postlist.database.PostDAO
-import com.phellipesilva.coolposts.postlist.database.UserDAO
 import com.phellipesilva.coolposts.postlist.domain.Post
 import com.phellipesilva.coolposts.postlist.domain.User
 import com.phellipesilva.coolposts.postlist.entities.PostEntity
@@ -36,14 +35,11 @@ class PostListRepositoryTest {
     @Mock
     private lateinit var postDAO: PostDAO
 
-    @Mock
-    private lateinit var userDAO: UserDAO
-
     private lateinit var postListRepository: PostListRepository
 
     @Before
     fun setUp() {
-        postListRepository = PostListRepository(postService, postDAO, userDAO)
+        postListRepository = PostListRepository(postService, postDAO)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
     }
 
@@ -53,7 +49,7 @@ class PostListRepositoryTest {
     }
 
     @Test
-    fun shouldSavePostsOnDatabaseWhenPostAndUserRequestsAreSuccessful() {
+    fun shouldTryToSavePostsOnDatabaseWhenPostAndUserRequestsAreSuccessful() {
         val expectedPosts = listOf<PostEntity>()
         val postsSingle = Single.just(expectedPosts)
         whenever(postService.getPosts()).thenReturn(postsSingle)
@@ -65,23 +61,7 @@ class PostListRepositoryTest {
         val testObserver = TestObserver<Unit>()
         postListRepository.fetchPosts().subscribe(testObserver)
 
-        verify(postDAO).savePosts(expectedPosts)
-    }
-
-    @Test
-    fun shouldSaveUsersOnDatabaseWhenPostAndUserRequestsAreSuccessful() {
-        val expectedPosts = listOf<PostEntity>()
-        val postsSingle = Single.just(expectedPosts)
-        whenever(postService.getPosts()).thenReturn(postsSingle)
-
-        val expectedUsers = listOf<UserEntity>()
-        val usersSingle = Single.just(expectedUsers)
-        whenever(postService.getUsers()).thenReturn(usersSingle)
-
-        val testObserver = TestObserver<Unit>()
-        postListRepository.fetchPosts().subscribe(testObserver)
-
-        verify(userDAO).saveUsers(expectedUsers)
+        verify(postDAO).savePosts(listOf())
     }
 
     @Test
@@ -118,7 +98,7 @@ class PostListRepositoryTest {
 
     @Test
     fun shouldReturnEmptyPostListWhenNothingIsStoredOnDatabase() {
-        whenever(postDAO.getAllPosts()).thenReturn(MutableLiveData<List<PostEntity>>())
+        whenever(postDAO.getAllPosts()).thenReturn(MutableLiveData<List<Post>>())
 
         postListRepository.getPosts().observeForever {
             assertEquals(0, it.size)
@@ -126,42 +106,47 @@ class PostListRepositoryTest {
     }
 
     @Test
-    fun shouldMapLiveDataEntitiesWithOneElementToLiveDataWithSinglePost() {
+    fun shouldMapPostAndUserEntitiesWithOneElementToLiveDataWithSinglePost() {
         val expectedPost = Post(
             id = 1,
             title = "Title",
             body = "Body",
             user = User(
-                id = 99,
-                name = "User Name",
-                website = "Website"
-            )
-        )
-
-        val postsLiveData = MutableLiveData<List<PostEntity>>()
-        postsLiveData.value = listOf(
-            PostEntity(
-                id = 1,
                 userId = 99,
-                title = "Title",
-                body = "Body"
-            )
-        )
-        whenever(postDAO.getAllPosts()).thenReturn(postsLiveData)
-
-        val usersLiveData = MutableLiveData<List<UserEntity>>()
-        usersLiveData.value = listOf(
-            UserEntity(
-                id = 99,
                 name = "User Name",
                 website = "Website"
             )
         )
-        whenever(userDAO.getAllUsers()).thenReturn(usersLiveData)
 
-        postListRepository.getPosts().observeForever {
-            assertEquals(listOf(expectedPost), it)
-        }
+        whenever(postService.getPosts()).thenReturn(
+            Single.just(
+                listOf(
+                    PostEntity(
+                        id = 1,
+                        userId = 99,
+                        title = "Title",
+                        body = "Body"
+                    )
+                )
+            )
+        )
+
+        whenever(postService.getUsers()).thenReturn(
+            Single.just(
+                listOf(
+                    UserEntity(
+                        id = 99,
+                        name = "User Name",
+                        website = "Website"
+                    )
+                )
+            )
+        )
+
+        val testObserver = TestObserver<Unit>()
+        postListRepository.fetchPosts().subscribe(testObserver)
+
+        verify(postDAO).savePosts(listOf(expectedPost))
     }
 
     @Test
@@ -171,7 +156,7 @@ class PostListRepositoryTest {
             title = "Title",
             body = "Body",
             user = User(
-                id = 99,
+                userId = 99,
                 name = "User Name",
                 website = "Website"
             )
@@ -181,7 +166,7 @@ class PostListRepositoryTest {
             title = "Title2",
             body = "Body2",
             user = User(
-                id = 99,
+                userId = 99,
                 name = "User Name",
                 website = "Website"
             )
@@ -191,52 +176,57 @@ class PostListRepositoryTest {
             title = "Title3",
             body = "Body3",
             user = User(
-                id = 98,
-                name = "User Name 2",
-                website = "Website 2"
-            )
-        )
-
-        val postsLiveData = MutableLiveData<List<PostEntity>>()
-        postsLiveData.value = listOf(
-            PostEntity(
-                id = 1,
-                userId = 99,
-                title = "Title",
-                body = "Body"
-            ),
-            PostEntity(
-                id = 2,
-                userId = 99,
-                title = "Title2",
-                body = "Body2"
-            ),
-            PostEntity(
-                id = 3,
                 userId = 98,
-                title = "Title3",
-                body = "Body3"
-            )
-        )
-        whenever(postDAO.getAllPosts()).thenReturn(postsLiveData)
-
-        val usersLiveData = MutableLiveData<List<UserEntity>>()
-        usersLiveData.value = listOf(
-            UserEntity(
-                id = 99,
-                name = "User Name",
-                website = "Website"
-            ),
-            UserEntity(
-                id = 98,
                 name = "User Name 2",
                 website = "Website 2"
             )
         )
-        whenever(userDAO.getAllUsers()).thenReturn(usersLiveData)
 
-        postListRepository.getPosts().observeForever {
-            assertEquals(listOf(expectedPost1, expectedPost2, expectedPost3), it)
-        }
+        whenever(postService.getPosts()).thenReturn(
+            Single.just(
+                listOf(
+                    PostEntity(
+                        id = 1,
+                        userId = 99,
+                        title = "Title",
+                        body = "Body"
+                    ),
+                    PostEntity(
+                        id = 2,
+                        userId = 99,
+                        title = "Title2",
+                        body = "Body2"
+                    ),
+                    PostEntity(
+                        id = 3,
+                        userId = 98,
+                        title = "Title3",
+                        body = "Body3"
+                    )
+                )
+            )
+        )
+
+        whenever(postService.getUsers()).thenReturn(
+            Single.just(
+                listOf(
+                    UserEntity(
+                        id = 99,
+                        name = "User Name",
+                        website = "Website"
+                    ),
+                    UserEntity(
+                        id = 98,
+                        name = "User Name 2",
+                        website = "Website 2"
+                    )
+                )
+            )
+        )
+
+        val testObserver = TestObserver<Unit>()
+        postListRepository.fetchPosts().subscribe(testObserver)
+
+        verify(postDAO).savePosts(listOf(expectedPost1, expectedPost2, expectedPost3))
     }
 }
