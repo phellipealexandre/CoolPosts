@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.phellipesilva.coolposts.postlist.entities.PostEntity
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,6 +34,7 @@ class PostDAOTest {
 
         postsLiveData.observeForever {
             assertEquals(0, it.size)
+            assertNotNull(it)
         }
     }
 

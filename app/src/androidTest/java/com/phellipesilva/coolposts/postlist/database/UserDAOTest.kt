@@ -5,7 +5,8 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.phellipesilva.coolposts.postlist.entities.UserEntity
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +33,8 @@ class UserDAOTest {
         val userLiveData = userDAO.getAllUsers()
 
         userLiveData.observeForever {
-            Assert.assertEquals(0, it.size)
+            assertEquals(0, it.size)
+            assertNotNull(it)
         }
     }
 
@@ -46,9 +48,9 @@ class UserDAOTest {
         val userLiveData = userDAO.getAllUsers()
 
         userLiveData.observeForever {
-            Assert.assertEquals(2, it.size)
-            Assert.assertEquals(user1, it[0])
-            Assert.assertEquals(user2, it[1])
+            assertEquals(2, it.size)
+            assertEquals(user1, it[0])
+            assertEquals(user2, it[1])
         }
     }
 
@@ -67,9 +69,9 @@ class UserDAOTest {
         val userLiveData = userDAO.getAllUsers()
 
         userLiveData.observeForever {
-            Assert.assertEquals(2, it.size)
-            Assert.assertEquals(user1New, it[0])
-            Assert.assertEquals(user2, it[1])
+            assertEquals(2, it.size)
+            assertEquals(user1New, it[0])
+            assertEquals(user2, it[1])
         }
     }
 }

@@ -5,7 +5,8 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.phellipesilva.coolposts.postlist.entities.CommentEntity
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +33,8 @@ class CommentDAOTest {
         val commentLiveData = commentDAO.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
-            Assert.assertEquals(0, it.size)
+            assertEquals(0, it.size)
+            assertNotNull(it)
         }
     }
 
@@ -46,9 +48,9 @@ class CommentDAOTest {
         val commentLiveData = commentDAO.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
-            Assert.assertEquals(2, it.size)
-            Assert.assertEquals(comment1, it[0])
-            Assert.assertEquals(comment2, it[1])
+            assertEquals(2, it.size)
+            assertEquals(comment1, it[0])
+            assertEquals(comment2, it[1])
         }
     }
 
@@ -63,8 +65,8 @@ class CommentDAOTest {
         val commentLiveData = commentDAO.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
-            Assert.assertEquals(1, it.size)
-            Assert.assertEquals(comment1, it[0])
+            assertEquals(1, it.size)
+            assertEquals(comment1, it[0])
         }
     }
 
@@ -83,9 +85,9 @@ class CommentDAOTest {
         val commentLiveData = commentDAO.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
-            Assert.assertEquals(2, it.size)
-            Assert.assertEquals(comment1New, it[0])
-            Assert.assertEquals(comment2, it[1])
+            assertEquals(2, it.size)
+            assertEquals(comment1New, it[0])
+            assertEquals(comment2, it[1])
         }
     }
 }
