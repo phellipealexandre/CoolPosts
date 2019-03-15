@@ -2,8 +2,8 @@ package com.phellipesilva.coolposts.di
 
 import android.content.Context
 import androidx.room.Room
-import com.phellipesilva.coolposts.postlist.database.CommentDAO
-import com.phellipesilva.coolposts.postlist.database.MainDatabase
+import com.phellipesilva.coolposts.postdetails.database.CommentDAO
+import com.phellipesilva.coolposts.database.MainDatabase
 import com.phellipesilva.coolposts.postlist.database.PostDAO
 import dagger.Module
 import dagger.Provides

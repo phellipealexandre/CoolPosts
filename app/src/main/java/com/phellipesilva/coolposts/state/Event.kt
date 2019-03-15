@@ -1,4 +1,4 @@
-package com.phellipesilva.coolposts.postlist.viewmodel.state
+package com.phellipesilva.coolposts.state
 
 /**
  * @author: Phellipe Silva

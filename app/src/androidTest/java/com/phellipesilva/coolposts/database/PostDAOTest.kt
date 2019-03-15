@@ -1,11 +1,12 @@
-package com.phellipesilva.coolposts.postlist.database
+package com.phellipesilva.coolposts.database
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.phellipesilva.coolposts.postlist.domain.Post
-import com.phellipesilva.coolposts.postlist.domain.User
+import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.data.User
+import com.phellipesilva.coolposts.postlist.database.PostDAO
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before

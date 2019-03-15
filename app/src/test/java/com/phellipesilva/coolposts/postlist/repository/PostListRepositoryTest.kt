@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postlist.database.PostDAO
-import com.phellipesilva.coolposts.postlist.domain.Post
-import com.phellipesilva.coolposts.postlist.domain.User
-import com.phellipesilva.coolposts.postlist.entities.PostEntity
-import com.phellipesilva.coolposts.postlist.entities.UserEntity
+import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.data.User
+import com.phellipesilva.coolposts.postlist.entity.PostRemoteEntity
+import com.phellipesilva.coolposts.postlist.entity.UserRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.PostService
 import com.phellipesilva.coolposts.postlist.utils.RxUtils
 import io.reactivex.Single
@@ -50,11 +50,11 @@ class PostListRepositoryTest {
 
     @Test
     fun shouldTryToSavePostsOnDatabaseWhenPostAndUserRequestsAreSuccessful() {
-        val expectedPosts = listOf<PostEntity>()
+        val expectedPosts = listOf<PostRemoteEntity>()
         val postsSingle = Single.just(expectedPosts)
         whenever(postService.getPosts()).thenReturn(postsSingle)
 
-        val expectedUsers = listOf<UserEntity>()
+        val expectedUsers = listOf<UserRemoteEntity>()
         val usersSingle = Single.just(expectedUsers)
         whenever(postService.getUsers()).thenReturn(usersSingle)
 
@@ -67,10 +67,10 @@ class PostListRepositoryTest {
     @Test
     fun shouldThrowErrorOnCompletionWhenPostRequestsHasError() {
         val expectedError = Throwable("Error")
-        val postsSingle = Single.error<List<PostEntity>>(expectedError)
+        val postsSingle = Single.error<List<PostRemoteEntity>>(expectedError)
         whenever(postService.getPosts()).thenReturn(postsSingle)
 
-        val expectedUsers = listOf<UserEntity>()
+        val expectedUsers = listOf<UserRemoteEntity>()
         val usersSingle = Single.just(expectedUsers)
         whenever(postService.getUsers()).thenReturn(usersSingle)
 
@@ -82,12 +82,12 @@ class PostListRepositoryTest {
 
     @Test
     fun shouldThrowErrorOnCompletionWhenUserRequestsHasError() {
-        val expectedPosts = listOf<PostEntity>()
+        val expectedPosts = listOf<PostRemoteEntity>()
         val postsSingle = Single.just(expectedPosts)
         whenever(postService.getPosts()).thenReturn(postsSingle)
 
         val expectedError = Throwable("Error")
-        val usersSingle = Single.error<List<UserEntity>>(expectedError)
+        val usersSingle = Single.error<List<UserRemoteEntity>>(expectedError)
         whenever(postService.getUsers()).thenReturn(usersSingle)
 
         val testObserver = TestObserver<Unit>()
@@ -121,7 +121,7 @@ class PostListRepositoryTest {
         whenever(postService.getPosts()).thenReturn(
             Single.just(
                 listOf(
-                    PostEntity(
+                    PostRemoteEntity(
                         id = 1,
                         userId = 99,
                         title = "Title",
@@ -134,7 +134,7 @@ class PostListRepositoryTest {
         whenever(postService.getUsers()).thenReturn(
             Single.just(
                 listOf(
-                    UserEntity(
+                    UserRemoteEntity(
                         id = 99,
                         name = "User Name",
                         website = "Website"
@@ -185,19 +185,19 @@ class PostListRepositoryTest {
         whenever(postService.getPosts()).thenReturn(
             Single.just(
                 listOf(
-                    PostEntity(
+                    PostRemoteEntity(
                         id = 1,
                         userId = 99,
                         title = "Title",
                         body = "Body"
                     ),
-                    PostEntity(
+                    PostRemoteEntity(
                         id = 2,
                         userId = 99,
                         title = "Title2",
                         body = "Body2"
                     ),
-                    PostEntity(
+                    PostRemoteEntity(
                         id = 3,
                         userId = 98,
                         title = "Title3",
@@ -210,12 +210,12 @@ class PostListRepositoryTest {
         whenever(postService.getUsers()).thenReturn(
             Single.just(
                 listOf(
-                    UserEntity(
+                    UserRemoteEntity(
                         id = 99,
                         name = "User Name",
                         website = "Website"
                     ),
-                    UserEntity(
+                    UserRemoteEntity(
                         id = 98,
                         name = "User Name 2",
                         website = "Website 2"

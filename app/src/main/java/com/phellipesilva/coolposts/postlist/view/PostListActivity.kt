@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
-import com.phellipesilva.coolposts.postlist.viewmodel.state.ViewState
-import kotlinx.android.synthetic.main.activity_main.*
+import com.phellipesilva.coolposts.postlist.viewmodel.PostListActivityState
+import kotlinx.android.synthetic.main.activity_post_list.*
 
 class PostListActivity : AppCompatActivity() {
 
@@ -17,7 +17,7 @@ class PostListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_post_list)
 
         initViewModel(savedInstanceState)
         initRecyclerView()
@@ -49,8 +49,8 @@ class PostListActivity : AppCompatActivity() {
     private fun initViewStateObserver() {
         postListViewModel.viewState().observe(this, Observer {
             when (it.peekContent()) {
-                ViewState.IDLE -> swipeRefreshLayout.isRefreshing = false
-                ViewState.UNEXPECTED_ERROR -> Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                PostListActivityState.IDLE -> swipeRefreshLayout.isRefreshing = false
+                PostListActivityState.UNEXPECTED_ERROR -> Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
             }
         })
     }

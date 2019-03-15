@@ -15,7 +15,7 @@ import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.utils.SwipeLayoutRefreshingIdlingResource
 import io.appflate.restmock.RESTMockServer
 import io.appflate.restmock.utils.RequestMatchers.pathContains
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_post_list.*
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Rule

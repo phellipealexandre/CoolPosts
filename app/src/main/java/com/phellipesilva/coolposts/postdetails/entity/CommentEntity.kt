@@ -1,4 +1,4 @@
-package com.phellipesilva.coolposts.postlist.entities
+package com.phellipesilva.coolposts.postdetails.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
-import com.phellipesilva.coolposts.postlist.viewmodel.state.Event
-import com.phellipesilva.coolposts.postlist.viewmodel.state.ViewState
+import com.phellipesilva.coolposts.state.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -19,11 +18,11 @@ class PostListViewModel(
 ) : ViewModel() {
 
     private val postsLiveData by lazy { postListRepository.getPosts() }
-    private val viewState = MutableLiveData<Event<ViewState>>()
+    private val viewState = MutableLiveData<Event<PostListActivityState>>()
 
     fun getPostsObservable() = this.postsLiveData
 
-    fun viewState(): LiveData<Event<ViewState>> = viewState
+    fun viewState(): LiveData<Event<PostListActivityState>> = viewState
 
     fun fetchPosts() {
         postListRepository
@@ -33,9 +32,9 @@ class PostListViewModel(
             .subscribeBy(
                 onError = {
                     Timber.e(it)
-                    viewState.value = Event(ViewState.UNEXPECTED_ERROR)
+                    viewState.value = Event(PostListActivityState.UNEXPECTED_ERROR)
                 },
-                onComplete = { viewState.value = Event(ViewState.IDLE) }
+                onComplete = { viewState.value = Event(PostListActivityState.IDLE) }
             )
             .addTo(compositeDisposable)
     }

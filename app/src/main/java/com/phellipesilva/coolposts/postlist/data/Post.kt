@@ -1,4 +1,4 @@
-package com.phellipesilva.coolposts.postlist.domain
+package com.phellipesilva.coolposts.postlist.data
 
 import androidx.room.Embedded
 import androidx.room.Entity

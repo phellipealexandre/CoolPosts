@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.phellipesilva.coolposts.postlist.domain.Post
+import com.phellipesilva.coolposts.postlist.data.Post
 import io.reactivex.Completable
 
 @Dao

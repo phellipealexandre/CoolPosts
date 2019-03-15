@@ -5,10 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.phellipesilva.coolposts.postlist.domain.Post
+import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
 import com.phellipesilva.coolposts.postlist.utils.RxUtils
-import com.phellipesilva.coolposts.postlist.viewmodel.state.ViewState
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -54,7 +53,7 @@ class PostListViewModelTest {
         postListViewModel.fetchPosts()
 
         postListViewModel.viewState().observeForever {
-            assertEquals(ViewState.IDLE, it.peekContent())
+            assertEquals(PostListActivityState.IDLE, it.peekContent())
         }
     }
 
@@ -65,7 +64,7 @@ class PostListViewModelTest {
         postListViewModel.fetchPosts()
 
         postListViewModel.viewState().observeForever {
-            assertEquals(ViewState.UNEXPECTED_ERROR, it.peekContent())
+            assertEquals(PostListActivityState.UNEXPECTED_ERROR, it.peekContent())
         }
     }
 

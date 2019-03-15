@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.phellipesilva.coolposts.R
-import com.phellipesilva.coolposts.postlist.domain.Post
+import com.phellipesilva.coolposts.postlist.data.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
 
 class PostListAdapter(private val context: Context) : RecyclerView.Adapter<PostListAdapter.PostViewHolder>() {

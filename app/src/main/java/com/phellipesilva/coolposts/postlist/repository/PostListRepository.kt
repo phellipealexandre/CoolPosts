@@ -2,17 +2,17 @@ package com.phellipesilva.coolposts.postlist.repository
 
 import androidx.lifecycle.LiveData
 import com.phellipesilva.coolposts.postlist.database.PostDAO
-import com.phellipesilva.coolposts.postlist.domain.Post
-import com.phellipesilva.coolposts.postlist.domain.User
-import com.phellipesilva.coolposts.postlist.entities.PostEntity
-import com.phellipesilva.coolposts.postlist.entities.UserEntity
+import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.data.User
+import com.phellipesilva.coolposts.postlist.entity.PostRemoteEntity
+import com.phellipesilva.coolposts.postlist.entity.UserRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.PostService
 import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
-typealias PostUserPairList = BiFunction<List<PostEntity>, List<UserEntity>, Pair<List<PostEntity>, List<UserEntity>>>
+typealias PostUserPairList = BiFunction<List<PostRemoteEntity>, List<UserRemoteEntity>, Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>>
 
 @Reusable
 class PostListRepository @Inject constructor(
@@ -40,8 +40,8 @@ class PostListRepository @Inject constructor(
     }
 
     private fun mapPostEntityListInPostDomainList(
-        postEntities: List<PostEntity>,
-        userEntities: List<UserEntity>
+        postEntities: List<PostRemoteEntity>,
+        userEntities: List<UserRemoteEntity>
     ): List<Post> {
         return postEntities.map { postEntity ->
             Post(
@@ -53,7 +53,7 @@ class PostListRepository @Inject constructor(
         }
     }
 
-    private fun mapUserEntityToUserDomain(userEntity: UserEntity): User {
+    private fun mapUserEntityToUserDomain(userEntity: UserRemoteEntity): User {
         return userEntity.run { User(id, name, website) }
     }
 }

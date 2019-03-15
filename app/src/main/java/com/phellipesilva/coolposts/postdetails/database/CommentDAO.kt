@@ -1,11 +1,11 @@
-package com.phellipesilva.coolposts.postlist.database
+package com.phellipesilva.coolposts.postdetails.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.phellipesilva.coolposts.postlist.entities.CommentEntity
+import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
 import io.reactivex.Completable
 
 @Dao

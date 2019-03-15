@@ -1,4 +1,4 @@
-package com.phellipesilva.coolposts.postdetails
+package com.phellipesilva.coolposts.postdetails.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
