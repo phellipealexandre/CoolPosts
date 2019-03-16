@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CoolPosts</string>
+    <string name="app_name">Cool Posts</string>
     <string name="author_avatar_content_description">Author Avatar</string>
     <string name="thumbnail_image_content_description">Thumbnail image</string>
 </resources>

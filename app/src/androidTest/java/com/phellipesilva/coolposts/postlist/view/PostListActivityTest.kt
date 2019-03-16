@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -102,6 +103,23 @@ class PostListActivityTest {
                 hasSibling(withText("Clementina DuBuque"))
             )
         ).check(matches(isDisplayed()))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
+    @Test
+    fun shouldSeePostDescriptionWithBodyWhenClickingOnItem() {
+        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+
+        val activity = activityRule.launchActivity(Intent())
+        val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
+        IdlingRegistry.getInstance().register(idlingResource)
+
+        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PostListAdapter.PostViewHolder>(0, click()))
+
+        onView(withText("sunt aut facere repellat provident occaecati excepturi optio reprehenderit")).check(matches(isDisplayed()))
+        onView(withText("quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto")).check(matches(isDisplayed()))
 
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
