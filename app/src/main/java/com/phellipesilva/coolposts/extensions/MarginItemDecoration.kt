@@ -1,4 +1,4 @@
-package com.phellipesilva.coolposts.postlist.view
+package com.phellipesilva.coolposts.extensions
 
 import android.graphics.Rect
 import android.view.View

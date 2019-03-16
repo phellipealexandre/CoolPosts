@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
+import com.phellipesilva.coolposts.extensions.MarginItemDecoration
 import com.phellipesilva.coolposts.state.ViewState
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
 import kotlinx.android.synthetic.main.activity_post_list.*

@@ -60,7 +60,9 @@ class PostListAdapter(private val activity: Activity) :
                 rounded = false
             )
 
-            RxView.clicks(itemView).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe {
+            RxView.clicks(itemView)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe {
                     val intent = Intent(activity, PostDetailsActivity::class.java)
                     intent.putExtra("post", post)
 

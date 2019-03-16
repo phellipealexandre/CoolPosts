@@ -9,4 +9,13 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
+    <style name="CollapsingBarExtendedStyle">
+        <item name="android:textColor">@color/transparent</item>
+    </style>
+
+    <style name="CollapsingBarCollapsedStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
