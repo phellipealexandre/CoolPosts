@@ -12,6 +12,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/gray"
+        android:layoutAnimation="@anim/layout_animation_enter_up"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

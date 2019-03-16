@@ -37,7 +37,8 @@ class PostListAdapter(private val context: Context) : RecyclerView.Adapter<PostL
     class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val postTitleTextView: TextView = view.postTitle
         private val postAuthorTextView: TextView = view.postAuthor
-        private val authorAvatar: ImageView = view.authorAvatar
+        private val authorAvatarImageView: ImageView = view.authorAvatar
+        private val thumbnailImageView: ImageView = view.thumbnailImageView
 
         fun bind(post: Post) {
             postTitleTextView.text = post.title
@@ -46,7 +47,11 @@ class PostListAdapter(private val context: Context) : RecyclerView.Adapter<PostL
             Glide.with(itemView.context)
                 .load("https://api.adorable.io/avatars/${post.user.userId}")
                 .apply(RequestOptions.circleCropTransform())
-                .into(authorAvatar)
+                .into(authorAvatarImageView)
+
+            Glide.with(itemView.context)
+                .load("https://picsum.photos/300/300/?image=${post.id}")
+                .into(thumbnailImageView)
         }
     }
 }

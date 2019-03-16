@@ -41,10 +41,9 @@ class PostListActivityTest {
 
         activityRule.launchActivity(Intent())
 
-        onView(withText("qui est esse")).check(matches(isDisplayed()))
         onView(
             allOf(
-                withText("eum et est occaecati"),
+                withText("sunt aut facere repellat provident occaecati excepturi optio reprehenderit"),
                 hasSibling(withText("Leanne Graham"))
             )
         ).check(matches(isDisplayed()))
@@ -53,7 +52,7 @@ class PostListActivityTest {
     @Test
     fun shouldUpdateSecondPostTitleWhenOpenActivityAndRefreshAgain() {
         RESTMockServer.whenGET(pathContains("posts"))
-            .thenReturnFile(200, "json/posts_response.json", "json/posts_updated_response.json")
+            .thenReturnFile(200, "json/posts_updated_response.json")
         RESTMockServer.whenGET(pathContains("users"))
             .thenReturnFile(200, "json/users_response.json")
 
@@ -61,10 +60,10 @@ class PostListActivityTest {
         val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
         IdlingRegistry.getInstance().register(idlingResource)
 
-        onView(withText("qui est esse")).check(matches(isDisplayed()))
+        onView(withText("sunt aut facere repellat provident occaecati excepturi optio reprehenderit")).check(matches(isDisplayed()))
 
         onView(withId(com.phellipesilva.coolposts.R.id.swipeRefreshLayout)).perform(swipeDown())
-        onView(withText("qui est esse")).check(doesNotExist())
+        onView(withText("sunt aut facere repellat provident occaecati excepturi optio reprehenderit")).check(doesNotExist())
         onView(withText("Updated Title")).check(matches(isDisplayed()))
 
         IdlingRegistry.getInstance().unregister(idlingResource)
@@ -80,8 +79,9 @@ class PostListActivityTest {
         IdlingRegistry.getInstance().register(idlingResource)
 
         onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(99))
-
         onView(withText("at nam consequatur ea labore ea harum")).check(matches(isDisplayed()))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     @Test
@@ -90,11 +90,19 @@ class PostListActivityTest {
         RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
 
         val activity = activityRule.launchActivity(Intent())
+        val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
+        IdlingRegistry.getInstance().register(idlingResource)
 
-        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(9))
-
-        onView(withText("dolorem dolore est ipsam")).check(matches(isDisplayed()))
+        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(99))
+        onView(withText("at nam consequatur ea labore ea harum")).check(matches(isDisplayed()))
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        onView(withText("dolorem dolore est ipsam")).check(matches(isDisplayed()))
+        onView(
+            allOf(
+                withText("temporibus sit alias delectus eligendi possimus magni"),
+                hasSibling(withText("Clementina DuBuque"))
+            )
+        ).check(matches(isDisplayed()))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 }

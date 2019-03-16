@@ -1,14 +1,14 @@
 package com.phellipesilva.coolposts.postlist.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
-import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListActivityState
+import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
 import kotlinx.android.synthetic.main.activity_post_list.*
 
 class PostListActivity : AppCompatActivity() {
@@ -19,28 +19,28 @@ class PostListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_list)
 
-        initViewModel(savedInstanceState)
-        initRecyclerView()
+        initViewModel()
+        initRecyclerView(savedInstanceState)
         initViewStateObserver()
         initSwipeLayout()
     }
 
-    private fun initViewModel(savedInstanceState: Bundle?) {
+    private fun initViewModel() {
         val postListViewModelFactory = injector.getPostListViewModelFactory()
         postListViewModel = ViewModelProviders.of(this, postListViewModelFactory).get(PostListViewModel::class.java)
-
-        if (savedInstanceState == null) {
-            swipeRefreshLayout.isRefreshing = true
-            postListViewModel.fetchPosts()
-        }
     }
 
-    private fun initRecyclerView() {
+    private fun initRecyclerView(savedInstanceState: Bundle?) {
         val adapter = PostListAdapter(this)
         recyclerView.adapter = adapter
 
         postListViewModel.getPostsObservable().observe(this, Observer { postList ->
-            postList?.let {
+            val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null
+
+            if (isFirstUse) {
+                swipeRefreshLayout.isRefreshing = true
+                postListViewModel.fetchPosts()
+            } else {
                 adapter.updateData(postList)
             }
         })

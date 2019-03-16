@@ -13,7 +13,9 @@ object DatabaseTestModule {
 
     @Provides
     @JvmStatic
-    fun providesDatabase(context: Context): MainDatabase = Room.inMemoryDatabaseBuilder(context, MainDatabase::class.java).build()
+    fun providesDatabase(context: Context): MainDatabase = Room
+        .inMemoryDatabaseBuilder(context, MainDatabase::class.java)
+        .build()
 
     @Provides
     @JvmStatic

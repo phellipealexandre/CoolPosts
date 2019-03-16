@@ -1,11 +1,10 @@
 run-unit-tests:
 	./gradlew test
 
-run-instrumented-tests:
+run-instrumented-tests: clear-app-data disable-animations
 	./gradlew connectedAndroidTest
 
-run-all-tests:
-	./gradlew test connectedAndroidTest
+run-all-tests: run-unit-tests run-instrumented-tests
 
 clear-app-data:
 	adb shell pm clear com.phellipesilva.coolposts
