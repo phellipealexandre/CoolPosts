@@ -15,7 +15,6 @@ import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
 import com.phellipesilva.coolposts.postlist.data.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
 
-
 class PostListAdapter(private val activity: Activity) :
     RecyclerView.Adapter<PostListAdapter.PostViewHolder>() {
 
@@ -64,14 +63,12 @@ class PostListAdapter(private val activity: Activity) :
 
                 val pair1 = android.util.Pair(thumbnailImageView as View, "thumbnailImageView")
                 val pair2 = android.util.Pair(authorAvatarImageView as View, "authorAvatarImageView")
-                val pair3 = android.util.Pair(postAuthorTextView as View, "postAuthorTextView")
-                val pair4 = android.util.Pair(postTitleTextView as View, "postTitleTextView")
+                val pair3 = android.util.Pair(postTitleTextView as View, "postTitleTextView")
                 val options = ActivityOptions.makeSceneTransitionAnimation(
                     activity,
                     pair1,
                     pair2,
-                    pair3,
-                    pair4
+                    pair3
                 )
 
                 activity.startActivity(intent, options.toBundle())

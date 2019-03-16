@@ -1,5 +1,6 @@
 package com.phellipesilva.coolposts.di
 
+import com.phellipesilva.coolposts.postdetails.service.CommentService
 import com.phellipesilva.coolposts.postlist.service.PostService
 import dagger.Module
 import dagger.Provides
@@ -25,4 +26,18 @@ object ServiceTestModule {
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
         .create(PostService::class.java)
+
+    @Provides
+    @JvmStatic
+    fun providesCommentService(): CommentService = Retrofit.Builder()
+        .baseUrl(RESTMockServer.getUrl())
+        .client(
+            OkHttpClient.Builder()
+                .sslSocketFactory(RESTMockServer.getSSLSocketFactory(), RESTMockServer.getTrustManager())
+                .build()
+        )
+        .addConverterFactory(MoshiConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
+        .create(CommentService::class.java)
 }

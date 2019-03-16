@@ -1,11 +1,11 @@
-package com.phellipesilva.coolposts.postlist.viewmodel
+package com.phellipesilva.coolposts.postdetails.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.phellipesilva.coolposts.postlist.repository.PostListRepository
-import com.phellipesilva.coolposts.state.Event
+import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.state.ViewState
+import com.phellipesilva.coolposts.state.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -13,21 +13,20 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class PostListViewModel(
-    private val postListRepository: PostListRepository,
+class PostDetailsViewModel(
+    private val postDetailsRepository: PostDetailsRepository,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
 
-    private val postsLiveData by lazy { postListRepository.getPosts() }
     private val viewState = MutableLiveData<Event<ViewState>>()
 
-    fun getPostsObservable() = this.postsLiveData
+    fun getCommentsObservable(postId: Int) = postDetailsRepository.getComments(postId)
 
     fun viewState(): LiveData<Event<ViewState>> = viewState
 
-    fun fetchPosts() {
-        postListRepository
-            .fetchPosts()
+    fun fetchComments(postId: Int) {
+        postDetailsRepository
+            .fetchComments(postId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(

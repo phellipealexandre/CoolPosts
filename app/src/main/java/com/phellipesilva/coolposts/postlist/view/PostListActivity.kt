@@ -7,7 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
-import com.phellipesilva.coolposts.postlist.viewmodel.PostListActivityState
+import com.phellipesilva.coolposts.state.ViewState
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
 import kotlinx.android.synthetic.main.activity_post_list.*
 
@@ -49,8 +49,8 @@ class PostListActivity : AppCompatActivity() {
     private fun initViewStateObserver() {
         postListViewModel.viewState().observe(this, Observer {
             when (it.peekContent()) {
-                PostListActivityState.IDLE -> swipeRefreshLayout.isRefreshing = false
-                PostListActivityState.UNEXPECTED_ERROR -> Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                ViewState.IDLE -> swipeRefreshLayout.isRefreshing = false
+                ViewState.UNEXPECTED_ERROR -> Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
             }
         })
     }

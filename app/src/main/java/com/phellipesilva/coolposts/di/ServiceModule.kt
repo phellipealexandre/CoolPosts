@@ -1,5 +1,6 @@
 package com.phellipesilva.coolposts.di
 
+import com.phellipesilva.coolposts.postdetails.service.CommentService
 import com.phellipesilva.coolposts.postlist.service.PostService
 import dagger.Module
 import dagger.Provides
@@ -20,4 +21,14 @@ object ServiceModule {
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
         .create(PostService::class.java)
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun providesCommentService(): CommentService = Retrofit.Builder()
+        .baseUrl("https://jsonplaceholder.typicode.com")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
+        .create(CommentService::class.java)
 }
