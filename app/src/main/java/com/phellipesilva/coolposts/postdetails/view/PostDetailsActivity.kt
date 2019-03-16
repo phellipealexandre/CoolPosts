@@ -79,7 +79,7 @@ class PostDetailsActivity : AppCompatActivity() {
 
         supportPostponeEnterTransition()
         toolbarImageView.load(
-            url = "https://picsum.photos/300/300/?image=${post.id}",
+            url = "https://picsum.photos/400/400/?image=${post.id}",
             onLoadingFinished = { supportStartPostponedEnterTransition() }
         )
 

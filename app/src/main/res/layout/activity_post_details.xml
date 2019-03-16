@@ -31,7 +31,7 @@
                 <ImageView
                     android:id="@+id/toolbarImageView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:background="@color/dark_filter"
                     android:contentDescription="@string/thumbnail_image_content_description"
                     android:scaleType="centerCrop"
@@ -70,18 +70,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:ellipsize="end"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:transitionName="postTitleTextView"
-                    app:layout_constraintBottom_toTopOf="@+id/postBodyTextView"
                     app:layout_constraintEnd_toStartOf="@+id/authorAvatarImageView"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/guideline"
+                    app:layout_constraintVertical_chainStyle="spread_inside"
                     tools:text="sunt aut facere repellat provident occaecati excepturi optio reprehenderit" />
 
                 <TextView
@@ -89,13 +89,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/authorAvatarImageView"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/postTitleTextView"
                     tools:text="est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla" />
 
                 <androidx.constraintlayout.widget.Guideline
@@ -127,7 +129,6 @@
         android:layout_height="match_parent"
         android:background="@color/gray"
         android:layoutAnimation="@anim/layout_animation_enter_up"
-        android:padding="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 

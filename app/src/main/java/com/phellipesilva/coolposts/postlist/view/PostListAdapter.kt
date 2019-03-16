@@ -53,7 +53,7 @@ class PostListAdapter(private val activity: Activity) :
             )
 
             thumbnailImageView.load(
-                url = "https://picsum.photos/300/300/?image=${post.id}",
+                url = "https://picsum.photos/400/400/?image=${post.id}",
                 rounded = false
             )
 
