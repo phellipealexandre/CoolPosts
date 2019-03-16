@@ -2,10 +2,10 @@ package com.phellipesilva.coolposts.postlist.view
 
 import android.os.Bundle
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.state.ViewState
@@ -51,9 +51,13 @@ class PostListActivity : AppCompatActivity() {
 
     private fun initViewStateObserver() {
         postListViewModel.viewState().observe(this, Observer {
-            when (it.peekContent()) {
-                ViewState.IDLE -> swipeRefreshLayout.isRefreshing = false
-                ViewState.UNEXPECTED_ERROR -> Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+            val event = it.peekContent()
+            when (event) {
+                ViewState.SUCCESS -> swipeRefreshLayout.isRefreshing = false
+                else -> {
+                    Snackbar.make(postListCoordinatorLayout, event.msgStringId, Snackbar.LENGTH_LONG).show()
+                    swipeRefreshLayout.isRefreshing = event.isLoading
+                }
             }
         })
     }

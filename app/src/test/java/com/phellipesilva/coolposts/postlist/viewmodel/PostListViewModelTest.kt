@@ -8,6 +8,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
 import com.phellipesilva.coolposts.postlist.utils.RxUtils
+import com.phellipesilva.coolposts.state.ConnectionManager
 import com.phellipesilva.coolposts.state.ViewState
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
@@ -32,14 +33,18 @@ class PostListViewModelTest {
     private lateinit var postListRepository: PostListRepository
 
     @Mock
+    private lateinit var connectionManager: ConnectionManager
+
+    @Mock
     private lateinit var compositeDisposable: CompositeDisposable
 
     private lateinit var postListViewModel: PostListViewModel
 
     @Before
     fun setUp() {
-        postListViewModel = PostListViewModel(postListRepository, compositeDisposable)
+        postListViewModel = PostListViewModel(postListRepository, connectionManager, compositeDisposable)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
+        whenever(connectionManager.isOnline()).thenReturn(true)
     }
 
     @After
@@ -48,13 +53,24 @@ class PostListViewModelTest {
     }
 
     @Test
-    fun shouldEmitIdleEventWhenPostFetchingFinishesSuccessfully() {
+    fun shouldEmitSuccessEventWhenPostFetchingFinishesSuccessfully() {
         whenever(postListRepository.fetchPosts()).thenReturn(Completable.complete())
 
         postListViewModel.fetchPosts()
 
         postListViewModel.viewState().observeForever {
-            assertEquals(ViewState.IDLE, it.peekContent())
+            assertEquals(ViewState.SUCCESS, it.peekContent())
+        }
+    }
+
+    @Test
+    fun shouldEmitNoInternetEventWhenThereIsNoInternet() {
+        whenever(connectionManager.isOnline()).thenReturn(false)
+
+        postListViewModel.fetchPosts()
+
+        postListViewModel.viewState().observeForever {
+            assertEquals(ViewState.NO_INTERNET, it.peekContent())
         }
     }
 

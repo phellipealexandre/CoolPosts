@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
+import com.phellipesilva.coolposts.state.ConnectionManager
 import com.phellipesilva.coolposts.state.Event
 import com.phellipesilva.coolposts.state.ViewState
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,6 +16,7 @@ import timber.log.Timber
 
 class PostListViewModel(
     private val postListRepository: PostListRepository,
+    private val connectionManager: ConnectionManager,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
 
@@ -26,6 +28,14 @@ class PostListViewModel(
     fun viewState(): LiveData<Event<ViewState>> = viewState
 
     fun fetchPosts() {
+        if (connectionManager.isOnline()) {
+            fetchPostsFromRepository()
+        } else {
+            viewState.value = Event(ViewState.NO_INTERNET)
+        }
+    }
+
+    private fun fetchPostsFromRepository() {
         postListRepository
             .fetchPosts()
             .subscribeOn(Schedulers.io())
@@ -35,7 +45,7 @@ class PostListViewModel(
                     Timber.e(it)
                     viewState.value = Event(ViewState.UNEXPECTED_ERROR)
                 },
-                onComplete = { viewState.value = Event(ViewState.IDLE) }
+                onComplete = { viewState.value = Event(ViewState.SUCCESS) }
             )
             .addTo(compositeDisposable)
     }

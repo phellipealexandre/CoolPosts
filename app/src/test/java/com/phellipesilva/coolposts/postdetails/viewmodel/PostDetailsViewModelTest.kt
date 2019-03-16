@@ -8,6 +8,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.postlist.utils.RxUtils
+import com.phellipesilva.coolposts.state.ConnectionManager
 import com.phellipesilva.coolposts.state.ViewState
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
@@ -32,14 +33,18 @@ class PostDetailsViewModelTest {
     private lateinit var postDetailsRepository: PostDetailsRepository
 
     @Mock
+    private lateinit var connectionManager: ConnectionManager
+
+    @Mock
     private lateinit var compositeDisposable: CompositeDisposable
 
     private lateinit var postDetailsViewModel: PostDetailsViewModel
 
     @Before
     fun setUp() {
-        postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, compositeDisposable)
+        postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionManager, compositeDisposable)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
+        whenever(connectionManager.isOnline()).thenReturn(true)
     }
 
     @After
@@ -48,16 +53,26 @@ class PostDetailsViewModelTest {
     }
 
     @Test
-    fun shouldEmitIdleEventWhenPostFetchingFinishesSuccessfully() {
+    fun shouldEmitSuccessEventWhenPostFetchingFinishesSuccessfully() {
         whenever(postDetailsRepository.fetchComments(1)).thenReturn(Completable.complete())
 
         postDetailsViewModel.fetchComments(1)
 
         postDetailsViewModel.viewState().observeForever {
-            assertEquals(ViewState.IDLE, it.peekContent())
+            assertEquals(ViewState.SUCCESS, it.peekContent())
         }
     }
 
+    @Test
+    fun shouldEmitNoInternetEventWhenThereIsNoInternet() {
+        whenever(connectionManager.isOnline()).thenReturn(false)
+
+        postDetailsViewModel.fetchComments(1)
+
+        postDetailsViewModel.viewState().observeForever {
+            assertEquals(ViewState.NO_INTERNET, it.peekContent())
+        }
+    }
 
     @Test
     fun shouldEmitErrorEventWhenPostFetchingFinishesWithError() {

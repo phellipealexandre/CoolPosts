@@ -2,10 +2,10 @@ package com.phellipesilva.coolposts.postdetails.view
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.extensions.fadeIn
@@ -65,13 +65,12 @@ class PostDetailsActivity : AppCompatActivity() {
 
     private fun initViewStateObserver() {
         postDetailsViewModel.viewState().observe(this, Observer {
-            when (it.peekContent()) {
-                ViewState.IDLE -> { }
-                ViewState.UNEXPECTED_ERROR -> Toast.makeText(
-                    this,
-                    "Error",
-                    Toast.LENGTH_SHORT
-                ).show()
+            val event = it.peekContent()
+            when (event) {
+                ViewState.SUCCESS -> {}
+                else -> {
+                    Snackbar.make(postDetailsCoordinatorLayout, event.msgStringId, Snackbar.LENGTH_LONG).show()
+                }
             }
         })
     }
