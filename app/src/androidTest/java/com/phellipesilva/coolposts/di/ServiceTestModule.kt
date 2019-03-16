@@ -15,13 +15,15 @@ object ServiceTestModule {
 
     @Provides
     @JvmStatic
-    fun providesPostService(): PostService = Retrofit.Builder()
+    fun providesOkHttpCientService(): OkHttpClient = OkHttpClient.Builder()
+        .sslSocketFactory(RESTMockServer.getSSLSocketFactory(), RESTMockServer.getTrustManager())
+        .build()
+
+    @Provides
+    @JvmStatic
+    fun providesPostService(okHttpClient: OkHttpClient): PostService = Retrofit.Builder()
         .baseUrl(RESTMockServer.getUrl())
-        .client(
-            OkHttpClient.Builder()
-                .sslSocketFactory(RESTMockServer.getSSLSocketFactory(), RESTMockServer.getTrustManager())
-                .build()
-        )
+        .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
@@ -29,13 +31,9 @@ object ServiceTestModule {
 
     @Provides
     @JvmStatic
-    fun providesCommentService(): CommentService = Retrofit.Builder()
+    fun providesCommentService(okHttpClient: OkHttpClient): CommentService = Retrofit.Builder()
         .baseUrl(RESTMockServer.getUrl())
-        .client(
-            OkHttpClient.Builder()
-                .sslSocketFactory(RESTMockServer.getSSLSocketFactory(), RESTMockServer.getTrustManager())
-                .build()
-        )
+        .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()

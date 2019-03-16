@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.phellipesilva.coolposts.TestInstrumentationRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
     buildTypes {
         release {
@@ -25,6 +26,9 @@ android {
     }
     androidExtensions {
         experimental = true
+    }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
@@ -88,5 +92,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'
     androidTestImplementation "androidx.test.espresso:espresso-contrib:3.1.1"
     androidTestImplementation 'com.github.andrzejchm.RESTMock:android:0.3.3'
+    androidTestUtil 'androidx.test:orchestrator:1.1.1'
     kaptAndroidTest "com.google.dagger:dagger-compiler:2.19"
 }

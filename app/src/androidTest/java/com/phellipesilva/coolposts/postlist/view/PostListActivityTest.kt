@@ -52,6 +52,7 @@ class PostListActivityTest {
     @Test
     fun shouldUpdateSecondPostTitleWhenOpenActivityAndRefreshAgain() {
         RESTMockServer.whenGET(pathContains("posts"))
+            .thenReturnFile(200, "json/posts_response.json")
             .thenReturnFile(200, "json/posts_updated_response.json")
         RESTMockServer.whenGET(pathContains("users"))
             .thenReturnFile(200, "json/users_response.json")
