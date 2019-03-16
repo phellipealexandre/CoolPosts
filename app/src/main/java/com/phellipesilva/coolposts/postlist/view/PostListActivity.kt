@@ -35,6 +35,9 @@ class PostListActivity : AppCompatActivity() {
         val adapter = PostListAdapter(this)
         recyclerView.adapter = adapter
         recyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_enter_up)
+        recyclerView.addItemDecoration(
+            MarginItemDecoration(resources.getDimension(R.dimen.recyclerview_margin).toInt())
+        )
 
         postListViewModel.getPostsObservable().observe(this, Observer { postList ->
             val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null

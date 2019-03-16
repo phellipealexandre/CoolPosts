@@ -1,5 +1,6 @@
 package com.phellipesilva.coolposts.postlist.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
@@ -9,11 +10,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.phellipesilva.coolposts.R
+import com.jakewharton.rxbinding.view.RxView
 import com.phellipesilva.coolposts.extensions.load
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
 import com.phellipesilva.coolposts.postlist.data.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
+import java.util.concurrent.TimeUnit
 
 class PostListAdapter(private val activity: Activity) :
     RecyclerView.Adapter<PostListAdapter.PostViewHolder>() {
@@ -22,7 +24,7 @@ class PostListAdapter(private val activity: Activity) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
-            LayoutInflater.from(activity).inflate(R.layout.post_list_item, parent, false)
+            LayoutInflater.from(activity).inflate(com.phellipesilva.coolposts.R.layout.post_list_item, parent, false)
         )
     }
 
@@ -37,6 +39,7 @@ class PostListAdapter(private val activity: Activity) :
         notifyDataSetChanged()
     }
 
+    @SuppressLint("CheckResult")
     class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val postTitleTextView: TextView = view.postTitle
         private val postAuthorTextView: TextView = view.postAuthor
@@ -57,20 +60,18 @@ class PostListAdapter(private val activity: Activity) :
                 rounded = false
             )
 
-            itemView.setOnClickListener {
-                val intent = Intent(activity, PostDetailsActivity::class.java)
-                intent.putExtra("post", post)
+            RxView.clicks(itemView).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe {
+                    val intent = Intent(activity, PostDetailsActivity::class.java)
+                    intent.putExtra("post", post)
 
-                val pair1 = android.util.Pair(thumbnailImageView as View, "thumbnailImageView")
-                val pair2 = android.util.Pair(authorAvatarImageView as View, "authorAvatarImageView")
-                val options = ActivityOptions.makeSceneTransitionAnimation(
-                    activity,
-                    pair1,
-                    pair2
-                )
+                    val options = ActivityOptions.makeSceneTransitionAnimation(
+                        activity,
+                        android.util.Pair(authorAvatarImageView as View, "authorAvatarImageView"),
+                        android.util.Pair(thumbnailImageView as View, "thumbnailImageView")
+                    )
 
-                activity.startActivity(intent, options.toBundle())
-            }
+                    activity.startActivity(intent, options.toBundle())
+                }
         }
     }
 }
