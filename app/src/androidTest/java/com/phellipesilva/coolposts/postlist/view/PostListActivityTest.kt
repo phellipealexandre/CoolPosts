@@ -26,8 +26,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class PostListActivityTest {
 
-    @Rule
-    @JvmField
+    @get:Rule
     var activityRule: ActivityTestRule<PostListActivity> = ActivityTestRule(PostListActivity::class.java, false, false)
 
     @Before

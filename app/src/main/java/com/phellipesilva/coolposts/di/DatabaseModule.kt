@@ -2,9 +2,9 @@ package com.phellipesilva.coolposts.di
 
 import android.content.Context
 import androidx.room.Room
-import com.phellipesilva.coolposts.postdetails.database.CommentDAO
+import com.phellipesilva.coolposts.postdetails.database.CommentDao
 import com.phellipesilva.coolposts.database.MainDatabase
-import com.phellipesilva.coolposts.postlist.database.PostDAO
+import com.phellipesilva.coolposts.postlist.database.PostDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -21,10 +21,10 @@ object DatabaseModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun providesPostDAO(mainDatabase: MainDatabase): PostDAO = mainDatabase.getPostDAO()
+    fun providesPostDao(mainDatabase: MainDatabase): PostDao = mainDatabase.getPostDao()
 
     @Provides
     @Singleton
     @JvmStatic
-    fun providesCommentDAO(mainDatabase: MainDatabase): CommentDAO = mainDatabase.getCommentDAO()
+    fun providesCommentDao(mainDatabase: MainDatabase): CommentDao = mainDatabase.getCommentDao()
 }

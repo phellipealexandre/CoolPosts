@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.phellipesilva.coolposts.postlist.database.PostDAO
+import com.phellipesilva.coolposts.postlist.database.PostDao
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.data.User
 import com.phellipesilva.coolposts.postlist.entity.PostRemoteEntity
@@ -33,13 +33,13 @@ class PostListRepositoryTest {
     private lateinit var postService: PostService
 
     @Mock
-    private lateinit var postDAO: PostDAO
+    private lateinit var postDao: PostDao
 
     private lateinit var postListRepository: PostListRepository
 
     @Before
     fun setUp() {
-        postListRepository = PostListRepository(postService, postDAO)
+        postListRepository = PostListRepository(postService, postDao)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
     }
 
@@ -61,7 +61,7 @@ class PostListRepositoryTest {
         val testObserver = TestObserver<Unit>()
         postListRepository.fetchPosts().subscribe(testObserver)
 
-        verify(postDAO).savePosts(listOf())
+        verify(postDao).savePosts(listOf())
     }
 
     @Test
@@ -98,7 +98,7 @@ class PostListRepositoryTest {
 
     @Test
     fun shouldReturnEmptyPostListWhenNothingIsStoredOnDatabase() {
-        whenever(postDAO.getAllPosts()).thenReturn(MutableLiveData<List<Post>>())
+        whenever(postDao.getAllPosts()).thenReturn(MutableLiveData<List<Post>>())
 
         postListRepository.getPosts().observeForever {
             assertEquals(0, it.size)
@@ -146,7 +146,7 @@ class PostListRepositoryTest {
         val testObserver = TestObserver<Unit>()
         postListRepository.fetchPosts().subscribe(testObserver)
 
-        verify(postDAO).savePosts(listOf(expectedPost))
+        verify(postDao).savePosts(listOf(expectedPost))
     }
 
     @Test
@@ -227,6 +227,6 @@ class PostListRepositoryTest {
         val testObserver = TestObserver<Unit>()
         postListRepository.fetchPosts().subscribe(testObserver)
 
-        verify(postDAO).savePosts(listOf(expectedPost1, expectedPost2, expectedPost3))
+        verify(postDao).savePosts(listOf(expectedPost1, expectedPost2, expectedPost3))
     }
 }

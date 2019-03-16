@@ -9,7 +9,7 @@ import com.phellipesilva.coolposts.postlist.data.Post
 import io.reactivex.Completable
 
 @Dao
-interface PostDAO {
+interface PostDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun savePosts(posts: List<Post>): Completable

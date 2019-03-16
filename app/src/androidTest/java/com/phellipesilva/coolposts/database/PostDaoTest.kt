@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.data.User
-import com.phellipesilva.coolposts.postlist.database.PostDAO
+import com.phellipesilva.coolposts.postlist.database.PostDao
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -15,9 +15,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class PostDAOTest {
+class PostDaoTest {
 
-    private lateinit var postDAO: PostDAO
+    private lateinit var postDao: PostDao
     private lateinit var database: MainDatabase
 
     @get:Rule
@@ -27,12 +27,12 @@ class PostDAOTest {
     fun setUp() {
         val context = InstrumentationRegistry.getInstrumentation().context
         database = Room.inMemoryDatabaseBuilder(context, MainDatabase::class.java).build()
-        postDAO = database.getPostDAO()
+        postDao = database.getPostDao()
     }
 
     @Test
     fun shouldReturnEmptyPostListWhenThereIsNothingStoredInTheDatabase() {
-        val postsLiveData = postDAO.getAllPosts()
+        val postsLiveData = postDao.getAllPosts()
 
         postsLiveData.observeForever {
             assertEquals(0, it.size)
@@ -46,8 +46,8 @@ class PostDAOTest {
         val post2 = Post(2, "Title2", "body2", User(1, "Name", "Website"))
         val postList = listOf(post1, post2)
 
-        postDAO.savePosts(postList).subscribe()
-        val postsLiveData = postDAO.getAllPosts()
+        postDao.savePosts(postList).subscribe()
+        val postsLiveData = postDao.getAllPosts()
 
         postsLiveData.observeForever {
             assertEquals(2, it.size)
@@ -62,13 +62,13 @@ class PostDAOTest {
         val post2 = Post(2, "Title2", "body2", User(1, "Name", "Website"))
         val postList = listOf(post1, post2)
 
-        postDAO.savePosts(postList).subscribe()
+        postDao.savePosts(postList).subscribe()
 
         val post1New = Post(1, "TitleNew", "bodyNew", User(1, "Name", "Website"))
         val newPostList = listOf(post1New, post2)
 
-        postDAO.savePosts(newPostList).subscribe()
-        val postsLiveData = postDAO.getAllPosts()
+        postDao.savePosts(newPostList).subscribe()
+        val postsLiveData = postDao.getAllPosts()
 
         postsLiveData.observeForever {
             assertEquals(2, it.size)

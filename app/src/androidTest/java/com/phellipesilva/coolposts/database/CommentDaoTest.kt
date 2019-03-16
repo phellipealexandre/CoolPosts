@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.phellipesilva.coolposts.postdetails.database.CommentDAO
+import com.phellipesilva.coolposts.postdetails.database.CommentDao
 import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -14,9 +14,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CommentDAOTest {
+class CommentDaoTest {
 
-    private lateinit var commentDAO: CommentDAO
+    private lateinit var commentDao: CommentDao
     private lateinit var database: MainDatabase
 
     @get:Rule
@@ -26,12 +26,12 @@ class CommentDAOTest {
     fun setUp() {
         val context = InstrumentationRegistry.getInstrumentation().context
         database = Room.inMemoryDatabaseBuilder(context, MainDatabase::class.java).build()
-        commentDAO = database.getCommentDAO()
+        commentDao = database.getCommentDao()
     }
 
     @Test
     fun shouldReturnEmptyCommentListWhenThereIsNothingStoredInTheDatabase() {
-        val commentLiveData = commentDAO.getAllCommentsFromPost(1)
+        val commentLiveData = commentDao.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(0, it.size)
@@ -57,8 +57,8 @@ class CommentDAOTest {
         )
         val commentList = listOf(comment1, comment2)
 
-        commentDAO.saveComments(commentList).subscribe()
-        val commentLiveData = commentDAO.getAllCommentsFromPost(1)
+        commentDao.saveComments(commentList).subscribe()
+        val commentLiveData = commentDao.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(2, it.size)
@@ -92,8 +92,8 @@ class CommentDAOTest {
         )
         val commentList = listOf(comment1, comment2, comment3)
 
-        commentDAO.saveComments(commentList).subscribe()
-        val commentLiveData = commentDAO.getAllCommentsFromPost(1)
+        commentDao.saveComments(commentList).subscribe()
+        val commentLiveData = commentDao.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(1, it.size)
@@ -125,7 +125,7 @@ class CommentDAOTest {
             "body3"
         )
         val commentList = listOf(comment1, comment2, comment3)
-        commentDAO.saveComments(commentList).subscribe()
+        commentDao.saveComments(commentList).subscribe()
 
         val comment1New = CommentEntity(
             1,
@@ -135,9 +135,9 @@ class CommentDAOTest {
             "bodyNew"
         )
         val commentListNew = listOf(comment1New, comment2)
-        commentDAO.saveComments(commentListNew).subscribe()
+        commentDao.saveComments(commentListNew).subscribe()
 
-        val commentLiveData = commentDAO.getAllCommentsFromPost(1)
+        val commentLiveData = commentDao.getAllCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(2, it.size)

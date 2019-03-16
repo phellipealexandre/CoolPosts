@@ -1,7 +1,7 @@
 package com.phellipesilva.coolposts.postlist.repository
 
 import androidx.lifecycle.LiveData
-import com.phellipesilva.coolposts.postlist.database.PostDAO
+import com.phellipesilva.coolposts.postlist.database.PostDao
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.data.User
 import com.phellipesilva.coolposts.postlist.entity.PostRemoteEntity
@@ -17,7 +17,7 @@ typealias PostUserPairList = BiFunction<List<PostRemoteEntity>, List<UserRemoteE
 @Reusable
 class PostListRepository @Inject constructor(
     private val postService: PostService,
-    private val postDAO: PostDAO
+    private val postDao: PostDao
 ) {
 
     fun fetchPosts(): Completable {
@@ -31,12 +31,12 @@ class PostListRepository @Inject constructor(
                 }
             ).flatMapCompletable {
                 val postList = mapPostEntityListInPostDomainList(it.first, it.second)
-                postDAO.savePosts(postList)
+                postDao.savePosts(postList)
             }
     }
 
     fun getPosts(): LiveData<List<Post>> {
-        return postDAO.getAllPosts()
+        return postDao.getAllPosts()
     }
 
     private fun mapPostEntityListInPostDomainList(

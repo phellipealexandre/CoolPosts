@@ -9,7 +9,7 @@ import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
 import io.reactivex.Completable
 
 @Dao
-interface CommentDAO {
+interface CommentDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveComments(comments: List<CommentEntity>): Completable

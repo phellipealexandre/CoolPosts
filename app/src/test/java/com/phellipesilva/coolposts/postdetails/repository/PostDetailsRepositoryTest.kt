@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.phellipesilva.coolposts.postdetails.database.CommentDAO
+import com.phellipesilva.coolposts.postdetails.database.CommentDao
 import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
 import com.phellipesilva.coolposts.postdetails.service.CommentService
 import com.phellipesilva.coolposts.postlist.utils.RxUtils
@@ -31,13 +31,13 @@ class PostDetailsRepositoryTest {
     private lateinit var commentService: CommentService
 
     @Mock
-    private lateinit var commentDAO: CommentDAO
+    private lateinit var commentDao: CommentDao
 
     private lateinit var postDetailsRepository: PostDetailsRepository
 
     @Before
     fun setUp() {
-        postDetailsRepository = PostDetailsRepository(commentService, commentDAO)
+        postDetailsRepository = PostDetailsRepository(commentService, commentDao)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
     }
 
@@ -96,7 +96,7 @@ class PostDetailsRepositoryTest {
         val testObserver = TestObserver<Unit>()
         postDetailsRepository.fetchComments(1).subscribe(testObserver)
 
-        verify(commentDAO).saveComments(comments)
+        verify(commentDao).saveComments(comments)
     }
 
     @Test
@@ -119,7 +119,7 @@ class PostDetailsRepositoryTest {
             )
         )
         expectedLiveData.value = comments
-        whenever(commentDAO.getAllCommentsFromPost(1)).thenReturn(expectedLiveData)
+        whenever(commentDao.getAllCommentsFromPost(1)).thenReturn(expectedLiveData)
 
         val commentsLiveData = postDetailsRepository.getComments(1)
 
