@@ -9,8 +9,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.extensions.MarginItemDecoration
-import com.phellipesilva.coolposts.state.ViewState
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
+import com.phellipesilva.coolposts.state.ViewState
 import kotlinx.android.synthetic.main.activity_post_list.*
 
 class PostListActivity : AppCompatActivity() {
@@ -36,9 +36,7 @@ class PostListActivity : AppCompatActivity() {
         val adapter = PostListAdapter(this)
         recyclerView.adapter = adapter
         recyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_enter_up)
-        recyclerView.addItemDecoration(
-            MarginItemDecoration(resources.getDimension(R.dimen.recyclerview_margin).toInt())
-        )
+        recyclerView.addItemDecoration(MarginItemDecoration())
 
         postListViewModel.getPostsObservable().observe(this, Observer { postList ->
             val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null
@@ -47,7 +45,7 @@ class PostListActivity : AppCompatActivity() {
                 swipeRefreshLayout.isRefreshing = true
                 postListViewModel.fetchPosts()
             } else {
-                adapter.updateData(postList)
+                adapter.submitList(postList)
                 recyclerView.scheduleLayoutAnimation()
             }
         })

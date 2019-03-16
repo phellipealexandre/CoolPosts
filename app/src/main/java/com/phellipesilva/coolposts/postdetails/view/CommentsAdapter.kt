@@ -1,35 +1,26 @@
 package com.phellipesilva.coolposts.postdetails.view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
 import kotlinx.android.synthetic.main.comment_list_item.view.*
 
-class CommentsAdapter(private val context: Context) :
-    RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>() {
-
-    private var comments = listOf<CommentEntity>()
+class CommentsAdapter : ListAdapter<CommentEntity, CommentsAdapter.CommentViewHolder>(CommentsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         return CommentsAdapter.CommentViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.comment_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.comment_list_item, parent, false)
         )
     }
 
-    override fun getItemCount(): Int = comments.size
-
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.bind(comments[position])
-    }
-
-    fun updateData(newComments: List<CommentEntity>) {
-        this.comments = newComments
-        notifyDataSetChanged()
+        holder.bind(getItem(position))
     }
 
     class CommentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -39,6 +30,16 @@ class CommentsAdapter(private val context: Context) :
         fun bind(commentEntity: CommentEntity) {
             commentBodyTextView.text = commentEntity.body
             commentEmailTextView.text = commentEntity.email
+        }
+    }
+
+    private class CommentsDiffCallback : DiffUtil.ItemCallback<CommentEntity>() {
+        override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
+            return oldItem == newItem
         }
     }
 

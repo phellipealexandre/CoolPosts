@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.phellipesilva.coolposts.extensions.load
@@ -17,10 +19,7 @@ import com.phellipesilva.coolposts.postlist.data.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
 
-class PostListAdapter(private val activity: Activity) :
-    RecyclerView.Adapter<PostListAdapter.PostViewHolder>() {
-
-    private var posts = listOf<Post>()
+class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
@@ -28,15 +27,8 @@ class PostListAdapter(private val activity: Activity) :
         )
     }
 
-    override fun getItemCount(): Int = posts.size
-
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.bind(posts[position], activity)
-    }
-
-    fun updateData(newPosts: List<Post>) {
-        this.posts = newPosts
-        notifyDataSetChanged()
+        holder.bind(getItem(position), activity)
     }
 
     @SuppressLint("CheckResult")
@@ -74,6 +66,16 @@ class PostListAdapter(private val activity: Activity) :
 
                     activity.startActivity(intent, options.toBundle())
                 }
+        }
+    }
+
+    private class PostsDiffCallback : DiffUtil.ItemCallback<Post>() {
+        override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem == newItem
         }
     }
 }

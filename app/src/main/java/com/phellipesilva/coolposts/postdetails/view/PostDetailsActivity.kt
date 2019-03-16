@@ -2,7 +2,6 @@ package com.phellipesilva.coolposts.postdetails.view
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -48,12 +47,9 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView(savedInstanceState: Bundle?, postId: Int) {
-        val adapter = CommentsAdapter(this)
+        val adapter = CommentsAdapter()
         postDetailsRecyclerView.adapter = adapter
-        postDetailsRecyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_enter_up)
-        postDetailsRecyclerView.addItemDecoration(
-            MarginItemDecoration(resources.getDimension(R.dimen.recyclerview_margin).toInt())
-        )
+        postDetailsRecyclerView.addItemDecoration(MarginItemDecoration())
 
         postDetailsViewModel.getCommentsObservable(postId).observe(this, Observer { commentList ->
             val isFirstUse = commentList.isNullOrEmpty() && savedInstanceState == null
@@ -61,8 +57,7 @@ class PostDetailsActivity : AppCompatActivity() {
             if (isFirstUse) {
                 postDetailsViewModel.fetchComments(postId)
             } else {
-                adapter.updateData(commentList)
-                postDetailsRecyclerView.scheduleLayoutAnimation()
+                adapter.submitList(commentList)
             }
         })
     }
