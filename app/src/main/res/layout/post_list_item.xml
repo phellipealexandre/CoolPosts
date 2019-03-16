@@ -49,7 +49,6 @@
             android:maxLines="2"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:transitionName="postTitleTextView"
             app:layout_constraintBottom_toTopOf="@+id/postAuthor"
             app:layout_constraintEnd_toStartOf="@+id/authorAvatar"
             app:layout_constraintHorizontal_bias="0.5"

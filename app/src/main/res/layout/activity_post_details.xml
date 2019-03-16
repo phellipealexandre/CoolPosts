@@ -42,7 +42,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <View
-                    android:id="@+id/view"
+                    android:id="@+id/filter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/dark_filter"
@@ -76,7 +76,6 @@
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:transitionName="postTitleTextView"
                     app:layout_constraintEnd_toStartOf="@+id/authorAvatarImageView"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"

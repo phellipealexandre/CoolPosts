@@ -1,6 +1,8 @@
 package com.phellipesilva.coolposts.extensions
 
 import android.graphics.drawable.Drawable
+import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -26,7 +28,6 @@ fun ImageView.load(url: String, rounded: Boolean = false, onLoadingFinished: () 
         }
     }
 
-
     val requestBuilder = Glide.with(this)
         .load(url)
         .listener(listener)
@@ -38,5 +39,12 @@ fun ImageView.load(url: String, rounded: Boolean = false, onLoadingFinished: () 
         requestBuilder.apply(RequestOptions.noTransformation())
 
     requestBuilder.into(this)
+}
 
+fun View.fadeIn() {
+    val fadeIn = AlphaAnimation(0.0f, 1.0f)
+    fadeIn.duration = 800
+    fadeIn.fillAfter = true
+    fadeIn.interpolator = android.view.animation.DecelerateInterpolator()
+    startAnimation(fadeIn)
 }

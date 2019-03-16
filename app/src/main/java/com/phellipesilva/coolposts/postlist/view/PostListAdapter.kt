@@ -63,16 +63,13 @@ class PostListAdapter(private val activity: Activity) :
 
                 val pair1 = android.util.Pair(thumbnailImageView as View, "thumbnailImageView")
                 val pair2 = android.util.Pair(authorAvatarImageView as View, "authorAvatarImageView")
-                val pair3 = android.util.Pair(postTitleTextView as View, "postTitleTextView")
                 val options = ActivityOptions.makeSceneTransitionAnimation(
                     activity,
                     pair1,
-                    pair2,
-                    pair3
+                    pair2
                 )
 
                 activity.startActivity(intent, options.toBundle())
-                activity.window.exitTransition = null
             }
         }
     }

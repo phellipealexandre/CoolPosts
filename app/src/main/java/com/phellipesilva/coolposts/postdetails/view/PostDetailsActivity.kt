@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
+import com.phellipesilva.coolposts.extensions.fadeIn
 import com.phellipesilva.coolposts.extensions.load
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
 import com.phellipesilva.coolposts.postlist.data.Post
@@ -21,7 +22,6 @@ class PostDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_details)
-        window.enterTransition = null
 
         val post = intent.getParcelableExtra<Post>("post")
         setupsCollapsingToolbar(post)
@@ -38,6 +38,11 @@ class PostDetailsActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        supportFinishAfterTransition()
+        super.onBackPressed()
     }
 
     private fun initRecyclerView(postId: Int) {
@@ -90,6 +95,9 @@ class PostDetailsActivity : AppCompatActivity() {
         )
 
         postBodyTextView.text = post.body
+        postBodyTextView.fadeIn()
         postTitleTextView.text = post.title
+        postTitleTextView.fadeIn()
+        filter.fadeIn()
     }
 }
