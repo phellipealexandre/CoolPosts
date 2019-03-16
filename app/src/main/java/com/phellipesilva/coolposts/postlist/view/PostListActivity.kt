@@ -1,6 +1,7 @@
 package com.phellipesilva.coolposts.postlist.view
 
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -33,6 +34,7 @@ class PostListActivity : AppCompatActivity() {
     private fun initRecyclerView(savedInstanceState: Bundle?) {
         val adapter = PostListAdapter(this)
         recyclerView.adapter = adapter
+        recyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_enter_up)
 
         postListViewModel.getPostsObservable().observe(this, Observer { postList ->
             val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null
@@ -42,6 +44,7 @@ class PostListActivity : AppCompatActivity() {
                 postListViewModel.fetchPosts()
             } else {
                 adapter.updateData(postList)
+                recyclerView.scheduleLayoutAnimation()
             }
         })
     }

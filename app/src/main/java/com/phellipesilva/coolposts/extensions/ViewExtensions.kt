@@ -5,6 +5,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
@@ -29,6 +30,7 @@ fun ImageView.load(url: String, rounded: Boolean = false, onLoadingFinished: () 
     val requestBuilder = Glide.with(this)
         .load(url)
         .listener(listener)
+        .transition(DrawableTransitionOptions.withCrossFade())
 
     if (rounded)
         requestBuilder.apply(RequestOptions.circleCropTransform())
