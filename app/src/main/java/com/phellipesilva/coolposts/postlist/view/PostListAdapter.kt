@@ -7,6 +7,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -64,7 +65,9 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
                     val options = ActivityOptions.makeSceneTransitionAnimation(
                         activity,
                         android.util.Pair(authorAvatarImageView as View, activity.getString(R.string.user_avatar_transition_id)),
-                        android.util.Pair(thumbnailImageView as View, activity.getString(R.string.thumbnail_transition_id))
+                        android.util.Pair(thumbnailImageView as View, activity.getString(R.string.thumbnail_transition_id)),
+                        android.util.Pair(activity.findViewById(android.R.id.navigationBarBackground), Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME),
+                        android.util.Pair(activity.findViewById(android.R.id.statusBarBackground), Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME)
                     )
 
                     activity.startActivity(intent, options.toBundle())
