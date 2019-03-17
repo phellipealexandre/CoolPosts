@@ -16,7 +16,7 @@ object ServiceModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun providesOkHttpCliente(): OkHttpClient = OkHttpClient.Builder().build()
+    fun providesOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
 
     @Provides
     @Singleton

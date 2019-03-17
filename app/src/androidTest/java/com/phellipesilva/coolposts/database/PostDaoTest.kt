@@ -42,8 +42,8 @@ class PostDaoTest {
 
     @Test
     fun shouldReturnSamePostListValueWhenThereWasAPreviouslyStoredPostList() {
-        val post1 = Post(1, "Title", "body", User(1, "Name", "Website"))
-        val post2 = Post(2, "Title2", "body2", User(1, "Name", "Website"))
+        val post1 = Post(1, "Title", "body", User(1, "Name"))
+        val post2 = Post(2, "Title2", "body2", User(1, "Name"))
         val postList = listOf(post1, post2)
 
         postDao.savePosts(postList).subscribe()
@@ -58,13 +58,13 @@ class PostDaoTest {
 
     @Test
     fun shouldReplacePostsWithSameIdWhenThereIsConflictInStoredPostList() {
-        val post1 = Post(1, "Title", "body", User(1, "Name", "Website"))
-        val post2 = Post(2, "Title2", "body2", User(1, "Name", "Website"))
+        val post1 = Post(1, "Title", "body", User(1, "Name"))
+        val post2 = Post(2, "Title2", "body2", User(1, "Name"))
         val postList = listOf(post1, post2)
 
         postDao.savePosts(postList).subscribe()
 
-        val post1New = Post(1, "TitleNew", "bodyNew", User(1, "Name", "Website"))
+        val post1New = Post(1, "TitleNew", "bodyNew", User(1, "Name"))
         val newPostList = listOf(post1New, post2)
 
         postDao.savePosts(newPostList).subscribe()

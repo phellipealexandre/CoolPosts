@@ -87,6 +87,9 @@ class PostDetailsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        postBodyTextView.text = post.body
+        postTitleTextView.text = post.title
+
         supportPostponeEnterTransition()
         toolbarImageView.load(
             url = "https://picsum.photos/400/400/?image=${post.id}",
@@ -98,9 +101,6 @@ class PostDetailsActivity : AppCompatActivity() {
             rounded = true,
             onLoadingFinished = { supportStartPostponedEnterTransition() }
         )
-
-        postBodyTextView.text = post.body
-        postTitleTextView.text = post.title
 
         window.sharedElementEnterTransition.addListener(
             onEnd = {

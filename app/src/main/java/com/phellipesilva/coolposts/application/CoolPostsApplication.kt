@@ -7,7 +7,7 @@ import com.phellipesilva.coolposts.di.DaggerApplicationComponent
 import com.phellipesilva.coolposts.di.DaggerComponentProvider
 import timber.log.Timber
 
-class CoolPostsAplication : Application(), DaggerComponentProvider {
+class CoolPostsApplication : Application(), DaggerComponentProvider {
 
     override val component: ApplicationComponent by lazy {
         DaggerApplicationComponent.builder()

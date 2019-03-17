@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postdetails.database.CommentDao
-import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
+import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.service.CommentService
-import com.phellipesilva.coolposts.postlist.utils.RxUtils
+import com.phellipesilva.coolposts.utils.RxUtils
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
@@ -49,14 +49,14 @@ class PostDetailsRepositoryTest {
     @Test
     fun shouldFetchCommentsWithGivenPostId() {
         val comments = listOf(
-            CommentEntity(
+            Comment(
                 postId = 1,
                 id = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
-            CommentEntity(
+            Comment(
                 postId = 2,
                 id = 2,
                 name = "Name2",
@@ -75,14 +75,14 @@ class PostDetailsRepositoryTest {
     @Test
     fun shouldSaveCommentsOnDatabaseWhenFetchingIsSuccessful() {
         val comments = listOf(
-            CommentEntity(
+            Comment(
                 postId = 1,
                 id = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
-            CommentEntity(
+            Comment(
                 postId = 2,
                 id = 2,
                 name = "Name2",
@@ -101,16 +101,16 @@ class PostDetailsRepositoryTest {
 
     @Test
     fun shouldReturnCommentsLiveDataFromDatabaseForGivenPostId() {
-        val expectedLiveData = MutableLiveData<List<CommentEntity>>()
+        val expectedLiveData = MutableLiveData<List<Comment>>()
         val comments = listOf(
-            CommentEntity(
+            Comment(
                 postId = 1,
                 id = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
-            CommentEntity(
+            Comment(
                 postId = 2,
                 id = 2,
                 name = "Name2",

@@ -10,7 +10,7 @@ import com.phellipesilva.coolposts.postlist.data.User
 import com.phellipesilva.coolposts.postlist.entity.PostRemoteEntity
 import com.phellipesilva.coolposts.postlist.entity.UserRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.PostService
-import com.phellipesilva.coolposts.postlist.utils.RxUtils
+import com.phellipesilva.coolposts.utils.RxUtils
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
@@ -113,8 +113,7 @@ class PostListRepositoryTest {
             body = "Body",
             user = User(
                 userId = 99,
-                name = "User Name",
-                website = "Website"
+                name = "User Name"
             )
         )
 
@@ -136,8 +135,7 @@ class PostListRepositoryTest {
                 listOf(
                     UserRemoteEntity(
                         id = 99,
-                        name = "User Name",
-                        website = "Website"
+                        name = "User Name"
                     )
                 )
             )
@@ -157,8 +155,7 @@ class PostListRepositoryTest {
             body = "Body",
             user = User(
                 userId = 99,
-                name = "User Name",
-                website = "Website"
+                name = "User Name"
             )
         )
         val expectedPost2 = Post(
@@ -167,8 +164,7 @@ class PostListRepositoryTest {
             body = "Body2",
             user = User(
                 userId = 99,
-                name = "User Name",
-                website = "Website"
+                name = "User Name"
             )
         )
         val expectedPost3 = Post(
@@ -177,8 +173,7 @@ class PostListRepositoryTest {
             body = "Body3",
             user = User(
                 userId = 98,
-                name = "User Name 2",
-                website = "Website 2"
+                name = "User Name 2"
             )
         )
 
@@ -212,13 +207,11 @@ class PostListRepositoryTest {
                 listOf(
                     UserRemoteEntity(
                         id = 99,
-                        name = "User Name",
-                        website = "Website"
+                        name = "User Name"
                     ),
                     UserRemoteEntity(
                         id = 98,
-                        name = "User Name 2",
-                        website = "Website 2"
+                        name = "User Name 2"
                     )
                 )
             )

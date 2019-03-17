@@ -8,6 +8,5 @@ import kotlinx.android.parcel.Parcelize
 @Entity
 data class User(
     val userId: Int,
-    val name: String,
-    val website: String
+    val name: String
 ) : Parcelable

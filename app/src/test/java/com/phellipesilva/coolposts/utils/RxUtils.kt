@@ -1,4 +1,4 @@
-package com.phellipesilva.coolposts.postlist.utils
+package com.phellipesilva.coolposts.utils
 
 import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins

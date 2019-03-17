@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
+import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
-import com.phellipesilva.coolposts.postlist.utils.RxUtils
+import com.phellipesilva.coolposts.utils.RxUtils
 import com.phellipesilva.coolposts.state.ConnectionManager
 import com.phellipesilva.coolposts.state.ViewState
 import io.reactivex.Completable
@@ -95,7 +95,7 @@ class PostDetailsViewModelTest {
 
     @Test
     fun shouldGetCommentLiveDataFromRepository() {
-        val postsLiveData = MutableLiveData<List<CommentEntity>>()
+        val postsLiveData = MutableLiveData<List<Comment>>()
         whenever(postDetailsRepository.getComments(1)).thenReturn(postsLiveData)
 
         postDetailsViewModel.getCommentsObservable(1).observeForever {

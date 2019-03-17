@@ -1,6 +1,6 @@
 package com.phellipesilva.coolposts.postdetails.service
 
-import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
+import com.phellipesilva.coolposts.postdetails.data.Comment
 import io.reactivex.observers.TestObserver
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -39,7 +39,7 @@ class CommentServiceTest {
 
     @Test
     fun shouldParseCommentsCorrectlyWhenRequestingCommentsOfSpecificPostFromService() {
-        val testObserver = TestObserver<List<CommentEntity>>()
+        val testObserver = TestObserver<List<Comment>>()
         val json = readJsonFromResources("json/comments_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
@@ -50,7 +50,7 @@ class CommentServiceTest {
         testObserver.assertNoErrors()
         testObserver.assertValue { it.size == 2 }
         testObserver.assertValue {
-            it[0] == CommentEntity(
+            it[0] == Comment(
                 postId = 1,
                 id = 1,
                 name = "id labore ex et quam laborum",
@@ -59,7 +59,7 @@ class CommentServiceTest {
             )
         }
         testObserver.assertValue {
-            it[1] == CommentEntity(
+            it[1] == Comment(
                 postId = 1,
                 id = 2,
                 name = "quo vero reiciendis velit similique earum",

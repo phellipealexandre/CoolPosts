@@ -7,7 +7,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
-import com.phellipesilva.coolposts.postlist.utils.RxUtils
+import com.phellipesilva.coolposts.utils.RxUtils
 import com.phellipesilva.coolposts.state.ConnectionManager
 import com.phellipesilva.coolposts.state.ViewState
 import io.reactivex.Completable

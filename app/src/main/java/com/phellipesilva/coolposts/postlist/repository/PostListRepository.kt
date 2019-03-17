@@ -54,6 +54,6 @@ class PostListRepository @Inject constructor(
     }
 
     private fun mapUserEntityToUserDomain(userEntity: UserRemoteEntity): User {
-        return userEntity.run { User(id, name, website) }
+        return userEntity.run { User(id, name) }
     }
 }

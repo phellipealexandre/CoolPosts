@@ -8,7 +8,7 @@ package com.phellipesilva.coolposts.state
 class Event<out T>(private val content: T) {
 
     var hasBeenHandled = false
-        private set // Allow external read but not write
+        private set
 
     fun peekContent(): T = content
 }

@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.phellipesilva.coolposts.postdetails.database.CommentDao
-import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
+import com.phellipesilva.coolposts.postdetails.data.Comment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -41,14 +41,14 @@ class CommentDaoTest {
 
     @Test
     fun shouldReturnSameCommentListForPostWhenThereWasAPreviouslyStoredCommentListForSpecificPost() {
-        val comment1 = CommentEntity(
+        val comment1 = Comment(
             1,
             1,
             "Name",
             "email",
             "body"
         )
-        val comment2 = CommentEntity(
+        val comment2 = Comment(
             1,
             2,
             "Name2",
@@ -69,21 +69,21 @@ class CommentDaoTest {
 
     @Test
     fun shouldReturnSpecificCommentListForPostWhenThereWasAPreviouslyStoredCommentListForManyPosts() {
-        val comment1 = CommentEntity(
+        val comment1 = Comment(
             1,
             1,
             "Name",
             "email",
             "body"
         )
-        val comment2 = CommentEntity(
+        val comment2 = Comment(
             2,
             2,
             "Name2",
             "email2",
             "body2"
         )
-        val comment3 = CommentEntity(
+        val comment3 = Comment(
             2,
             3,
             "Name3",
@@ -103,21 +103,21 @@ class CommentDaoTest {
 
     @Test
     fun shouldReplaceSpecificCommentForPostWhenThereWasAStoredCommentWithSameIdForThisPost() {
-        val comment1 = CommentEntity(
+        val comment1 = Comment(
             1,
             1,
             "Name",
             "email",
             "body"
         )
-        val comment2 = CommentEntity(
+        val comment2 = Comment(
             1,
             2,
             "Name2",
             "email2",
             "bod2"
         )
-        val comment3 = CommentEntity(
+        val comment3 = Comment(
             2,
             3,
             "Name3",
@@ -127,7 +127,7 @@ class CommentDaoTest {
         val commentList = listOf(comment1, comment2, comment3)
         commentDao.saveComments(commentList).subscribe()
 
-        val comment1New = CommentEntity(
+        val comment1New = Comment(
             1,
             1,
             "NameNew",

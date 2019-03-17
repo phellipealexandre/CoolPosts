@@ -83,15 +83,13 @@ class PostServiceTest {
         testObserver.assertValue {
             it[0] == UserRemoteEntity(
                 id = 1,
-                name = "Leanne Graham",
-                website = "hildegard.org"
+                name = "Leanne Graham"
             )
         }
         testObserver.assertValue {
             it[1] == UserRemoteEntity(
                 id = 2,
-                name = "Ervin Howell",
-                website = "anastasia.net"
+                name = "Ervin Howell"
             )
         }
     }

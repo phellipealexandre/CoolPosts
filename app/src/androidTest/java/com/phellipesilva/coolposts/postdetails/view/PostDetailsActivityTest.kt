@@ -37,7 +37,7 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name", "Website")
+                user = User(1, "Name")
             )
         )
         activityRule.launchActivity(intent)
@@ -59,7 +59,7 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name", "Website")
+                user = User(1, "Name")
             )
         )
         activityRule.launchActivity(intent)
@@ -79,7 +79,7 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name", "Website")
+                user = User(1, "Name")
             )
         )
         activityRule.launchActivity(intent)

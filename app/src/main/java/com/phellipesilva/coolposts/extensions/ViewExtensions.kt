@@ -18,9 +18,10 @@ fun ImageView.load(
     url: String,
     withCrossFade: Boolean = false,
     rounded: Boolean = false,
-    onLoadingFinished: () -> Unit = {}) {
-    val listener = object : RequestListener<Drawable> {
+    onLoadingFinished: () -> Unit = {}
+) {
 
+    val listener = object : RequestListener<Drawable> {
         override fun onLoadFailed(glideException: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
             Timber.e(glideException)
             onLoadingFinished()

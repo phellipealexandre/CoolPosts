@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.phellipesilva.coolposts.R
-import com.phellipesilva.coolposts.postdetails.entity.CommentEntity
+import com.phellipesilva.coolposts.postdetails.data.Comment
 import kotlinx.android.synthetic.main.comment_list_item.view.*
 
-class CommentsAdapter : ListAdapter<CommentEntity, CommentsAdapter.CommentViewHolder>(CommentsDiffCallback()) {
+class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(CommentsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         return CommentsAdapter.CommentViewHolder(
@@ -27,18 +27,18 @@ class CommentsAdapter : ListAdapter<CommentEntity, CommentsAdapter.CommentViewHo
         private val commentBodyTextView: TextView = view.commentBody
         private val commentEmailTextView: TextView = view.commentEmail
 
-        fun bind(commentEntity: CommentEntity) {
-            commentBodyTextView.text = commentEntity.body
-            commentEmailTextView.text = commentEntity.email
+        fun bind(comment: Comment) {
+            commentBodyTextView.text = comment.body
+            commentEmailTextView.text = comment.email
         }
     }
 
-    private class CommentsDiffCallback : DiffUtil.ItemCallback<CommentEntity>() {
-        override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
+    private class CommentsDiffCallback : DiffUtil.ItemCallback<Comment>() {
+        override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
+        override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
             return oldItem.body == newItem.body && oldItem.email == newItem.email
         }
     }
