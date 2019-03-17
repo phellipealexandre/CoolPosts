@@ -3,6 +3,7 @@ package com.phellipesilva.coolposts.postdetails.view
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
@@ -81,7 +82,7 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupsCollapsingToolbar(post: Post) {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(postDetailsToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -99,9 +100,14 @@ class PostDetailsActivity : AppCompatActivity() {
         )
 
         postBodyTextView.text = post.body
-        postBodyTextView.fadeIn()
         postTitleTextView.text = post.title
-        postTitleTextView.fadeIn()
-        filter.fadeIn()
+
+        window.sharedElementEnterTransition.addListener(
+            onEnd = {
+                postBodyTextView.fadeIn()
+                postTitleTextView.fadeIn()
+                filter.fadeIn()
+            }
+        )
     }
 }

@@ -79,7 +79,7 @@ class PostListActivityTest {
         val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
         IdlingRegistry.getInstance().register(idlingResource)
 
-        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(99))
+        onView(withId(R.id.postListRecyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(99))
         onView(withText("at nam consequatur ea labore ea harum")).check(matches(isDisplayed()))
 
         IdlingRegistry.getInstance().unregister(idlingResource)
@@ -94,7 +94,7 @@ class PostListActivityTest {
         val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
         IdlingRegistry.getInstance().register(idlingResource)
 
-        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(99))
+        onView(withId(R.id.postListRecyclerView)).perform(RecyclerViewActions.scrollToPosition<PostListAdapter.PostViewHolder>(99))
         onView(withText("at nam consequatur ea labore ea harum")).check(matches(isDisplayed()))
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         onView(
@@ -116,7 +116,7 @@ class PostListActivityTest {
         val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.swipeRefreshLayout)
         IdlingRegistry.getInstance().register(idlingResource)
 
-        onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PostListAdapter.PostViewHolder>(0, click()))
+        onView(withId(R.id.postListRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PostListAdapter.PostViewHolder>(0, click()))
 
         onView(withText("sunt aut facere repellat provident occaecati excepturi optio reprehenderit")).check(matches(isDisplayed()))
         onView(withText("quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto")).check(matches(isDisplayed()))

@@ -1,7 +1,6 @@
 package com.phellipesilva.coolposts.postdetails.view
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -84,7 +83,7 @@ class PostDetailsActivityTest {
             )
         )
         activityRule.launchActivity(intent)
-        onView(withId(R.id.appBarLayout)).perform(swipeUp())
+        onView(withId(R.id.postDetailsAppBarLayout)).perform(swipeUp())
         onView(withId(R.id.postDetailsRecyclerView)).perform(swipeUp())
 
         onView(withText("Hayden@althea.biz")).check(matches(isDisplayed()))

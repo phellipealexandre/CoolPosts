@@ -32,7 +32,7 @@ class PostListActivity : AppCompatActivity() {
 
     private fun initRecyclerView(savedInstanceState: Bundle?) {
         val adapter = PostListAdapter(this)
-        recyclerView.adapter = adapter
+        postListRecyclerView.adapter = adapter
 
         postListViewModel.getPostsObservable().observe(this, Observer { postList ->
             val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null
