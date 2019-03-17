@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
-import com.phellipesilva.coolposts.extensions.MarginItemDecoration
 import com.phellipesilva.coolposts.extensions.fadeIn
 import com.phellipesilva.coolposts.extensions.load
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
@@ -49,7 +48,6 @@ class PostDetailsActivity : AppCompatActivity() {
     private fun initRecyclerView(savedInstanceState: Bundle?, postId: Int) {
         val adapter = CommentsAdapter()
         postDetailsRecyclerView.adapter = adapter
-        postDetailsRecyclerView.addItemDecoration(MarginItemDecoration())
 
         postDetailsViewModel.getCommentsObservable(postId).observe(this, Observer { commentList ->
             val isFirstUse = commentList.isNullOrEmpty() && savedInstanceState == null
@@ -71,10 +69,13 @@ class PostDetailsActivity : AppCompatActivity() {
         postDetailsViewModel.viewState().observe(this, Observer {
             val event = it.peekContent()
             when (event) {
-                ViewState.SUCCESS -> {}
-                else -> {
-                    Snackbar.make(postDetailsCoordinatorLayout, event.msgStringId, Snackbar.LENGTH_LONG).show()
+                ViewState.UNEXPECTED_ERROR -> {
+                    Snackbar.make(postDetailsCoordinatorLayout, R.string.unexpected_error_msg, Snackbar.LENGTH_LONG).show()
                 }
+                ViewState.NO_INTERNET -> {
+                    Snackbar.make(postDetailsCoordinatorLayout, R.string.no_connection_msg, Snackbar.LENGTH_LONG).show()
+                }
+                else -> {}
             }
         })
     }

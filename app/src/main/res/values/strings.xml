@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">Cool Posts</string>
-    <string name="author_avatar_content_description">Author Avatar</string>
+    <string name="author_avatar_content_description">Author avatar</string>
     <string name="thumbnail_image_content_description">Thumbnail image</string>
-    <string name="unexpected_error_msg">Unexpected Error</string>
-    <string name="no_connection_msg">No Internet Connection</string>
-    <string name="app_updated_msg">App updated</string>
+    <string name="unexpected_error_msg">Unexpected error</string>
+    <string name="no_connection_msg">No internet connection</string>
 </resources>

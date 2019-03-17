@@ -1,14 +1,12 @@
 package com.phellipesilva.coolposts.postlist.view
 
 import android.os.Bundle
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
-import com.phellipesilva.coolposts.extensions.MarginItemDecoration
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
 import com.phellipesilva.coolposts.state.ViewState
 import kotlinx.android.synthetic.main.activity_post_list.*
@@ -35,8 +33,6 @@ class PostListActivity : AppCompatActivity() {
     private fun initRecyclerView(savedInstanceState: Bundle?) {
         val adapter = PostListAdapter(this)
         recyclerView.adapter = adapter
-        recyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_enter_up)
-        recyclerView.addItemDecoration(MarginItemDecoration())
 
         postListViewModel.getPostsObservable().observe(this, Observer { postList ->
             val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null
@@ -46,7 +42,6 @@ class PostListActivity : AppCompatActivity() {
                 postListViewModel.fetchPosts()
             } else {
                 adapter.submitList(postList)
-                recyclerView.scheduleLayoutAnimation()
             }
         })
     }
@@ -54,12 +49,16 @@ class PostListActivity : AppCompatActivity() {
     private fun initViewStateObserver() {
         postListViewModel.viewState().observe(this, Observer {
             val event = it.peekContent()
+            swipeRefreshLayout.isRefreshing = false
+
             when (event) {
-                ViewState.SUCCESS -> swipeRefreshLayout.isRefreshing = false
-                else -> {
-                    Snackbar.make(postListCoordinatorLayout, event.msgStringId, Snackbar.LENGTH_LONG).show()
-                    swipeRefreshLayout.isRefreshing = event.isLoading
+                ViewState.UNEXPECTED_ERROR -> {
+                    Snackbar.make(postListCoordinatorLayout, R.string.unexpected_error_msg, Snackbar.LENGTH_LONG).show()
                 }
+                ViewState.NO_INTERNET -> {
+                    Snackbar.make(postListCoordinatorLayout, R.string.no_connection_msg, Snackbar.LENGTH_LONG).show()
+                }
+                else -> {}
             }
         })
     }
