@@ -12,14 +12,12 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             app:contentScrim="@color/colorPrimary"
             app:titleEnabled="false"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -36,7 +34,7 @@
                     android:background="@color/dark_filter"
                     android:contentDescription="@string/thumbnail_image_content_description"
                     android:scaleType="centerCrop"
-                    android:transitionName="thumbnailImageView"
+                    android:transitionName="@string/thumbnail_transition_id"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +58,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:contentDescription="@string/author_avatar_content_description"
-                    android:transitionName="authorAvatarImageView"
+                    android:transitionName="@string/user_avatar_transition_id"
                     app:layout_constraintBottom_toBottomOf="@+id/postBodyTextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/postTitleTextView"

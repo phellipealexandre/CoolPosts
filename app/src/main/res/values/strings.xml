@@ -1,7 +1,12 @@
 <resources>
+    <!--Content-->
     <string name="app_name">Cool Posts</string>
     <string name="author_avatar_content_description">Author avatar</string>
     <string name="thumbnail_image_content_description">Thumbnail image</string>
     <string name="unexpected_error_msg">Unexpected error</string>
     <string name="no_connection_msg">No internet connection</string>
+
+    <!--IDs-->
+    <string name="thumbnail_transition_id">thumbnailImageView</string>
+    <string name="user_avatar_transition_id">authorAvatarImageView</string>
 </resources>

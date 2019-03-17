@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
+import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.extensions.load
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
 import com.phellipesilva.coolposts.postlist.data.Post
@@ -33,9 +34,9 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
 
     @SuppressLint("CheckResult")
     class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val postTitleTextView: TextView = view.postTitle
-        private val postAuthorTextView: TextView = view.postAuthor
-        private val authorAvatarImageView: ImageView = view.authorAvatar
+        private val postTitleTextView: TextView = view.postTitleTextView
+        private val postAuthorTextView: TextView = view.postAuthorTextView
+        private val authorAvatarImageView: ImageView = view.authorAvatarImageView
         private val thumbnailImageView: ImageView = view.thumbnailImageView
 
         fun bind(post: Post, activity: Activity) {
@@ -60,8 +61,8 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
 
                     val options = ActivityOptions.makeSceneTransitionAnimation(
                         activity,
-                        android.util.Pair(authorAvatarImageView as View, "authorAvatarImageView"),
-                        android.util.Pair(thumbnailImageView as View, "thumbnailImageView")
+                        android.util.Pair(authorAvatarImageView as View, activity.getString(R.string.user_avatar_transition_id)),
+                        android.util.Pair(thumbnailImageView as View, activity.getString(R.string.thumbnail_transition_id))
                     )
 
                     activity.startActivity(intent, options.toBundle())
