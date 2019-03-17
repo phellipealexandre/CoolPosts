@@ -84,8 +84,7 @@ class PostDetailsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        collapsingToolbar.title = post.title
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         supportPostponeEnterTransition()
         toolbarImageView.load(
