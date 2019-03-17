@@ -18,6 +18,7 @@ import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.extensions.load
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
 import com.phellipesilva.coolposts.postlist.data.Post
+import kotlinx.android.synthetic.main.activity_post_list.*
 import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
 
@@ -66,6 +67,7 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
                         activity,
                         android.util.Pair(authorAvatarImageView as View, activity.getString(R.string.user_avatar_transition_id)),
                         android.util.Pair(thumbnailImageView as View, activity.getString(R.string.thumbnail_transition_id)),
+                        android.util.Pair(activity.postListAppBarLayout, activity.getString(R.string.post_list_appbarlayout_transition_id)),
                         android.util.Pair(activity.findViewById(android.R.id.navigationBarBackground), Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME),
                         android.util.Pair(activity.findViewById(android.R.id.statusBarBackground), Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME)
                     )

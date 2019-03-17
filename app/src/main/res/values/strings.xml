@@ -9,4 +9,5 @@
     <!--IDs-->
     <string name="thumbnail_transition_id">thumbnailImageView</string>
     <string name="user_avatar_transition_id">authorAvatarImageView</string>
+    <string name="post_list_appbarlayout_transition_id">appBarLayout</string>
 </resources>
