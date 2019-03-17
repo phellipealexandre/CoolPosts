@@ -50,7 +50,7 @@ fun ImageView.load(
 
 fun View.fadeIn() {
     val fadeIn = AlphaAnimation(0.0f, 1.0f)
-    fadeIn.duration = 700
+    fadeIn.duration = 500
     fadeIn.interpolator = android.view.animation.DecelerateInterpolator()
     fadeIn.setAnimationListener(object : Animation.AnimationListener {
         override fun onAnimationRepeat(animation: Animation?) {}
