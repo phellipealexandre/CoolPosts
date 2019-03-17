@@ -45,12 +45,14 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
 
             authorAvatarImageView.load(
                 url = "https://api.adorable.io/avatars/${post.user.userId}",
-                rounded = true
+                rounded = true,
+                withCrossFade = true
             )
 
             thumbnailImageView.load(
                 url = "https://picsum.photos/400/400/?image=${post.id}",
-                rounded = false
+                rounded = false,
+                withCrossFade = true
             )
 
             RxView.clicks(itemView)

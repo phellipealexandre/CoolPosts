@@ -3,6 +3,7 @@ package com.phellipesilva.coolposts.extensions
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -13,7 +14,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import timber.log.Timber
 
-fun ImageView.load(url: String, rounded: Boolean = false, onLoadingFinished: () -> Unit = {}) {
+fun ImageView.load(
+    url: String,
+    withCrossFade: Boolean = false,
+    rounded: Boolean = false,
+    onLoadingFinished: () -> Unit = {}) {
     val listener = object : RequestListener<Drawable> {
 
         override fun onLoadFailed(glideException: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -31,7 +36,9 @@ fun ImageView.load(url: String, rounded: Boolean = false, onLoadingFinished: () 
     val requestBuilder = Glide.with(this)
         .load(url)
         .listener(listener)
-        .transition(DrawableTransitionOptions.withCrossFade())
+
+    if (withCrossFade)
+        requestBuilder.transition(DrawableTransitionOptions.withCrossFade())
 
     if (rounded)
         requestBuilder.apply(RequestOptions.circleCropTransform())
@@ -43,8 +50,14 @@ fun ImageView.load(url: String, rounded: Boolean = false, onLoadingFinished: () 
 
 fun View.fadeIn() {
     val fadeIn = AlphaAnimation(0.0f, 1.0f)
-    fadeIn.duration = 800
-    fadeIn.fillAfter = true
+    fadeIn.duration = 700
     fadeIn.interpolator = android.view.animation.DecelerateInterpolator()
+    fadeIn.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationRepeat(animation: Animation?) {}
+        override fun onAnimationStart(animation: Animation?) {}
+        override fun onAnimationEnd(animation: Animation?) {
+            visibility = View.VISIBLE
+        }
+    })
     startAnimation(fadeIn)
 }

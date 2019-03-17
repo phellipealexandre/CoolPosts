@@ -2,6 +2,7 @@ package com.phellipesilva.coolposts.postdetails.view
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
@@ -34,7 +35,7 @@ class PostDetailsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
-                supportFinishAfterTransition()
+                leaveActivityWithSceneTransition()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -42,8 +43,7 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        supportFinishAfterTransition()
-        super.onBackPressed()
+        leaveActivityWithSceneTransition()
     }
 
     private fun initRecyclerView(savedInstanceState: Bundle?, postId: Int) {
@@ -109,5 +109,12 @@ class PostDetailsActivity : AppCompatActivity() {
                 filter.fadeIn()
             }
         )
+    }
+
+    private fun leaveActivityWithSceneTransition() {
+        postBodyTextView.visibility = View.INVISIBLE
+        postTitleTextView.visibility = View.INVISIBLE
+        filter.visibility = View.INVISIBLE
+        supportFinishAfterTransition()
     }
 }
