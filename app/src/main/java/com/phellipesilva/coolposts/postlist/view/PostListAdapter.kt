@@ -76,7 +76,7 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
         }
 
         override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-            return oldItem == newItem
+            return oldItem.title == newItem.title && oldItem.user.name == newItem.user.name
         }
     }
 }

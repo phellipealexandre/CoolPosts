@@ -39,7 +39,7 @@ class CommentsAdapter : ListAdapter<CommentEntity, CommentsAdapter.CommentViewHo
         }
 
         override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
-            return oldItem == newItem
+            return oldItem.body == newItem.body && oldItem.email == newItem.email
         }
     }
 
