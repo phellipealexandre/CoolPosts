@@ -15,7 +15,7 @@ object ServiceTestModule {
 
     @Provides
     @JvmStatic
-    fun providesOkHttpCientService(): OkHttpClient = OkHttpClient.Builder()
+    fun providesOkHttpClientService(): OkHttpClient = OkHttpClient.Builder()
         .sslSocketFactory(RESTMockServer.getSSLSocketFactory(), RESTMockServer.getTrustManager())
         .build()
 

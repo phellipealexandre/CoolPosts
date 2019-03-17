@@ -2,20 +2,27 @@ package com.phellipesilva.coolposts.postdetails.view
 
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.phellipesilva.coolposts.R
+import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.data.User
 import io.appflate.restmock.RESTMockServer
 import io.appflate.restmock.utils.RequestMatchers
+import okhttp3.OkHttpClient
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
+
 
 @RunWith(AndroidJUnit4::class)
 class PostDetailsActivityTest {
@@ -23,9 +30,22 @@ class PostDetailsActivityTest {
     @get:Rule
     var activityRule: ActivityTestRule<PostDetailsActivity> = ActivityTestRule(PostDetailsActivity::class.java, false, false)
 
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+
+    lateinit var okHttp3IdlingResource: OkHttp3IdlingResource
+
     @Before
     fun setUp() {
         RESTMockServer.reset()
+        injector().inject(this)
+        okHttp3IdlingResource = OkHttp3IdlingResource.create("OkHttp", okHttpClient)
+        IdlingRegistry.getInstance().register(okHttp3IdlingResource)
+    }
+
+    @After
+    fun tearDown() {
+        IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
     }
 
     @Test
@@ -63,6 +83,8 @@ class PostDetailsActivityTest {
             )
         )
         activityRule.launchActivity(intent)
+
+        Thread.sleep(1000)
 
         onView(withText("Eliseo@gardner.biz")).check(matches(isDisplayed()))
         onView(withText("laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium")).check(matches(isDisplayed()))
