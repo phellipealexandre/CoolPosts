@@ -91,7 +91,7 @@ class PostDetailsActivity : AppCompatActivity() {
         postTitleTextView.text = post.title
 
         supportPostponeEnterTransition()
-        toolbarImageView.load(
+        postDetailsThumbnailImageView.load(
             url = "https://picsum.photos/400/400/?image=${post.id}",
             onLoadingFinished = { supportStartPostponedEnterTransition() }
         )

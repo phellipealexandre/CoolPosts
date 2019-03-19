@@ -29,7 +29,7 @@
                 app:layout_collapseMode="none">
 
                 <ImageView
-                    android:id="@+id/toolbarImageView"
+                    android:id="@+id/postDetailsThumbnailImageView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@color/dark_filter"
