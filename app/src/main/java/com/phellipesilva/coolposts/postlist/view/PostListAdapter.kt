@@ -1,13 +1,9 @@
 package com.phellipesilva.coolposts.postlist.view
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.ActivityOptions
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -16,22 +12,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.extensions.load
-import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
 import com.phellipesilva.coolposts.postlist.data.Post
-import kotlinx.android.synthetic.main.activity_post_list.*
 import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
 
-class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsDiffCallback()) {
+typealias AndroidTransitionPair = android.util.Pair<View, String>
+
+class PostListAdapter : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsDiffCallback()) {
+
+    private var onItemClickListener: ((Array<AndroidTransitionPair>, Post) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
-            LayoutInflater.from(activity).inflate(com.phellipesilva.coolposts.R.layout.post_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(com.phellipesilva.coolposts.R.layout.post_list_item, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.bind(getItem(position), activity)
+        holder.bind(getItem(position), onItemClickListener)
+    }
+
+    fun setOnItemClickListener(onItemClickListener: (Array<AndroidTransitionPair>, Post) -> Unit) {
+        this.onItemClickListener = onItemClickListener
     }
 
     @SuppressLint("CheckResult")
@@ -41,7 +43,7 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
         private val authorAvatarImageView: ImageView = view.authorAvatarImageView
         private val thumbnailImageView: ImageView = view.thumbnailImageView
 
-        fun bind(post: Post, activity: Activity) {
+        fun bind(post: Post, onItemClickListener: ((Array<AndroidTransitionPair>, Post) -> Unit)?) {
             postTitleTextView.text = post.title
             postAuthorTextView.text = post.user.name
 
@@ -60,19 +62,12 @@ class PostListAdapter(private val activity: Activity) : ListAdapter<Post, PostLi
             RxView.clicks(itemView)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe {
-                    val intent = Intent(activity, PostDetailsActivity::class.java)
-                    intent.putExtra("post", post)
-
-                    val options = ActivityOptions.makeSceneTransitionAnimation(
-                        activity,
-                        android.util.Pair(authorAvatarImageView as View, activity.getString(R.string.user_avatar_transition_id)),
-                        android.util.Pair(thumbnailImageView as View, activity.getString(R.string.thumbnail_transition_id)),
-                        android.util.Pair(activity.postListAppBarLayout, activity.getString(R.string.post_list_appbarlayout_transition_id)),
-                        android.util.Pair(activity.findViewById(android.R.id.navigationBarBackground), Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME),
-                        android.util.Pair(activity.findViewById(android.R.id.statusBarBackground), Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME)
+                    val transitionElements = arrayOf(
+                        AndroidTransitionPair(authorAvatarImageView, itemView.context.getString(R.string.user_avatar_transition_id)),
+                        AndroidTransitionPair(thumbnailImageView, itemView.context.getString(R.string.thumbnail_transition_id))
                     )
 
-                    activity.startActivity(intent, options.toBundle())
+                    onItemClickListener?.invoke(transitionElements, post)
                 }
         }
     }

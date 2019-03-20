@@ -12,6 +12,7 @@ import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.extensions.fadeIn
 import com.phellipesilva.coolposts.extensions.load
+import com.phellipesilva.coolposts.navigation.PostNavigator
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.state.ViewState
@@ -25,7 +26,7 @@ class PostDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_details)
 
-        val post = intent.getParcelableExtra<Post>("post")
+        val post = intent.getParcelableExtra<Post>(PostNavigator.postId)
         setupsCollapsingToolbar(post)
         initViewModel()
         initViewStateObserver()
