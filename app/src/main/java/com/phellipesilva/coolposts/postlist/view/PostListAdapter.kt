@@ -37,11 +37,11 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsD
     }
 
     @SuppressLint("CheckResult")
-    class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val postTitleTextView: TextView = view.postTitleTextView
-        private val postAuthorTextView: TextView = view.postAuthorTextView
-        private val authorAvatarImageView: ImageView = view.authorAvatarImageView
-        private val thumbnailImageView: ImageView = view.thumbnailImageView
+    class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val postTitleTextView: TextView = itemView.postTitleTextView
+        private val postAuthorTextView: TextView = itemView.postAuthorTextView
+        private val authorAvatarImageView: ImageView = itemView.authorAvatarImageView
+        private val thumbnailImageView: ImageView = itemView.thumbnailImageView
 
         fun bind(post: Post, onItemClickListener: ((Array<AndroidTransitionPair>, Post) -> Unit)?) {
             postTitleTextView.text = post.title

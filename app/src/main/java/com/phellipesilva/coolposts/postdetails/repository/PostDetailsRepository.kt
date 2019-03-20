@@ -14,12 +14,12 @@ class PostDetailsRepository @Inject constructor(
     private val commentDao: CommentDao
 ) {
 
-    fun fetchComments(postId: Int): Completable {
-        return commentService.getComments(postId)
+    fun updateCommentsFromPost(postId: Int): Completable {
+        return commentService.fetchCommentsFromPost(postId)
             .flatMapCompletable(commentDao::saveComments)
     }
 
-    fun getComments(postId: Int): LiveData<List<Comment>> {
-        return commentDao.getAllCommentsFromPost(postId)
+    fun getCommentsFromPost(postId: Int): LiveData<List<Comment>> {
+        return commentDao.getCommentsFromPost(postId)
     }
 }

@@ -8,5 +8,5 @@ import retrofit2.http.Query
 interface CommentService {
 
     @GET("comments")
-    fun getComments(@Query("postId") postId: Int): Single<List<Comment>>
+    fun fetchCommentsFromPost(@Query("postId") postId: Int): Single<List<Comment>>
 }

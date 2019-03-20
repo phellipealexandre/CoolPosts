@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Comment(
-    val postId: Int,
     @PrimaryKey val id: Int,
+    val postId: Int,
     val name: String,
     val email: String,
     val body: String

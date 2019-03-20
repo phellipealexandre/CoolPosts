@@ -20,7 +20,9 @@ import kotlinx.android.synthetic.main.activity_post_details.*
 
 class PostDetailsActivity : AppCompatActivity() {
 
-    private lateinit var postDetailsViewModel: PostDetailsViewModel
+    private val postDetailsViewModel by lazy {
+        ViewModelProviders.of(this, injector.getPostDetailsViewModelFactory()).get(PostDetailsViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +30,6 @@ class PostDetailsActivity : AppCompatActivity() {
 
         val post = intent.getParcelableExtra<Post>(PostNavigator.postId)
         setupsCollapsingToolbar(post)
-        initViewModel()
         initViewStateObserver()
         initRecyclerView(savedInstanceState, post.id)
         initSwipeLayout(post)
@@ -62,21 +63,16 @@ class PostDetailsActivity : AppCompatActivity() {
         val adapter = CommentsAdapter()
         postDetailsRecyclerView.adapter = adapter
 
-        postDetailsViewModel.getCommentsObservable(postId).observe(this, Observer { commentList ->
+        postDetailsViewModel.getCommentsFromPost(postId).observe(this, Observer { commentList ->
             val isFirstUse = commentList.isNullOrEmpty() && savedInstanceState == null
 
             if (isFirstUse) {
                 postDetailsSwipeRefreshLayout.isRefreshing = true
-                postDetailsViewModel.fetchComments(postId)
+                postDetailsViewModel.updateCommentsFromPost(postId)
             } else {
                 adapter.submitList(commentList)
             }
         })
-    }
-
-    private fun initViewModel() {
-        val postDetailsViewModelFactory = injector.getPostDetailsViewModelFactory()
-        postDetailsViewModel = ViewModelProviders.of(this, postDetailsViewModelFactory).get(PostDetailsViewModel::class.java)
     }
 
     private fun initViewStateObserver() {
@@ -121,7 +117,6 @@ class PostDetailsActivity : AppCompatActivity() {
                 postBodyTextView.fadeIn()
                 postTitleTextView.fadeIn()
                 filter.fadeIn()
-                filter.visibility = View.VISIBLE
             }
         )
     }
@@ -135,7 +130,7 @@ class PostDetailsActivity : AppCompatActivity() {
 
     private fun initSwipeLayout(post: Post) {
         postDetailsSwipeRefreshLayout.setOnRefreshListener {
-            postDetailsViewModel.fetchComments(post.id)
+            postDetailsViewModel.updateCommentsFromPost(post.id)
         }
     }
 }

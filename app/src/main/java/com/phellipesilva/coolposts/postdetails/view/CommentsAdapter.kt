@@ -23,9 +23,9 @@ class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(
         holder.bind(getItem(position))
     }
 
-    class CommentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val commentBodyTextView: TextView = view.commentBody
-        private val commentEmailTextView: TextView = view.commentEmail
+    class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val commentBodyTextView: TextView = itemView.commentBody
+        private val commentEmailTextView: TextView = itemView.commentEmail
 
         fun bind(comment: Comment) {
             commentBodyTextView.text = comment.body

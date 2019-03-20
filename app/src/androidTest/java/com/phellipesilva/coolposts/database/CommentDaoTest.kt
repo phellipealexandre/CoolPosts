@@ -31,7 +31,7 @@ class CommentDaoTest {
 
     @Test
     fun shouldReturnEmptyCommentListWhenThereIsNothingStoredInTheDatabase() {
-        val commentLiveData = commentDao.getAllCommentsFromPost(1)
+        val commentLiveData = commentDao.getCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(0, it.size)
@@ -42,23 +42,23 @@ class CommentDaoTest {
     @Test
     fun shouldReturnSameCommentListForPostWhenThereWasAPreviouslyStoredCommentListForSpecificPost() {
         val comment1 = Comment(
-            1,
-            1,
-            "Name",
-            "email",
-            "body"
+            id = 1,
+            postId = 1,
+            name = "Name",
+            email = "email",
+            body = "body"
         )
         val comment2 = Comment(
-            1,
-            2,
-            "Name2",
-            "email2",
-            "body2"
+            id = 2,
+            postId = 1,
+            name = "Name2",
+            email = "email2",
+            body = "body2"
         )
         val commentList = listOf(comment1, comment2)
 
         commentDao.saveComments(commentList).subscribe()
-        val commentLiveData = commentDao.getAllCommentsFromPost(1)
+        val commentLiveData = commentDao.getCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(2, it.size)
@@ -70,30 +70,30 @@ class CommentDaoTest {
     @Test
     fun shouldReturnSpecificCommentListForPostWhenThereWasAPreviouslyStoredCommentListForManyPosts() {
         val comment1 = Comment(
-            1,
-            1,
-            "Name",
-            "email",
-            "body"
+            id = 1,
+            postId = 1,
+            name = "Name",
+            email = "email",
+            body = "body"
         )
         val comment2 = Comment(
-            2,
-            2,
-            "Name2",
-            "email2",
-            "body2"
+            id = 2,
+            postId = 2,
+            name = "Name2",
+            email = "email2",
+            body = "body2"
         )
         val comment3 = Comment(
-            2,
-            3,
-            "Name3",
-            "email3",
-            "body3"
+            id = 3,
+            postId = 2,
+            name = "Name3",
+            email = "email3",
+            body = "body3"
         )
         val commentList = listOf(comment1, comment2, comment3)
 
         commentDao.saveComments(commentList).subscribe()
-        val commentLiveData = commentDao.getAllCommentsFromPost(1)
+        val commentLiveData = commentDao.getCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(1, it.size)
@@ -104,40 +104,40 @@ class CommentDaoTest {
     @Test
     fun shouldReplaceSpecificCommentForPostWhenThereWasAStoredCommentWithSameIdForThisPost() {
         val comment1 = Comment(
-            1,
-            1,
-            "Name",
-            "email",
-            "body"
+            id = 1,
+            postId = 1,
+            name = "Name",
+            email = "email",
+            body = "body"
         )
         val comment2 = Comment(
-            1,
-            2,
-            "Name2",
-            "email2",
-            "bod2"
+            id = 2,
+            postId = 1,
+            name = "Name2",
+            email = "email2",
+            body = "bod2"
         )
         val comment3 = Comment(
-            2,
-            3,
-            "Name3",
-            "email3",
-            "body3"
+            id = 3,
+            postId = 2,
+            name = "Name3",
+            email = "email3",
+            body = "body3"
         )
         val commentList = listOf(comment1, comment2, comment3)
         commentDao.saveComments(commentList).subscribe()
 
         val comment1New = Comment(
-            1,
-            1,
-            "NameNew",
-            "emailNew",
-            "bodyNew"
+            id = 1,
+            postId = 1,
+            name = "NameNew",
+            email = "emailNew",
+            body = "bodyNew"
         )
         val commentListNew = listOf(comment1New, comment2)
         commentDao.saveComments(commentListNew).subscribe()
 
-        val commentLiveData = commentDao.getAllCommentsFromPost(1)
+        val commentLiveData = commentDao.getCommentsFromPost(1)
 
         commentLiveData.observeForever {
             assertEquals(2, it.size)

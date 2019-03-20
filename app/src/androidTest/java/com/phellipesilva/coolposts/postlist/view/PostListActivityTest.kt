@@ -40,7 +40,9 @@ class PostListActivityTest {
         RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
         RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
 
-        activityRule.launchActivity(Intent())
+        val activity = activityRule.launchActivity(Intent())
+        val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.postListSwipeRefreshLayout)
+        IdlingRegistry.getInstance().register(idlingResource)
 
         onView(
             allOf(
@@ -48,6 +50,8 @@ class PostListActivityTest {
                 hasSibling(withText("Leanne Graham"))
             )
         ).check(matches(isDisplayed()))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     @Test

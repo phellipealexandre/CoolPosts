@@ -13,6 +13,8 @@ import javax.inject.Singleton
 @Module
 object ServiceModule {
 
+    private const val baseUrl = "https://jsonplaceholder.typicode.com"
+
     @Provides
     @Singleton
     @JvmStatic
@@ -22,7 +24,7 @@ object ServiceModule {
     @Singleton
     @JvmStatic
     fun providesPostService(okHttpClient: OkHttpClient): PostService = Retrofit.Builder()
-        .baseUrl("https://jsonplaceholder.typicode.com")
+        .baseUrl(baseUrl)
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -33,7 +35,7 @@ object ServiceModule {
     @Singleton
     @JvmStatic
     fun providesCommentService(okHttpClient: OkHttpClient): CommentService = Retrofit.Builder()
-        .baseUrl("https://jsonplaceholder.typicode.com")
+        .baseUrl(baseUrl)
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

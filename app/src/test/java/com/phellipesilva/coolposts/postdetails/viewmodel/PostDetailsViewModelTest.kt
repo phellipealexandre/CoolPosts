@@ -8,7 +8,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.utils.RxUtils
-import com.phellipesilva.coolposts.state.ConnectionManager
+import com.phellipesilva.coolposts.state.ConnectionChecker
 import com.phellipesilva.coolposts.state.ViewState
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
@@ -32,7 +32,7 @@ class PostDetailsViewModelTest {
     private lateinit var postDetailsRepository: PostDetailsRepository
 
     @Mock
-    private lateinit var connectionManager: ConnectionManager
+    private lateinit var connectionChecker: ConnectionChecker
 
     @Mock
     private lateinit var compositeDisposable: CompositeDisposable
@@ -41,9 +41,9 @@ class PostDetailsViewModelTest {
 
     @Before
     fun setUp() {
-        postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionManager, compositeDisposable)
+        postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionChecker, compositeDisposable)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
-        whenever(connectionManager.isOnline()).thenReturn(true)
+        whenever(connectionChecker.isOnline()).thenReturn(true)
     }
 
     @After
@@ -53,9 +53,9 @@ class PostDetailsViewModelTest {
 
     @Test
     fun shouldEmitSuccessEventWhenPostFetchingFinishesSuccessfully() {
-        whenever(postDetailsRepository.fetchComments(1)).thenReturn(Completable.complete())
+        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.complete())
 
-        postDetailsViewModel.fetchComments(1)
+        postDetailsViewModel.updateCommentsFromPost(1)
 
         postDetailsViewModel.viewState().observeForever {
             assertEquals(ViewState.SUCCESS, it.peekContent())
@@ -64,9 +64,9 @@ class PostDetailsViewModelTest {
 
     @Test
     fun shouldEmitNoInternetEventWhenThereIsNoInternet() {
-        whenever(connectionManager.isOnline()).thenReturn(false)
+        whenever(connectionChecker.isOnline()).thenReturn(false)
 
-        postDetailsViewModel.fetchComments(1)
+        postDetailsViewModel.updateCommentsFromPost(1)
 
         postDetailsViewModel.viewState().observeForever {
             assertEquals(ViewState.NO_INTERNET, it.peekContent())
@@ -75,9 +75,9 @@ class PostDetailsViewModelTest {
 
     @Test
     fun shouldEmitErrorEventWhenPostFetchingFinishesWithError() {
-        whenever(postDetailsRepository.fetchComments(1)).thenReturn(Completable.error(Throwable()))
+        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.error(Throwable()))
 
-        postDetailsViewModel.fetchComments(1)
+        postDetailsViewModel.updateCommentsFromPost(1)
 
         postDetailsViewModel.viewState().observeForever {
             assertEquals(ViewState.UNEXPECTED_ERROR, it.peekContent())
@@ -86,9 +86,9 @@ class PostDetailsViewModelTest {
 
     @Test
     fun shouldAddDisposableToCompositeDisposableWhenFetchingComments() {
-        whenever(postDetailsRepository.fetchComments(1)).thenReturn(Completable.complete())
+        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.complete())
 
-        postDetailsViewModel.fetchComments(1)
+        postDetailsViewModel.updateCommentsFromPost(1)
 
         verify(compositeDisposable).add(any())
     }
@@ -96,9 +96,9 @@ class PostDetailsViewModelTest {
     @Test
     fun shouldGetCommentLiveDataFromRepository() {
         val postsLiveData = MutableLiveData<List<Comment>>()
-        whenever(postDetailsRepository.getComments(1)).thenReturn(postsLiveData)
+        whenever(postDetailsRepository.getCommentsFromPost(1)).thenReturn(postsLiveData)
 
-        postDetailsViewModel.getCommentsObservable(1).observeForever {
+        postDetailsViewModel.getCommentsFromPost(1).observeForever {
             assertEquals(postsLiveData, it)
         }
     }

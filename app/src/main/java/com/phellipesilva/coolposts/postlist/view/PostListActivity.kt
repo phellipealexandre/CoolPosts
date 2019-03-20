@@ -39,12 +39,12 @@ class PostListActivity : AppCompatActivity() {
         }
 
         postListRecyclerView.adapter = adapter
-        postListViewModel.getPostsObservable().observe(this, Observer { postList ->
+        postListViewModel.getPosts().observe(this, Observer { postList ->
             val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null
 
             if (isFirstUse) {
                 postListSwipeRefreshLayout.isRefreshing = true
-                postListViewModel.fetchPosts()
+                postListViewModel.updatePosts()
             } else {
                 adapter.submitList(postList)
             }
@@ -78,7 +78,7 @@ class PostListActivity : AppCompatActivity() {
 
     private fun initSwipeLayout() {
         postListSwipeRefreshLayout.setOnRefreshListener {
-            postListViewModel.fetchPosts()
+            postListViewModel.updatePosts()
         }
     }
 }

@@ -7,6 +7,7 @@ import com.phellipesilva.coolposts.database.MainDatabase
 import com.phellipesilva.coolposts.postlist.database.PostDao
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import javax.inject.Singleton
 
 @Module
@@ -19,12 +20,12 @@ object DatabaseModule {
         Room.databaseBuilder(context, MainDatabase::class.java, "MainDatabase").build()
 
     @Provides
-    @Singleton
+    @Reusable
     @JvmStatic
     fun providesPostDao(mainDatabase: MainDatabase): PostDao = mainDatabase.getPostDao()
 
     @Provides
-    @Singleton
+    @Reusable
     @JvmStatic
     fun providesCommentDao(mainDatabase: MainDatabase): CommentDao = mainDatabase.getCommentDao()
 }

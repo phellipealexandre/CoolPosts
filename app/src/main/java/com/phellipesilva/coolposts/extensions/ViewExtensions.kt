@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -52,7 +53,7 @@ fun ImageView.load(
 fun View.fadeIn() {
     val fadeIn = AlphaAnimation(0.0f, 1.0f)
     fadeIn.duration = 500
-    fadeIn.interpolator = android.view.animation.DecelerateInterpolator()
+    fadeIn.interpolator = DecelerateInterpolator()
     fadeIn.setAnimationListener(object : Animation.AnimationListener {
         override fun onAnimationRepeat(animation: Animation?) {}
         override fun onAnimationStart(animation: Animation?) {}

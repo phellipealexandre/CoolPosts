@@ -15,5 +15,5 @@ interface PostDao {
     fun savePosts(posts: List<Post>): Completable
 
     @Query("SELECT * FROM post")
-    fun getAllPosts(): LiveData<List<Post>>
+    fun getPosts(): LiveData<List<Post>>
 }

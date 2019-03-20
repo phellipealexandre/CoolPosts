@@ -1,7 +1,7 @@
 package com.phellipesilva.coolposts.postlist.service
 
-import com.phellipesilva.coolposts.postlist.entity.PostRemoteEntity
-import com.phellipesilva.coolposts.postlist.entity.UserRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
 import io.reactivex.observers.TestObserver
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -45,8 +45,8 @@ class PostServiceTest {
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
 
-        val postsObservable = postService.getPosts()
-        postsObservable.subscribe(testObserver)
+        val postsSingle = postService.fetchPosts()
+        postsSingle.subscribe(testObserver)
 
         testObserver.assertNoErrors()
         testObserver.assertValue { it.size == 2 }
@@ -75,8 +75,8 @@ class PostServiceTest {
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
 
-        val userObservable = postService.getUsers()
-        userObservable.subscribe(testObserver)
+        val usersSingle = postService.fetchUsers()
+        usersSingle.subscribe(testObserver)
 
         testObserver.assertNoErrors()
         testObserver.assertValue { it.size == 2 }

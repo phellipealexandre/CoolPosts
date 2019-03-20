@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import com.phellipesilva.coolposts.postlist.database.PostDao
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.data.User
-import com.phellipesilva.coolposts.postlist.entity.PostRemoteEntity
-import com.phellipesilva.coolposts.postlist.entity.UserRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.PostService
 import dagger.Reusable
 import io.reactivex.Completable
@@ -20,23 +20,23 @@ class PostListRepository @Inject constructor(
     private val postDao: PostDao
 ) {
 
-    fun fetchPosts(): Completable {
-        return postService.getPosts()
-            .zipWith(postService.getUsers(),
+    fun updatePosts(): Completable {
+        return postService.fetchPosts()
+            .zipWith(postService.fetchUsers(),
                 PostUserPairList { posts, users ->
                     Pair(
                         posts,
                         users
                     )
                 }
-            ).flatMapCompletable {
-                val postList = mapPostEntityListInPostDomainList(it.first, it.second)
+            ).flatMapCompletable { (posts, users) ->
+                val postList = mapPostEntityListInPostDomainList(posts, users)
                 postDao.savePosts(postList)
             }
     }
 
     fun getPosts(): LiveData<List<Post>> {
-        return postDao.getAllPosts()
+        return postDao.getPosts()
     }
 
     private fun mapPostEntityListInPostDomainList(

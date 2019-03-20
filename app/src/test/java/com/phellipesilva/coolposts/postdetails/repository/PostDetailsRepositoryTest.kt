@@ -50,51 +50,51 @@ class PostDetailsRepositoryTest {
     fun shouldFetchCommentsWithGivenPostId() {
         val comments = listOf(
             Comment(
-                postId = 1,
                 id = 1,
+                postId = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
             Comment(
-                postId = 2,
                 id = 2,
+                postId = 2,
                 name = "Name2",
                 email = "Email2",
                 body = "body2"
             )
         )
         val commentsSingle = Single.just(comments)
-        whenever(commentService.getComments(1)).thenReturn(commentsSingle)
+        whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
 
-        postDetailsRepository.fetchComments(1)
+        postDetailsRepository.updateCommentsFromPost(1)
 
-        verify(commentService).getComments(1)
+        verify(commentService).fetchCommentsFromPost(1)
     }
 
     @Test
     fun shouldSaveCommentsOnDatabaseWhenFetchingIsSuccessful() {
         val comments = listOf(
             Comment(
-                postId = 1,
                 id = 1,
+                postId = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
             Comment(
-                postId = 2,
                 id = 2,
+                postId = 2,
                 name = "Name2",
                 email = "Email2",
                 body = "body2"
             )
         )
         val commentsSingle = Single.just(comments)
-        whenever(commentService.getComments(1)).thenReturn(commentsSingle)
+        whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
 
         val testObserver = TestObserver<Unit>()
-        postDetailsRepository.fetchComments(1).subscribe(testObserver)
+        postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
 
         verify(commentDao).saveComments(comments)
     }
@@ -104,24 +104,24 @@ class PostDetailsRepositoryTest {
         val expectedLiveData = MutableLiveData<List<Comment>>()
         val comments = listOf(
             Comment(
-                postId = 1,
                 id = 1,
+                postId = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
             Comment(
-                postId = 2,
                 id = 2,
+                postId = 2,
                 name = "Name2",
                 email = "Email2",
                 body = "body2"
             )
         )
         expectedLiveData.value = comments
-        whenever(commentDao.getAllCommentsFromPost(1)).thenReturn(expectedLiveData)
+        whenever(commentDao.getCommentsFromPost(1)).thenReturn(expectedLiveData)
 
-        val commentsLiveData = postDetailsRepository.getComments(1)
+        val commentsLiveData = postDetailsRepository.getCommentsFromPost(1)
 
         assertEquals(expectedLiveData, commentsLiveData)
     }

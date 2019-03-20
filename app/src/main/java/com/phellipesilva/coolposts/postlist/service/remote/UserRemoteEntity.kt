@@ -1,4 +1,4 @@
-package com.phellipesilva.coolposts.postlist.entity
+package com.phellipesilva.coolposts.postlist.service.remote
 
 data class UserRemoteEntity(
     val id: Int,

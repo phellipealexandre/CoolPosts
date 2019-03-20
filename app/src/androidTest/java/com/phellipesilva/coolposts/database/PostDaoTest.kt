@@ -32,7 +32,7 @@ class PostDaoTest {
 
     @Test
     fun shouldReturnEmptyPostListWhenThereIsNothingStoredInTheDatabase() {
-        val postsLiveData = postDao.getAllPosts()
+        val postsLiveData = postDao.getPosts()
 
         postsLiveData.observeForever {
             assertEquals(0, it.size)
@@ -47,7 +47,7 @@ class PostDaoTest {
         val postList = listOf(post1, post2)
 
         postDao.savePosts(postList).subscribe()
-        val postsLiveData = postDao.getAllPosts()
+        val postsLiveData = postDao.getPosts()
 
         postsLiveData.observeForever {
             assertEquals(2, it.size)
@@ -68,7 +68,7 @@ class PostDaoTest {
         val newPostList = listOf(post1New, post2)
 
         postDao.savePosts(newPostList).subscribe()
-        val postsLiveData = postDao.getAllPosts()
+        val postsLiveData = postDao.getPosts()
 
         postsLiveData.observeForever {
             assertEquals(2, it.size)

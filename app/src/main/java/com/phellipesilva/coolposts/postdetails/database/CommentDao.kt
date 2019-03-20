@@ -15,5 +15,5 @@ interface CommentDao {
     fun saveComments(comments: List<Comment>): Completable
 
     @Query("SELECT * FROM comment WHERE postId = :postId")
-    fun getAllCommentsFromPost(postId: Int): LiveData<List<Comment>>
+    fun getCommentsFromPost(postId: Int): LiveData<List<Comment>>
 }
