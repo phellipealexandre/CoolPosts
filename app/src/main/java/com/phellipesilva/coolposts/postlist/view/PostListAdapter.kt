@@ -45,10 +45,10 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsD
 
         fun bind(post: Post, onItemClickListener: ((Array<AndroidTransitionPair>, Post) -> Unit)?) {
             postTitleTextView.text = post.title
-            postAuthorTextView.text = post.user.name
+            postAuthorTextView.text = post.userName
 
             authorAvatarImageView.load(
-                url = "https://api.adorable.io/avatars/${post.user.userId}",
+                url = "https://api.adorable.io/avatars/${post.userId}",
                 rounded = true,
                 withCrossFade = true
             )
@@ -78,7 +78,7 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsD
         }
 
         override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-            return oldItem.title == newItem.title && oldItem.user.name == newItem.user.name
+            return oldItem.title == newItem.title && oldItem.userName == newItem.userName
         }
     }
 }

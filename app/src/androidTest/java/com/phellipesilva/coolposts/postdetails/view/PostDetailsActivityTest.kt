@@ -14,7 +14,6 @@ import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.postlist.data.Post
-import com.phellipesilva.coolposts.postlist.data.User
 import com.phellipesilva.coolposts.utils.SwipeLayoutRefreshingIdlingResource
 import io.appflate.restmock.RESTMockServer
 import io.appflate.restmock.utils.RequestMatchers
@@ -61,7 +60,8 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name")
+                userId = 1,
+                userName = "Name"
             )
         )
         activityRule.launchActivity(intent)
@@ -83,7 +83,8 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name")
+                userId = 1,
+                userName = "Name"
             )
         )
         val activity = activityRule.launchActivity(intent)
@@ -108,7 +109,8 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name")
+                userId = 1,
+                userName = "Name"
             )
         )
         val activity = activityRule.launchActivity(intent)
@@ -136,7 +138,8 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name")
+                userId = 1,
+                userName = "Name"
             )
         )
         activityRule.launchActivity(intent)
@@ -158,7 +161,8 @@ class PostDetailsActivityTest {
                 id = 1,
                 title = "Title",
                 body = "Body",
-                user = User(1, "Name")
+                userId = 1,
+                userName = "Name"
             )
         )
         val activity = activityRule.launchActivity(intent)

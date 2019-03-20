@@ -6,7 +6,6 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postlist.database.PostDao
 import com.phellipesilva.coolposts.postlist.data.Post
-import com.phellipesilva.coolposts.postlist.data.User
 import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.PostService
@@ -111,10 +110,8 @@ class PostListRepositoryTest {
             id = 1,
             title = "Title",
             body = "Body",
-            user = User(
-                userId = 99,
-                name = "User Name"
-            )
+            userId = 99,
+            userName = "User Name"
         )
 
         whenever(postService.fetchPosts()).thenReturn(
@@ -153,28 +150,22 @@ class PostListRepositoryTest {
             id = 1,
             title = "Title",
             body = "Body",
-            user = User(
-                userId = 99,
-                name = "User Name"
-            )
+            userId = 99,
+            userName = "User Name"
         )
         val expectedPost2 = Post(
             id = 2,
             title = "Title2",
             body = "Body2",
-            user = User(
-                userId = 99,
-                name = "User Name"
-            )
+            userId = 99,
+            userName = "User Name"
         )
         val expectedPost3 = Post(
             id = 3,
             title = "Title3",
             body = "Body3",
-            user = User(
-                userId = 98,
-                name = "User Name 2"
-            )
+            userId = 98,
+            userName = "User Name 2"
         )
 
         whenever(postService.fetchPosts()).thenReturn(

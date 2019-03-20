@@ -3,7 +3,6 @@ package com.phellipesilva.coolposts.postlist.repository
 import androidx.lifecycle.LiveData
 import com.phellipesilva.coolposts.postlist.database.PostDao
 import com.phellipesilva.coolposts.postlist.data.Post
-import com.phellipesilva.coolposts.postlist.data.User
 import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.PostService
@@ -44,16 +43,15 @@ class PostListRepository @Inject constructor(
         userEntities: List<UserRemoteEntity>
     ): List<Post> {
         return postEntities.map { postEntity ->
+            val user = userEntities.first { postEntity.userId == it.id }
+
             Post(
                 id = postEntity.id,
                 title = postEntity.title,
                 body = postEntity.body,
-                user = mapUserEntityToUserDomain(userEntities.first { postEntity.userId == it.id })
+                userId = user.id,
+                userName = user.name
             )
         }
-    }
-
-    private fun mapUserEntityToUserDomain(userEntity: UserRemoteEntity): User {
-        return userEntity.run { User(id, name) }
     }
 }

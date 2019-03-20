@@ -107,7 +107,7 @@ class PostDetailsActivity : AppCompatActivity() {
         )
 
         authorAvatarImageView.load(
-            url = "https://api.adorable.io/avatars/${post.user.userId}",
+            url = "https://api.adorable.io/avatars/${post.userId}",
             rounded = true,
             onLoadingFinished = { supportStartPostponedEnterTransition() }
         )
