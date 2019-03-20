@@ -31,6 +31,7 @@ class PostDetailsActivity : AppCompatActivity() {
         initViewModel()
         initViewStateObserver()
         initRecyclerView(savedInstanceState, post.id)
+        initSwipeLayout(post)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -47,6 +48,16 @@ class PostDetailsActivity : AppCompatActivity() {
         leaveActivityWithSceneTransition()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("FilterVisibility", filter.visibility)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        filter.visibility = savedInstanceState?.getInt("FilterVisibility") ?: View.VISIBLE
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
     private fun initRecyclerView(savedInstanceState: Bundle?, postId: Int) {
         val adapter = CommentsAdapter()
         postDetailsRecyclerView.adapter = adapter
@@ -55,6 +66,7 @@ class PostDetailsActivity : AppCompatActivity() {
             val isFirstUse = commentList.isNullOrEmpty() && savedInstanceState == null
 
             if (isFirstUse) {
+                postDetailsSwipeRefreshLayout.isRefreshing = true
                 postDetailsViewModel.fetchComments(postId)
             } else {
                 adapter.submitList(commentList)
@@ -69,6 +81,7 @@ class PostDetailsActivity : AppCompatActivity() {
 
     private fun initViewStateObserver() {
         postDetailsViewModel.viewState().observe(this, Observer {
+            postDetailsSwipeRefreshLayout.isRefreshing = false
             val event = it.peekContent()
             when (event) {
                 ViewState.UNEXPECTED_ERROR -> {
@@ -108,6 +121,7 @@ class PostDetailsActivity : AppCompatActivity() {
                 postBodyTextView.fadeIn()
                 postTitleTextView.fadeIn()
                 filter.fadeIn()
+                filter.visibility = View.VISIBLE
             }
         )
     }
@@ -117,5 +131,11 @@ class PostDetailsActivity : AppCompatActivity() {
         postTitleTextView.visibility = View.INVISIBLE
         filter.visibility = View.INVISIBLE
         supportFinishAfterTransition()
+    }
+
+    private fun initSwipeLayout(post: Post) {
+        postDetailsSwipeRefreshLayout.setOnRefreshListener {
+            postDetailsViewModel.fetchComments(post.id)
+        }
     }
 }

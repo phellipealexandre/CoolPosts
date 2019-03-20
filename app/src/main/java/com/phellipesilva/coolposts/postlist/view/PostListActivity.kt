@@ -43,7 +43,7 @@ class PostListActivity : AppCompatActivity() {
             val isFirstUse = postList.isNullOrEmpty() && savedInstanceState == null
 
             if (isFirstUse) {
-                swipeRefreshLayout.isRefreshing = true
+                postListSwipeRefreshLayout.isRefreshing = true
                 postListViewModel.fetchPosts()
             } else {
                 adapter.submitList(postList)
@@ -54,7 +54,7 @@ class PostListActivity : AppCompatActivity() {
     private fun initViewStateObserver() {
         postListViewModel.viewState().observe(this, Observer {
             val event = it.peekContent()
-            swipeRefreshLayout.isRefreshing = false
+            postListSwipeRefreshLayout.isRefreshing = false
 
             when (event) {
                 ViewState.UNEXPECTED_ERROR -> {
@@ -77,7 +77,7 @@ class PostListActivity : AppCompatActivity() {
     }
 
     private fun initSwipeLayout() {
-        swipeRefreshLayout.setOnRefreshListener {
+        postListSwipeRefreshLayout.setOnRefreshListener {
             postListViewModel.fetchPosts()
         }
     }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -14,8 +15,10 @@ import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.data.User
+import com.phellipesilva.coolposts.utils.SwipeLayoutRefreshingIdlingResource
 import io.appflate.restmock.RESTMockServer
 import io.appflate.restmock.utils.RequestMatchers
+import kotlinx.android.synthetic.main.activity_post_details.*
 import okhttp3.OkHttpClient
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -24,7 +27,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
-
 
 @RunWith(AndroidJUnit4::class)
 class PostDetailsActivityTest {
@@ -84,12 +86,43 @@ class PostDetailsActivityTest {
                 user = User(1, "Name")
             )
         )
-        activityRule.launchActivity(intent)
-
-        Thread.sleep(1000)
+        val activity = activityRule.launchActivity(intent)
+        val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.postDetailsSwipeRefreshLayout)
+        IdlingRegistry.getInstance().register(idlingResource)
 
         onView(withText("Eliseo@gardner.biz")).check(matches(isDisplayed()))
         onView(withText("laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium")).check(matches(isDisplayed()))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
+    @Test
+    fun shouldUpdateCommentsFromSpecificPostWhenSwipeToRefresh() {
+        RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1"))
+            .thenReturnFile(200, "json/comments_response.json", "json/comments_updated_response.json")
+
+        val intent = Intent()
+        intent.putExtra(
+            "post",
+            Post(
+                id = 1,
+                title = "Title",
+                body = "Body",
+                user = User(1, "Name")
+            )
+        )
+        val activity = activityRule.launchActivity(intent)
+        val idlingResource = SwipeLayoutRefreshingIdlingResource(activity.postDetailsSwipeRefreshLayout)
+        IdlingRegistry.getInstance().register(idlingResource)
+
+        onView(withText("Eliseo@gardner.biz")).check(matches(isDisplayed()))
+        onView(withText("laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium")).check(matches(isDisplayed()))
+
+        onView(withId(R.id.postDetailsAppBarLayout)).perform(swipeUp())
+        onView(withId(R.id.postDetailsSwipeRefreshLayout)).perform(swipeDown())
+        onView(withText("Updated Comment")).check(matches(isDisplayed()))
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     @Test
