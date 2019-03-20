@@ -15,11 +15,51 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import timber.log.Timber
 
-fun ImageView.load(
-    url: String,
-    withCrossFade: Boolean = false,
-    rounded: Boolean = false,
+fun View.fadeIn() {
+    val fadeIn = AlphaAnimation(0.0f, 1.0f)
+    fadeIn.duration = 500
+    fadeIn.interpolator = DecelerateInterpolator()
+    fadeIn.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationRepeat(animation: Animation?) {}
+        override fun onAnimationStart(animation: Animation?) {}
+        override fun onAnimationEnd(animation: Animation?) {
+            visibility = View.VISIBLE
+        }
+    })
+    startAnimation(fadeIn)
+}
+
+fun ImageView.loadRoundedAvatar(
+    userId: Int,
+    withCrossFade: Boolean = true,
     onLoadingFinished: () -> Unit = {}
+) {
+    this.load(
+        url = "https://api.adorable.io/avatars/$userId",
+        withCrossFade = withCrossFade,
+        rounded = true,
+        onLoadingFinished = onLoadingFinished
+    )
+}
+
+fun ImageView.loadThumbnail(
+    id: Int,
+    withCrossFade: Boolean = true,
+    onLoadingFinished: () -> Unit = {}
+) {
+    this.load(
+        url = "https://picsum.photos/400/400/?image=$id",
+        withCrossFade = withCrossFade,
+        rounded = false,
+        onLoadingFinished = onLoadingFinished
+    )
+}
+
+private fun ImageView.load(
+    url: String,
+    withCrossFade: Boolean,
+    rounded: Boolean,
+    onLoadingFinished: () -> Unit
 ) {
 
     val listener = object : RequestListener<Drawable> {
@@ -48,18 +88,4 @@ fun ImageView.load(
         requestBuilder.apply(RequestOptions.noTransformation())
 
     requestBuilder.into(this)
-}
-
-fun View.fadeIn() {
-    val fadeIn = AlphaAnimation(0.0f, 1.0f)
-    fadeIn.duration = 500
-    fadeIn.interpolator = DecelerateInterpolator()
-    fadeIn.setAnimationListener(object : Animation.AnimationListener {
-        override fun onAnimationRepeat(animation: Animation?) {}
-        override fun onAnimationStart(animation: Animation?) {}
-        override fun onAnimationEnd(animation: Animation?) {
-            visibility = View.VISIBLE
-        }
-    })
-    startAnimation(fadeIn)
 }

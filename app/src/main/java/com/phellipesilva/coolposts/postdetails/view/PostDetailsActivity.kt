@@ -11,7 +11,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.extensions.fadeIn
-import com.phellipesilva.coolposts.extensions.load
+import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
+import com.phellipesilva.coolposts.extensions.loadThumbnail
 import com.phellipesilva.coolposts.navigation.PostNavigator
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
 import com.phellipesilva.coolposts.postlist.data.Post
@@ -19,6 +20,8 @@ import com.phellipesilva.coolposts.state.ViewState
 import kotlinx.android.synthetic.main.activity_post_details.*
 
 class PostDetailsActivity : AppCompatActivity() {
+
+    private val filterVisibilityId = "FilterVisibility"
 
     private val postDetailsViewModel by lazy {
         ViewModelProviders.of(this, injector.getPostDetailsViewModelFactory()).get(PostDetailsViewModel::class.java)
@@ -50,12 +53,12 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("FilterVisibility", filter.visibility)
+        outState.putInt(filterVisibilityId, filter.visibility)
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        filter.visibility = savedInstanceState?.getInt("FilterVisibility") ?: View.VISIBLE
+        filter.visibility = savedInstanceState?.getInt(filterVisibilityId) ?: View.VISIBLE
         super.onRestoreInstanceState(savedInstanceState)
     }
 
@@ -101,14 +104,15 @@ class PostDetailsActivity : AppCompatActivity() {
         postTitleTextView.text = post.title
 
         supportPostponeEnterTransition()
-        postDetailsThumbnailImageView.load(
-            url = "https://picsum.photos/400/400/?image=${post.id}",
+        postDetailsThumbnailImageView.loadThumbnail(
+            id = post.id,
+            withCrossFade = false,
             onLoadingFinished = { supportStartPostponedEnterTransition() }
         )
 
-        authorAvatarImageView.load(
-            url = "https://api.adorable.io/avatars/${post.userId}",
-            rounded = true,
+        authorAvatarImageView.loadRoundedAvatar(
+            userId = post.userId,
+            withCrossFade = false,
             onLoadingFinished = { supportStartPostponedEnterTransition() }
         )
 

@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.phellipesilva.coolposts.R
-import com.phellipesilva.coolposts.extensions.load
+import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
+import com.phellipesilva.coolposts.extensions.loadThumbnail
 import com.phellipesilva.coolposts.postlist.data.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
@@ -47,17 +48,8 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsD
             postTitleTextView.text = post.title
             postAuthorTextView.text = post.userName
 
-            authorAvatarImageView.load(
-                url = "https://api.adorable.io/avatars/${post.userId}",
-                rounded = true,
-                withCrossFade = true
-            )
-
-            thumbnailImageView.load(
-                url = "https://picsum.photos/400/400/?image=${post.id}",
-                rounded = false,
-                withCrossFade = true
-            )
+            authorAvatarImageView.loadRoundedAvatar(post.userId)
+            thumbnailImageView.loadThumbnail(post.id)
 
             RxView.clicks(itemView)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
