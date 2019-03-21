@@ -1,5 +1,7 @@
 package com.phellipesilva.coolposts.postdetails.view
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -14,7 +16,6 @@ import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.extensions.fadeIn
 import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
 import com.phellipesilva.coolposts.extensions.loadThumbnail
-import com.phellipesilva.coolposts.navigation.PostNavigator
 import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
@@ -27,7 +28,7 @@ class PostDetailsActivity : AppCompatActivity() {
     private val filterVisibilityId = "FilterVisibility"
 
     private val postDetailsViewModel by lazy {
-        val post = intent.getParcelableExtra<Post>(PostNavigator.postId)
+        val post = intent.getParcelableExtra<Post>(PostDetailsActivity.postId)
         val postDetailsViewModelFactory = injector.with(PostDetailsModule(post.id)).getPostDetailsViewModelFactory()
         ViewModelProviders.of(this, postDetailsViewModelFactory).get(PostDetailsViewModel::class.java)
     }
@@ -36,7 +37,7 @@ class PostDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_details)
 
-        val post = intent.getParcelableExtra<Post>(PostNavigator.postId)
+        val post = intent.getParcelableExtra<Post>(PostDetailsActivity.postId)
 
         setupsCollapsingToolbar(post)
         initRecyclerView()
@@ -156,6 +157,17 @@ class PostDetailsActivity : AppCompatActivity() {
     private fun initSwipeLayout(post: Post) {
         postDetailsSwipeRefreshLayout.setOnRefreshListener {
             postDetailsViewModel.updateCommentsFromPost(post.id)
+        }
+    }
+
+    companion object {
+        private const val postId =  "post"
+
+        fun newIntent(context: Context, post: Post): Intent {
+            val intent = Intent(context, PostDetailsActivity::class.java)
+            intent.putExtra(postId, post)
+
+            return intent
         }
     }
 }

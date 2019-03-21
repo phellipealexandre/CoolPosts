@@ -1,7 +1,6 @@
 package com.phellipesilva.coolposts.di
 
 import android.content.Context
-import com.phellipesilva.coolposts.navigation.PostNavigator
 import com.phellipesilva.coolposts.postdetails.di.PostDetailsComponent
 import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModelFactory
@@ -21,7 +20,6 @@ interface ApplicationComponent {
     }
 
     fun getPostListViewModelFactory(): PostListViewModelFactory
-    fun getPostNavigator(): PostNavigator
 
     fun with(postDetailsModule: PostDetailsModule): PostDetailsComponent
 }

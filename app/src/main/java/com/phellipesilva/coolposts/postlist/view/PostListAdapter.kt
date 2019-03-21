@@ -11,13 +11,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.phellipesilva.coolposts.R
+import com.phellipesilva.coolposts.extensions.AndroidTransitionPair
 import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
 import com.phellipesilva.coolposts.extensions.loadThumbnail
 import com.phellipesilva.coolposts.postlist.data.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
-
-typealias AndroidTransitionPair = android.util.Pair<View, String>
 
 class PostListAdapter : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsDiffCallback()) {
 

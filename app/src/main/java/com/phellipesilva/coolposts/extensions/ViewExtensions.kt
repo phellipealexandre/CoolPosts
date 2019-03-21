@@ -15,6 +15,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import timber.log.Timber
 
+typealias AndroidTransitionPair = android.util.Pair<View, String>
+
 fun View.fadeIn() {
     val fadeIn = AlphaAnimation(0.0f, 1.0f)
     fadeIn.duration = 500
