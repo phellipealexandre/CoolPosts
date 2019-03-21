@@ -1,12 +1,12 @@
 package com.phellipesilva.coolposts.postdetails.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
+import com.phellipesilva.coolposts.postdetails.view.PostDetailsViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
-import com.phellipesilva.coolposts.state.ViewState
-import com.phellipesilva.coolposts.state.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -17,20 +17,28 @@ import timber.log.Timber
 class PostDetailsViewModel(
     private val postDetailsRepository: PostDetailsRepository,
     private val connectionChecker: ConnectionChecker,
-    private val compositeDisposable: CompositeDisposable
+    private val compositeDisposable: CompositeDisposable,
+    postId: Int
 ) : ViewModel() {
 
-    private val viewState = MutableLiveData<Event<ViewState>>()
+    private val viewState = MediatorLiveData<PostDetailsViewState>()
+    private val commentsLiveData = postDetailsRepository.getCommentsFromPost(postId)
 
-    fun getCommentsFromPost(postId: Int) = postDetailsRepository.getCommentsFromPost(postId)
+    init {
+        viewState.addSource(commentsLiveData) { comments ->
+            if (!comments.isNullOrEmpty()) {
+                viewState.value = PostDetailsViewState.buildSuccessState(comments)
+            }
+        }
+    }
 
-    fun viewState(): LiveData<Event<ViewState>> = viewState
+    fun viewState(): LiveData<PostDetailsViewState> = viewState
 
     fun updateCommentsFromPost(postId: Int) {
         if (connectionChecker.isOnline()) {
             fetchCommentsFromPost(postId)
         } else {
-            viewState.value = Event(ViewState.NO_INTERNET)
+            viewState.value = PostDetailsViewState.buildErrorState(NoConnectionException())
         }
     }
 
@@ -39,12 +47,17 @@ class PostDetailsViewModel(
             .updateCommentsFromPost(postId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                viewState.value = PostDetailsViewState.buildLoadingState()
+            }
             .subscribeBy(
                 onError = {
                     Timber.e(it)
-                    viewState.value = Event(ViewState.UNEXPECTED_ERROR)
+                    viewState.value = PostDetailsViewState.buildErrorState(it)
                 },
-                onComplete = { viewState.value = Event(ViewState.SUCCESS) }
+                onSuccess = {
+                    viewState.value = PostDetailsViewState.buildSuccessState(it)
+                }
             )
             .addTo(compositeDisposable)
     }

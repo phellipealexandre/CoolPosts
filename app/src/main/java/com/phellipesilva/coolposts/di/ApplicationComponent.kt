@@ -2,7 +2,8 @@ package com.phellipesilva.coolposts.di
 
 import android.content.Context
 import com.phellipesilva.coolposts.navigation.PostNavigator
-import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModelFactory
+import com.phellipesilva.coolposts.postdetails.di.PostDetailsComponent
+import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModelFactory
 import dagger.BindsInstance
 import dagger.Component
@@ -20,6 +21,7 @@ interface ApplicationComponent {
     }
 
     fun getPostListViewModelFactory(): PostListViewModelFactory
-    fun getPostDetailsViewModelFactory(): PostDetailsViewModelFactory
     fun getPostNavigator(): PostNavigator
+
+    fun with(postDetailsModule: PostDetailsModule): PostDetailsComponent
 }

@@ -11,6 +11,7 @@ import com.phellipesilva.coolposts.utils.RxUtils
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subscribers.TestSubscriber
 import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -67,9 +68,12 @@ class PostDetailsRepositoryTest {
         val commentsSingle = Single.just(comments)
         whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
 
-        postDetailsRepository.updateCommentsFromPost(1)
+        val testObserver = TestObserver<List<Comment>>()
+        postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
 
         verify(commentService).fetchCommentsFromPost(1)
+        testObserver.assertValue(comments)
+        testObserver.assertComplete()
     }
 
     @Test
@@ -93,7 +97,7 @@ class PostDetailsRepositoryTest {
         val commentsSingle = Single.just(comments)
         whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
 
-        val testObserver = TestObserver<Unit>()
+        val testObserver = TestObserver<List<Comment>>()
         postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
 
         verify(commentDao).saveComments(comments)

@@ -1,12 +1,12 @@
 package com.phellipesilva.coolposts.postlist.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
+import com.phellipesilva.coolposts.postlist.view.PostListViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
-import com.phellipesilva.coolposts.state.Event
-import com.phellipesilva.coolposts.state.ViewState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -20,18 +20,24 @@ class PostListViewModel(
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
 
+    private val viewState = MediatorLiveData<PostListViewState>()
     private val postsLiveData = postListRepository.getPosts()
-    private val viewState = MutableLiveData<Event<ViewState>>()
 
-    fun getPosts() = this.postsLiveData
+    init {
+        viewState.addSource(postsLiveData) { posts ->
+            if (!posts.isNullOrEmpty()) {
+                viewState.value = PostListViewState.buildSuccessState(posts)
+            }
+        }
+    }
 
-    fun viewState(): LiveData<Event<ViewState>> = viewState
+    fun viewState(): LiveData<PostListViewState> = viewState
 
     fun updatePosts() {
         if (connectionChecker.isOnline()) {
             updatePostsFromServer()
         } else {
-            viewState.value = Event(ViewState.NO_INTERNET)
+            viewState.value = PostListViewState.buildErrorState(NoConnectionException())
         }
     }
 
@@ -40,12 +46,17 @@ class PostListViewModel(
             .updatePosts()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                viewState.value = PostListViewState.buildLoadingState()
+            }
             .subscribeBy(
                 onError = {
                     Timber.e(it)
-                    viewState.value = Event(ViewState.UNEXPECTED_ERROR)
+                    viewState.value = PostListViewState.buildErrorState(it)
                 },
-                onComplete = { viewState.value = Event(ViewState.SUCCESS) }
+                onSuccess = {
+                    viewState.value = PostListViewState.buildSuccessState(it)
+                }
             )
             .addTo(compositeDisposable)
     }

@@ -10,10 +10,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
+import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.extensions.fadeIn
 import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
 import com.phellipesilva.coolposts.extensions.loadThumbnail
 import com.phellipesilva.coolposts.navigation.PostNavigator
+import com.phellipesilva.coolposts.postdetails.data.Comment
+import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.state.ViewState
@@ -24,7 +27,9 @@ class PostDetailsActivity : AppCompatActivity() {
     private val filterVisibilityId = "FilterVisibility"
 
     private val postDetailsViewModel by lazy {
-        ViewModelProviders.of(this, injector.getPostDetailsViewModelFactory()).get(PostDetailsViewModel::class.java)
+        val post = intent.getParcelableExtra<Post>(PostNavigator.postId)
+        val postDetailsViewModelFactory = injector.with(PostDetailsModule(post.id)).getPostDetailsViewModelFactory()
+        ViewModelProviders.of(this, postDetailsViewModelFactory).get(PostDetailsViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,10 +37,14 @@ class PostDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_post_details)
 
         val post = intent.getParcelableExtra<Post>(PostNavigator.postId)
+
         setupsCollapsingToolbar(post)
+        initRecyclerView()
         initViewStateObserver()
-        initRecyclerView(savedInstanceState, post.id)
         initSwipeLayout(post)
+
+        if (savedInstanceState == null)
+            postDetailsViewModel.updateCommentsFromPost(post.id)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -62,36 +71,11 @@ class PostDetailsActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
     }
 
-    private fun initRecyclerView(savedInstanceState: Bundle?, postId: Int) {
-        val adapter = CommentsAdapter()
-        postDetailsRecyclerView.adapter = adapter
-
-        postDetailsViewModel.getCommentsFromPost(postId).observe(this, Observer { commentList ->
-            val isFirstUse = commentList.isNullOrEmpty() && savedInstanceState == null
-
-            if (isFirstUse) {
-                postDetailsSwipeRefreshLayout.isRefreshing = true
-                postDetailsViewModel.updateCommentsFromPost(postId)
-            } else {
-                adapter.submitList(commentList)
-            }
-        })
-    }
-
-    private fun initViewStateObserver() {
-        postDetailsViewModel.viewState().observe(this, Observer {
-            postDetailsSwipeRefreshLayout.isRefreshing = false
-            val event = it.peekContent()
-            when (event) {
-                ViewState.UNEXPECTED_ERROR -> {
-                    Snackbar.make(postDetailsCoordinatorLayout, R.string.unexpected_error_msg, Snackbar.LENGTH_LONG).show()
-                }
-                ViewState.NO_INTERNET -> {
-                    Snackbar.make(postDetailsCoordinatorLayout, R.string.no_connection_msg, Snackbar.LENGTH_LONG).show()
-                }
-                else -> {}
-            }
-        })
+    private fun leaveActivityWithSceneTransition() {
+        postBodyTextView.visibility = View.INVISIBLE
+        postTitleTextView.visibility = View.INVISIBLE
+        filter.visibility = View.INVISIBLE
+        supportFinishAfterTransition()
     }
 
     private fun setupsCollapsingToolbar(post: Post) {
@@ -125,11 +109,48 @@ class PostDetailsActivity : AppCompatActivity() {
         )
     }
 
-    private fun leaveActivityWithSceneTransition() {
-        postBodyTextView.visibility = View.INVISIBLE
-        postTitleTextView.visibility = View.INVISIBLE
-        filter.visibility = View.INVISIBLE
-        supportFinishAfterTransition()
+    private fun initRecyclerView() {
+        val adapter = CommentsAdapter()
+        postDetailsRecyclerView.adapter = adapter
+    }
+
+    private fun initViewStateObserver() {
+        postDetailsViewModel.viewState().observe(this, Observer {
+            it?.let(::processEvent)
+        })
+    }
+
+    private fun processEvent(event: PostDetailsViewState) {
+        when (event.viewState) {
+            ViewState.SUCCESS -> {
+                processSuccess(event.comments)
+            }
+            ViewState.ERROR -> {
+                processError(event.throwable?.getContentIfNotHandled())
+            }
+            ViewState.LOADING -> {
+                postDetailsSwipeRefreshLayout.isRefreshing = true
+            }
+        }
+    }
+
+    private fun processSuccess(comments: List<Comment>?) {
+        postDetailsSwipeRefreshLayout.isRefreshing = false
+
+        val commentsAdapter = postDetailsRecyclerView.adapter as CommentsAdapter
+        comments?.let(commentsAdapter::submitList)
+    }
+
+    private fun processError(throwable: Throwable?) {
+        postDetailsSwipeRefreshLayout.isRefreshing = false
+
+        throwable?.let {
+            if (throwable is NoConnectionException) {
+                Snackbar.make(postDetailsCoordinatorLayout, R.string.no_connection_msg, Snackbar.LENGTH_LONG).show()
+            } else {
+                Snackbar.make(postDetailsCoordinatorLayout, R.string.unexpected_error_msg, Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun initSwipeLayout(post: Post) {
