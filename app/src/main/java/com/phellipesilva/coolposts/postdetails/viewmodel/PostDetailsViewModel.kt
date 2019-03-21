@@ -54,9 +54,6 @@ class PostDetailsViewModel(
                 onError = {
                     Timber.e(it)
                     viewState.value = PostDetailsViewState.buildErrorState(it)
-                },
-                onSuccess = {
-                    viewState.value = PostDetailsViewState.buildSuccessState(it)
                 }
             )
             .addTo(compositeDisposable)

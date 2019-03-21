@@ -2,16 +2,17 @@ package com.phellipesilva.coolposts.postdetails.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.phellipesilva.coolposts.postdetails.database.CommentDao
 import com.phellipesilva.coolposts.postdetails.data.Comment
+import com.phellipesilva.coolposts.postdetails.database.CommentDao
 import com.phellipesilva.coolposts.postdetails.service.CommentService
 import com.phellipesilva.coolposts.utils.RxUtils
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subscribers.TestSubscriber
 import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -67,12 +68,12 @@ class PostDetailsRepositoryTest {
         )
         val commentsSingle = Single.just(comments)
         whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
+        whenever(commentDao.saveComments(any())).thenReturn(Completable.complete())
 
-        val testObserver = TestObserver<List<Comment>>()
+        val testObserver = TestObserver<Unit>()
         postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
 
         verify(commentService).fetchCommentsFromPost(1)
-        testObserver.assertValue(comments)
         testObserver.assertComplete()
     }
 
@@ -96,11 +97,13 @@ class PostDetailsRepositoryTest {
         )
         val commentsSingle = Single.just(comments)
         whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
+        whenever(commentDao.saveComments(any())).thenReturn(Completable.complete())
 
-        val testObserver = TestObserver<List<Comment>>()
+        val testObserver = TestObserver<Unit>()
         postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
 
         verify(commentDao).saveComments(comments)
+        testObserver.assertComplete()
     }
 
     @Test

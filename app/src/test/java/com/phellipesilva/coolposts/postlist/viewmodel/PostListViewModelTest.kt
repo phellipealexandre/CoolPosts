@@ -13,6 +13,7 @@ import com.phellipesilva.coolposts.postlist.view.PostListViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
 import com.phellipesilva.coolposts.state.ViewState
 import com.phellipesilva.coolposts.utils.RxUtils
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -80,23 +81,6 @@ class PostListViewModelTest {
     }
 
     @Test
-    fun shouldEmitSuccessEventWhenPostFetchingFinishesSuccessfully() {
-        var successFlag = false
-        val postsNew = listOf<Post>()
-        whenever(postListRepository.updatePosts()).thenReturn(Single.just(postsNew))
-        postListViewModel.viewState().observeForever {
-            if (it.posts == postsNew) {
-                successFlag = true
-            }
-        }
-
-        postListViewModel.updatePosts()
-
-        assertTrue(successFlag)
-
-    }
-
-    @Test
     fun shouldEmitNoInternetEventWhenThereIsNoInternet() {
         var errorFlag = false
         whenever(connectionChecker.isOnline()).thenReturn(false)
@@ -114,7 +98,7 @@ class PostListViewModelTest {
     @Test
     fun shouldEmitErrorEventWhenPostFetchingFinishesWithUnexpectedError() {
         var errorFlag = false
-        whenever(postListRepository.updatePosts()).thenReturn(Single.error(Exception()))
+        whenever(postListRepository.updatePosts()).thenReturn(Completable.error(Exception()))
         postListViewModel.viewState().observeForever {
             if (it.throwable?.peekContent() is Exception) {
                 errorFlag = true
@@ -129,7 +113,7 @@ class PostListViewModelTest {
     @Test
     fun shouldEmitLoadingEventWhenStartPostsFetching() {
         var loadingFlag = false
-        whenever(postListRepository.updatePosts()).thenReturn(Single.error(Throwable()))
+        whenever(postListRepository.updatePosts()).thenReturn(Completable.error(Throwable()))
         postListViewModel.viewState().observeForever {
             if (it.viewState == ViewState.LOADING) {
                 loadingFlag = true
@@ -143,7 +127,7 @@ class PostListViewModelTest {
 
     @Test
     fun shouldAddDisposableToCompositeDisposableWhenFetchingPosts() {
-        whenever(postListRepository.updatePosts()).thenReturn(Single.just(emptyList()))
+        whenever(postListRepository.updatePosts()).thenReturn(Completable.complete())
 
         postListViewModel.updatePosts()
 

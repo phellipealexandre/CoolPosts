@@ -9,10 +9,10 @@ import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsViewState
-import com.phellipesilva.coolposts.utils.RxUtils
 import com.phellipesilva.coolposts.state.ConnectionChecker
 import com.phellipesilva.coolposts.state.ViewState
-import io.reactivex.Single
+import com.phellipesilva.coolposts.utils.RxUtils
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
@@ -80,22 +80,6 @@ class PostDetailsViewModelTest {
     }
 
     @Test
-    fun shouldEmitSuccessEventWhenCommentsFetchingFinishesSuccessfully() {
-        var successFlag = false
-        val commentsNew = listOf<Comment>()
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Single.just(commentsNew))
-        postDetailsViewModel.viewState().observeForever {
-            if (it.comments == commentsNew) {
-                successFlag = true
-            }
-        }
-
-        postDetailsViewModel.updateCommentsFromPost(1)
-
-        assertTrue(successFlag)
-    }
-
-    @Test
     fun shouldEmitNoInternetEventWhenThereIsNoInternet() {
         var errorFlag = false
         whenever(connectionChecker.isOnline()).thenReturn(false)
@@ -113,7 +97,7 @@ class PostDetailsViewModelTest {
     @Test
     fun shouldEmitErrorEventWhenCommentsFetchingFinishesWithUnexpectedError() {
         var errorFlag = false
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Single.error(Exception()))
+        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.error(Exception()))
         postDetailsViewModel.viewState().observeForever {
             if (it.throwable?.peekContent() is Exception) {
                 errorFlag = true
@@ -128,7 +112,7 @@ class PostDetailsViewModelTest {
     @Test
     fun shouldEmitLoadingEventWhenStartCommentsFetching() {
         var loadingFlag = false
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Single.error(Throwable()))
+        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.error(Throwable()))
         postDetailsViewModel.viewState().observeForever {
             if (it.viewState == ViewState.LOADING) {
                 loadingFlag = true
@@ -142,7 +126,7 @@ class PostDetailsViewModelTest {
 
     @Test
     fun shouldAddDisposableToCompositeDisposableWhenFetchingComments() {
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Single.just(emptyList()))
+        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.complete())
 
         postDetailsViewModel.updateCommentsFromPost(1)
 

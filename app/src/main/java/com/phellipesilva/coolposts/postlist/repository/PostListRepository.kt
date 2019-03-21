@@ -7,7 +7,7 @@ import com.phellipesilva.coolposts.postlist.service.PostService
 import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
 import dagger.Reusable
-import io.reactivex.Single
+import io.reactivex.Completable
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class PostListRepository @Inject constructor(
     private val postDao: PostDao
 ) {
 
-    fun updatePosts(): Single<List<Post>> {
+    fun updatePosts(): Completable {
         return postService.fetchPosts()
             .zipWith(postService.fetchUsers(),
                 PostUserPairList { posts, users ->
@@ -28,10 +28,9 @@ class PostListRepository @Inject constructor(
                         users
                     )
                 }
-            ).map { (posts, users) ->
+            ).flatMapCompletable { (posts, users) ->
                 val postList = mapPostEntityListInPostDomainList(posts, users)
                 postDao.savePosts(postList)
-                postList
             }
     }
 

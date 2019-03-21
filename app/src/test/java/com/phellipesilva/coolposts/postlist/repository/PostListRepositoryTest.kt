@@ -12,6 +12,7 @@ import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.PostService
 import com.phellipesilva.coolposts.utils.RxUtils
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
@@ -59,7 +60,7 @@ class PostListRepositoryTest {
         val usersSingle = Single.just(expectedUsers)
         whenever(postService.fetchUsers()).thenReturn(usersSingle)
 
-        val testObserver = TestObserver<List<Post>>()
+        val testObserver = TestObserver<Unit>()
         postListRepository.updatePosts().subscribe(testObserver)
 
         verify(postDao).savePosts(listOf())
@@ -75,7 +76,7 @@ class PostListRepositoryTest {
         val usersSingle = Single.just(expectedUsers)
         whenever(postService.fetchUsers()).thenReturn(usersSingle)
 
-        val testObserver = TestObserver<List<Post>>()
+        val testObserver = TestObserver<Unit>()
         postListRepository.updatePosts().subscribe(testObserver)
 
         testObserver.assertNotComplete()
@@ -93,7 +94,7 @@ class PostListRepositoryTest {
         val usersSingle = Single.error<List<UserRemoteEntity>>(expectedError)
         whenever(postService.fetchUsers()).thenReturn(usersSingle)
 
-        val testObserver = TestObserver<List<Post>>()
+        val testObserver = TestObserver<Unit>()
         postListRepository.updatePosts().subscribe(testObserver)
 
         testObserver.assertNotComplete()
@@ -143,13 +144,13 @@ class PostListRepositoryTest {
                 )
             )
         )
+        whenever(postDao.savePosts(listOf(expectedPost))).thenReturn(Completable.complete())
 
-        val testObserver = TestObserver<List<Post>>()
+        val testObserver = TestObserver<Unit>()
         postListRepository.updatePosts().subscribe(testObserver)
 
         verify(postDao).savePosts(listOf(expectedPost))
         testObserver.assertComplete()
-        testObserver.assertValue(listOf(expectedPost))
     }
 
     @Test
@@ -215,12 +216,12 @@ class PostListRepositoryTest {
                 )
             )
         )
+        whenever(postDao.savePosts(listOf(expectedPost1, expectedPost2, expectedPost3))).thenReturn(Completable.complete())
 
-        val testObserver = TestObserver<List<Post>>()
+        val testObserver = TestObserver<Unit>()
         postListRepository.updatePosts().subscribe(testObserver)
 
         verify(postDao).savePosts(listOf(expectedPost1, expectedPost2, expectedPost3))
         testObserver.assertComplete()
-        testObserver.assertValue(listOf(expectedPost1, expectedPost2, expectedPost3))
     }
 }
