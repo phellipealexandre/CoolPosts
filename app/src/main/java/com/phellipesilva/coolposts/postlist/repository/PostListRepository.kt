@@ -11,7 +11,8 @@ import io.reactivex.Completable
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
-typealias PostUserPairList = BiFunction<List<PostRemoteEntity>, List<UserRemoteEntity>, Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>>
+private typealias PostUserPairListFunction = BiFunction<List<PostRemoteEntity>, List<UserRemoteEntity>, Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>>
+private typealias PostUserPair = Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>
 
 @Reusable
 class PostListRepository @Inject constructor(
@@ -19,31 +20,28 @@ class PostListRepository @Inject constructor(
     private val postDao: PostDao
 ) {
 
+    fun getPosts(): LiveData<List<Post>> {
+        return postDao.getPosts()
+    }
+
     fun updatePosts(): Completable {
         return postService.fetchPosts()
-            .zipWith(postService.fetchUsers(),
-                PostUserPairList { posts, users ->
+            .zipWith(
+                postService.fetchUsers(),
+                PostUserPairListFunction { posts, users ->
                     Pair(
                         posts,
                         users
                     )
                 }
-            ).flatMapCompletable { (posts, users) ->
-                val postList = mapPostEntityListInPostDomainList(posts, users)
-                postDao.savePosts(postList)
-            }
+            )
+            .map(::mapPostAndUserEntitiesInPostDomainList)
+            .flatMapCompletable(postDao::savePosts)
     }
 
-    fun getPosts(): LiveData<List<Post>> {
-        return postDao.getPosts()
-    }
-
-    private fun mapPostEntityListInPostDomainList(
-        postEntities: List<PostRemoteEntity>,
-        userEntities: List<UserRemoteEntity>
-    ): List<Post> {
-        return postEntities.map { postEntity ->
-            val user = userEntities.first { postEntity.userId == it.id }
+    private fun mapPostAndUserEntitiesInPostDomainList(pair: PostUserPair): List<Post> {
+        return pair.first.map { postEntity ->
+            val user = pair.second.first { userEntity -> postEntity.userId == userEntity.id }
 
             Post(
                 id = postEntity.id,

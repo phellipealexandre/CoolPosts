@@ -46,14 +46,12 @@ class PostListViewModel(
             .updatePosts()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError(Timber::e)
             .doOnSubscribe {
                 viewState.value = PostListViewState.buildLoadingState()
             }
             .subscribeBy(
-                onError = {
-                    Timber.e(it)
-                    viewState.value = PostListViewState.buildErrorState(it)
-                }
+                onError = { viewState.value = PostListViewState.buildErrorState(it) }
             )
             .addTo(compositeDisposable)
     }

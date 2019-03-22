@@ -47,14 +47,12 @@ class PostDetailsViewModel(
             .updateCommentsFromPost(postId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError(Timber::e)
             .doOnSubscribe {
                 viewState.value = PostDetailsViewState.buildLoadingState()
             }
             .subscribeBy(
-                onError = {
-                    Timber.e(it)
-                    viewState.value = PostDetailsViewState.buildErrorState(it)
-                }
+                onError = { viewState.value = PostDetailsViewState.buildErrorState(it) }
             )
             .addTo(compositeDisposable)
     }

@@ -37,7 +37,7 @@ class PostListActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        val adapter = PostListAdapter()
+        val adapter = PostsAdapter()
         adapter.setOnItemClickListener(::navigateToPostDetailsWithTransition)
 
         postListRecyclerView.adapter = adapter
@@ -62,7 +62,7 @@ class PostListActivity : AppCompatActivity() {
     private fun processSuccess(posts: List<Post>?) {
         postListSwipeRefreshLayout.isRefreshing = false
 
-        val postListAdapter = postListRecyclerView.adapter as PostListAdapter
+        val postListAdapter = postListRecyclerView.adapter as PostsAdapter
         posts?.let(postListAdapter::submitList)
     }
 

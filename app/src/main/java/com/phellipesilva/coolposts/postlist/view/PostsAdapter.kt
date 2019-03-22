@@ -18,7 +18,7 @@ import com.phellipesilva.coolposts.postlist.data.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
 
-class PostListAdapter : ListAdapter<Post, PostListAdapter.PostViewHolder>(PostsDiffCallback()) {
+class PostsAdapter : ListAdapter<Post, PostsAdapter.PostViewHolder>(PostsDiffCallback()) {
 
     private var onItemClickListener: ((Array<AndroidTransitionPair>, Post) -> Unit)? = null
 

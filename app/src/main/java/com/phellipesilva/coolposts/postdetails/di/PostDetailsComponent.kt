@@ -5,7 +5,5 @@ import dagger.Subcomponent
 
 @Subcomponent(modules = [PostDetailsModule::class])
 interface PostDetailsComponent {
-
     fun getPostDetailsViewModelFactory(): PostDetailsViewModelFactory
-
 }
