@@ -144,12 +144,13 @@ class PostDetailsActivity : AppCompatActivity() {
 
     private fun processError(throwable: Throwable?) {
         postDetailsSwipeRefreshLayout.isRefreshing = false
-
         throwable?.let {
-            if (throwable is NoConnectionException) {
-                Snackbar.make(postDetailsCoordinatorLayout, R.string.no_connection_msg, Snackbar.LENGTH_LONG).show()
-            } else {
-                Snackbar.make(postDetailsCoordinatorLayout, R.string.unexpected_error_msg, Snackbar.LENGTH_LONG).show()
+            postDetailsCoordinatorLayout.post {
+                if (throwable is NoConnectionException) {
+                    Snackbar.make(postDetailsCoordinatorLayout, R.string.no_connection_msg, Snackbar.LENGTH_LONG).show()
+                } else {
+                    Snackbar.make(postDetailsCoordinatorLayout, R.string.unexpected_error_msg, Snackbar.LENGTH_LONG).show()
+                }
             }
         }
     }
