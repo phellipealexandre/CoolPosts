@@ -45,18 +45,22 @@ class PostListActivity : AppCompatActivity() {
 
     private fun initViewStateObserver() {
         postListViewModel.viewState().observe(this, Observer { state ->
-            when (state.viewState) {
-                ViewState.LOADING -> {
-                    postListSwipeRefreshLayout.isRefreshing = true
-                }
-                ViewState.ERROR -> {
-                    renderError(state.throwable?.getContentIfNotHandled())
-                }
-                ViewState.SUCCESS -> {
-                    renderSuccess(state.posts)
-                }
-            }
+            state?.let(::processViewState)
         })
+    }
+
+    private fun processViewState(state: PostListViewState) {
+        when (state.viewState) {
+            ViewState.LOADING -> {
+                postListSwipeRefreshLayout.isRefreshing = true
+            }
+            ViewState.ERROR -> {
+                renderError(state.throwable?.getContentIfNotHandled())
+            }
+            ViewState.SUCCESS -> {
+                renderSuccess(state.posts)
+            }
+        }
     }
 
     private fun renderSuccess(posts: List<Post>?) {

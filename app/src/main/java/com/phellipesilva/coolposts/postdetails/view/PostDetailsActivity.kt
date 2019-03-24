@@ -27,8 +27,9 @@ class PostDetailsActivity : AppCompatActivity() {
 
     private val filterVisibilityId = "FilterVisibility"
 
+    private val post by lazy { intent.getParcelableExtra<Post>(PostDetailsActivity.postId) }
+
     private val postDetailsViewModel by lazy {
-        val post = intent.getParcelableExtra<Post>(PostDetailsActivity.postId)
         val postDetailsViewModelFactory = injector.with(PostDetailsModule(post.id)).getPostDetailsViewModelFactory()
         ViewModelProviders.of(this, postDetailsViewModelFactory).get(PostDetailsViewModel::class.java)
     }
@@ -37,9 +38,7 @@ class PostDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_details)
 
-        val post = intent.getParcelableExtra<Post>(PostDetailsActivity.postId)
-
-        setupsCollapsingToolbar(post)
+        setupCollapsingToolbar(post)
         initRecyclerView()
         initViewStateObserver()
         initSwipeLayout(post)
@@ -79,7 +78,7 @@ class PostDetailsActivity : AppCompatActivity() {
         supportFinishAfterTransition()
     }
 
-    private fun setupsCollapsingToolbar(post: Post) {
+    private fun setupCollapsingToolbar(post: Post) {
         setSupportActionBar(postDetailsToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -116,18 +115,18 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     private fun initViewStateObserver() {
-        postDetailsViewModel.viewState().observe(this, Observer {
-            it?.let(::processEvent)
+        postDetailsViewModel.viewState().observe(this, Observer { state ->
+            state?.let(::processViewState)
         })
     }
 
-    private fun processEvent(event: PostDetailsViewState) {
-        when (event.viewState) {
+    private fun processViewState(state: PostDetailsViewState) {
+        when (state.viewState) {
             ViewState.SUCCESS -> {
-                renderSuccess(event.comments)
+                renderSuccess(state.comments)
             }
             ViewState.ERROR -> {
-                renderError(event.throwable?.getContentIfNotHandled())
+                renderError(state.throwable?.getContentIfNotHandled())
             }
             ViewState.LOADING -> {
                 postDetailsSwipeRefreshLayout.isRefreshing = true
@@ -162,7 +161,7 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val postId =  "post"
+        private const val postId =  "com.phellipesilva.coolposts.post"
 
         fun newIntent(context: Context, post: Post): Intent {
             val intent = Intent(context, PostDetailsActivity::class.java)

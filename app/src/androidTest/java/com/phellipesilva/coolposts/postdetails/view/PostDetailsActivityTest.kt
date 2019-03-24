@@ -55,7 +55,7 @@ class PostDetailsActivityTest {
     fun shouldShowPostInformationAccordingToIntentThtWasPassedInExtras() {
         val intent = Intent()
         intent.putExtra(
-            "post",
+            "com.phellipesilva.coolposts.post",
             Post(
                 id = 1,
                 title = "Title",
@@ -78,7 +78,7 @@ class PostDetailsActivityTest {
 
         val intent = Intent()
         intent.putExtra(
-            "post",
+            "com.phellipesilva.coolposts.post",
             Post(
                 id = 1,
                 title = "Title",
@@ -104,7 +104,7 @@ class PostDetailsActivityTest {
 
         val intent = Intent()
         intent.putExtra(
-            "post",
+            "com.phellipesilva.coolposts.post",
             Post(
                 id = 1,
                 title = "Title",
@@ -133,7 +133,7 @@ class PostDetailsActivityTest {
 
         val intent = Intent()
         intent.putExtra(
-            "post",
+            "com.phellipesilva.coolposts.post",
             Post(
                 id = 1,
                 title = "Title",
@@ -156,7 +156,7 @@ class PostDetailsActivityTest {
 
         val intent = Intent()
         intent.putExtra(
-            "post",
+            "com.phellipesilva.coolposts.post",
             Post(
                 id = 1,
                 title = "Title",
