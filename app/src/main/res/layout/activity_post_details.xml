@@ -20,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:contentScrim="@color/colorPrimary"
-            app:titleEnabled="false"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +31,7 @@
                     android:id="@+id/postDetailsThumbnailImageView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:background="@color/dark_filter"
+                    android:background="@color/darkFilter"
                     android:contentDescription="@string/thumbnail_image_content_description"
                     android:scaleType="centerCrop"
                     android:transitionName="@string/thumbnail_transition_id"
@@ -45,7 +44,7 @@
                     android:id="@+id/filter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/dark_filter"
+                    android:background="@color/darkFilter"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +72,6 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:ellipsize="end"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -92,8 +90,8 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
-                    android:textSize="16sp"
                     android:textColor="@color/white"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/authorAvatarImageView"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -117,8 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:titleEnabled="false" />
+                app:layout_scrollFlags="scroll|enterAlways" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -134,11 +131,10 @@
             android:id="@+id/postDetailsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:layoutAnimation="@anim/layout_animation_enter_up"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:clipToPadding="false"
-            android:background="@color/gray"
-            android:layoutAnimation="@anim/layout_animation_enter_up"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

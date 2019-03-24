@@ -4,6 +4,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/gray</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowEnterTransition">@transition/no_system_bars_fade_transition</item>
         <item name="android:windowExitTransition">@transition/no_system_bars_fade_transition</item>
