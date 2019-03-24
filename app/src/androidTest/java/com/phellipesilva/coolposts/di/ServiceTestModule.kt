@@ -21,21 +21,18 @@ object ServiceTestModule {
 
     @Provides
     @JvmStatic
-    fun providesPostService(okHttpClient: OkHttpClient): PostService = Retrofit.Builder()
+    fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(RESTMockServer.getUrl())
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
-        .create(PostService::class.java)
 
     @Provides
     @JvmStatic
-    fun providesCommentService(okHttpClient: OkHttpClient): CommentService = Retrofit.Builder()
-        .baseUrl(RESTMockServer.getUrl())
-        .client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .build()
-        .create(CommentService::class.java)
+    fun providesPostService(retrofit: Retrofit): PostService = retrofit.create(PostService::class.java)
+
+    @Provides
+    @JvmStatic
+    fun providesCommentService(retrofit: Retrofit): CommentService = retrofit.create(CommentService::class.java)
 }

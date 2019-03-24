@@ -13,32 +13,23 @@ import javax.inject.Singleton
 @Module
 object ServiceModule {
 
-    private const val baseUrl = "https://jsonplaceholder.typicode.com"
-
     @Provides
     @Singleton
     @JvmStatic
-    fun providesOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
-
-    @Provides
-    @Singleton
-    @JvmStatic
-    fun providesPostService(okHttpClient: OkHttpClient): PostService = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .client(okHttpClient)
+    fun providesRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl("https://jsonplaceholder.typicode.com")
+        .client(OkHttpClient.Builder().build())
         .addConverterFactory(MoshiConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
-        .create(PostService::class.java)
 
     @Provides
     @Singleton
     @JvmStatic
-    fun providesCommentService(okHttpClient: OkHttpClient): CommentService = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .build()
-        .create(CommentService::class.java)
+    fun providesPostService(retrofit: Retrofit): PostService = retrofit.create(PostService::class.java)
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun providesCommentService(retrofit: Retrofit): CommentService = retrofit.create(CommentService::class.java)
 }
