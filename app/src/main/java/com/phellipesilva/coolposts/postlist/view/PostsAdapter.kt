@@ -1,6 +1,5 @@
 package com.phellipesilva.coolposts.postlist.view
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ class PostsAdapter : ListAdapter<Post, PostsAdapter.PostViewHolder>(PostsDiffCal
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
-            LayoutInflater.from(parent.context).inflate(com.phellipesilva.coolposts.R.layout.post_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.post_list_item, parent, false)
         )
     }
 
@@ -36,7 +35,6 @@ class PostsAdapter : ListAdapter<Post, PostsAdapter.PostViewHolder>(PostsDiffCal
         this.onItemClickListener = onItemClickListener
     }
 
-    @SuppressLint("CheckResult")
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val postTitleTextView: TextView = itemView.postTitleTextView
         private val postAuthorTextView: TextView = itemView.postAuthorTextView

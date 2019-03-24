@@ -26,9 +26,7 @@ class PostDetailsViewModel(
 
     init {
         viewState.addSource(commentsLiveData) { comments ->
-            if (!comments.isNullOrEmpty()) {
-                viewState.value = PostDetailsViewState.buildSuccessState(comments)
-            }
+            viewState.value = PostDetailsViewState.buildSuccessState(comments)
         }
     }
 

@@ -25,9 +25,7 @@ class PostListViewModel(
 
     init {
         viewState.addSource(postsLiveData) { posts ->
-            if (!posts.isNullOrEmpty()) {
-                viewState.value = PostListViewState.buildSuccessState(posts)
-            }
+            viewState.value = PostListViewState.buildSuccessState(posts)
         }
     }
 

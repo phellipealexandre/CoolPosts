@@ -50,23 +50,23 @@ class PostListActivity : AppCompatActivity() {
                     postListSwipeRefreshLayout.isRefreshing = true
                 }
                 ViewState.ERROR -> {
-                    processError(state.throwable?.getContentIfNotHandled())
+                    renderError(state.throwable?.getContentIfNotHandled())
                 }
                 ViewState.SUCCESS -> {
-                    processSuccess(state.posts)
+                    renderSuccess(state.posts)
                 }
             }
         })
     }
 
-    private fun processSuccess(posts: List<Post>?) {
+    private fun renderSuccess(posts: List<Post>?) {
         postListSwipeRefreshLayout.isRefreshing = false
 
         val postListAdapter = postListRecyclerView.adapter as PostsAdapter
         posts?.let(postListAdapter::submitList)
     }
 
-    private fun processError(throwable: Throwable?) {
+    private fun renderError(throwable: Throwable?) {
         postListSwipeRefreshLayout.isRefreshing = false
 
         throwable?.let {

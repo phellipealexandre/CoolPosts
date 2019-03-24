@@ -124,10 +124,10 @@ class PostDetailsActivity : AppCompatActivity() {
     private fun processEvent(event: PostDetailsViewState) {
         when (event.viewState) {
             ViewState.SUCCESS -> {
-                processSuccess(event.comments)
+                renderSuccess(event.comments)
             }
             ViewState.ERROR -> {
-                processError(event.throwable?.getContentIfNotHandled())
+                renderError(event.throwable?.getContentIfNotHandled())
             }
             ViewState.LOADING -> {
                 postDetailsSwipeRefreshLayout.isRefreshing = true
@@ -135,14 +135,14 @@ class PostDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun processSuccess(comments: List<Comment>?) {
+    private fun renderSuccess(comments: List<Comment>?) {
         postDetailsSwipeRefreshLayout.isRefreshing = false
 
         val commentsAdapter = postDetailsRecyclerView.adapter as CommentsAdapter
         comments?.let(commentsAdapter::submitList)
     }
 
-    private fun processError(throwable: Throwable?) {
+    private fun renderError(throwable: Throwable?) {
         postDetailsSwipeRefreshLayout.isRefreshing = false
         throwable?.let {
             postDetailsCoordinatorLayout.post {
