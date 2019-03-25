@@ -15,7 +15,6 @@ import com.phellipesilva.coolposts.extensions.AndroidTransitionPair
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
-import com.phellipesilva.coolposts.state.ViewState
 import kotlinx.android.synthetic.main.activity_post_list.*
 
 class PostListActivity : AppCompatActivity() {
@@ -50,29 +49,17 @@ class PostListActivity : AppCompatActivity() {
     }
 
     private fun processViewState(state: PostListViewState) {
-        when (state.viewState) {
-            ViewState.LOADING -> {
-                postListSwipeRefreshLayout.isRefreshing = true
-            }
-            ViewState.ERROR -> {
-                renderError(state.throwable?.getContentIfNotHandled())
-            }
-            ViewState.SUCCESS -> {
-                renderSuccess(state.posts)
-            }
-        }
+        postListSwipeRefreshLayout.isRefreshing = state.isLoading
+        renderPosts(state.posts)
+        state.errorEvent?.getContentIfNotHandled()?.let(::renderError)
     }
 
-    private fun renderSuccess(posts: List<Post>?) {
-        postListSwipeRefreshLayout.isRefreshing = false
-
+    private fun renderPosts(posts: List<Post>?) {
         val postListAdapter = postListRecyclerView.adapter as PostsAdapter
         posts?.let(postListAdapter::submitList)
     }
 
     private fun renderError(throwable: Throwable?) {
-        postListSwipeRefreshLayout.isRefreshing = false
-
         throwable?.let {
             if (throwable is NoConnectionException) {
                 Snackbar.make(postListCoordinatorLayout, R.string.no_connection_msg, Snackbar.LENGTH_LONG).show()

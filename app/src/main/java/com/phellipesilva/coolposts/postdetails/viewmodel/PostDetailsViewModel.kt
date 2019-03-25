@@ -7,6 +7,7 @@ import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
+import com.phellipesilva.coolposts.state.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -25,8 +26,13 @@ class PostDetailsViewModel(
     private val commentsLiveData = postDetailsRepository.getCommentsFromPost(postId)
 
     init {
+        viewState.value = PostDetailsViewState(
+            isLoading = false,
+            comments = emptyList()
+        )
+
         viewState.addSource(commentsLiveData) { comments ->
-            viewState.value = PostDetailsViewState.buildSuccessState(comments)
+            viewState.value = viewState.value?.copy(isLoading = false, comments = comments)
         }
     }
 
@@ -36,7 +42,7 @@ class PostDetailsViewModel(
         if (connectionChecker.isOnline()) {
             fetchCommentsFromPost(postId)
         } else {
-            viewState.value = PostDetailsViewState.buildErrorState(NoConnectionException())
+            viewState.value = viewState.value?.copy(isLoading = false, errorEvent = Event(NoConnectionException()))
         }
     }
 
@@ -47,10 +53,12 @@ class PostDetailsViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError(Timber::e)
             .doOnSubscribe {
-                viewState.value = PostDetailsViewState.buildLoadingState()
+                viewState.value = viewState.value?.copy(isLoading = true)
             }
             .subscribeBy(
-                onError = { viewState.value = PostDetailsViewState.buildErrorState(it) }
+                onError = {
+                    viewState.value = viewState.value?.copy(isLoading = false, errorEvent = Event(it))
+                }
             )
             .addTo(compositeDisposable)
     }

@@ -20,7 +20,6 @@ import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
 import com.phellipesilva.coolposts.postlist.data.Post
-import com.phellipesilva.coolposts.state.ViewState
 import kotlinx.android.synthetic.main.activity_post_details.*
 
 class PostDetailsActivity : AppCompatActivity() {
@@ -121,28 +120,17 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     private fun processViewState(state: PostDetailsViewState) {
-        when (state.viewState) {
-            ViewState.SUCCESS -> {
-                renderSuccess(state.comments)
-            }
-            ViewState.ERROR -> {
-                renderError(state.throwable?.getContentIfNotHandled())
-            }
-            ViewState.LOADING -> {
-                postDetailsSwipeRefreshLayout.isRefreshing = true
-            }
-        }
+        postDetailsSwipeRefreshLayout.isRefreshing = state.isLoading
+        renderComments(state.comments)
+        state.errorEvent?.getContentIfNotHandled()?.let(::renderError)
     }
 
-    private fun renderSuccess(comments: List<Comment>?) {
-        postDetailsSwipeRefreshLayout.isRefreshing = false
-
+    private fun renderComments(comments: List<Comment>?) {
         val commentsAdapter = postDetailsRecyclerView.adapter as CommentsAdapter
         comments?.let(commentsAdapter::submitList)
     }
 
     private fun renderError(throwable: Throwable?) {
-        postDetailsSwipeRefreshLayout.isRefreshing = false
         throwable?.let {
             postDetailsCoordinatorLayout.post {
                 if (throwable is NoConnectionException) {

@@ -6,23 +6,17 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.exceptions.NoConnectionException
-import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
 import com.phellipesilva.coolposts.postlist.view.PostListViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
-import com.phellipesilva.coolposts.state.ViewState
 import com.phellipesilva.coolposts.utils.RxUtils
 import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.junit.After
+import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
@@ -56,9 +50,9 @@ class PostListViewModelTest {
 
     @Before
     fun setUp() {
-        val mutableLiveData = MutableLiveData<List<Post>>()
-        mutableLiveData.value = posts
-        whenever(postListRepository.getPosts()).thenReturn(mutableLiveData)
+        val initialLiveDataFromRepository = MutableLiveData<List<Post>>()
+        initialLiveDataFromRepository.value = posts
+        whenever(postListRepository.getPosts()).thenReturn(initialLiveDataFromRepository)
 
         postListViewModel = PostListViewModel(postListRepository, connectionChecker, compositeDisposable)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
@@ -74,18 +68,33 @@ class PostListViewModelTest {
     fun shouldGetPostLiveDataFromRepositoryOnInitialState() {
         postListViewModel.viewState().observeForever {
             assertEquals(
-                PostListViewState.buildSuccessState(posts),
+                PostListViewState(isLoading = false, posts = posts),
                 it
             )
         }
     }
 
     @Test
-    fun shouldEmitNoInternetEventWhenThereIsNoInternet() {
+    fun shouldFetchPostsFromRepositoryWithoutErrorWhenFetchingPostsIsSuccessful() {
+        var errorFlag = false
+        whenever(postListRepository.updatePosts()).thenReturn(Completable.complete())
+        postListViewModel.viewState().observeForever {
+            if (it.errorEvent?.peekContent() != null) {
+                errorFlag = true
+            }
+        }
+
+        postListViewModel.updatePosts()
+
+        Assert.assertFalse(errorFlag)
+    }
+
+    @Test
+    fun shouldEmitNoInternetStateWhenThereIsNoInternet() {
         var errorFlag = false
         whenever(connectionChecker.isOnline()).thenReturn(false)
         postListViewModel.viewState().observeForever {
-            if (it.throwable?.peekContent() is NoConnectionException) {
+            if (it.errorEvent?.peekContent() is NoConnectionException) {
                 errorFlag = true
             }
         }
@@ -96,11 +105,11 @@ class PostListViewModelTest {
     }
 
     @Test
-    fun shouldEmitErrorEventWhenPostFetchingFinishesWithUnexpectedError() {
+    fun shouldEmitErrorStateWhenPostFetchingFinishesWithUnexpectedError() {
         var errorFlag = false
         whenever(postListRepository.updatePosts()).thenReturn(Completable.error(Exception()))
         postListViewModel.viewState().observeForever {
-            if (it.throwable?.peekContent() is Exception) {
+            if (it.errorEvent?.peekContent() is Exception) {
                 errorFlag = true
             }
         }
@@ -111,11 +120,11 @@ class PostListViewModelTest {
     }
 
     @Test
-    fun shouldEmitLoadingEventWhenStartPostsFetching() {
+    fun shouldEmitLoadingStateWhenStartPostsFetching() {
         var loadingFlag = false
         whenever(postListRepository.updatePosts()).thenReturn(Completable.error(Throwable()))
         postListViewModel.viewState().observeForever {
-            if (it.viewState == ViewState.LOADING) {
+            if (it.isLoading) {
                 loadingFlag = true
             }
         }

@@ -10,14 +10,12 @@ import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
-import com.phellipesilva.coolposts.state.ViewState
 import com.phellipesilva.coolposts.utils.RxUtils
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,9 +53,9 @@ class PostDetailsViewModelTest {
 
     @Before
     fun setUp() {
-        val mutableLiveData = MutableLiveData<List<Comment>>()
-        mutableLiveData.value = comments
-        whenever(postDetailsRepository.getCommentsFromPost(postId)).thenReturn(mutableLiveData)
+        val initialLiveDataFromRepository = MutableLiveData<List<Comment>>()
+        initialLiveDataFromRepository.value = comments
+        whenever(postDetailsRepository.getCommentsFromPost(postId)).thenReturn(initialLiveDataFromRepository)
 
         postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionChecker, compositeDisposable, postId)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
@@ -70,36 +68,51 @@ class PostDetailsViewModelTest {
     }
 
     @Test
-    fun shouldGetCommentLiveDataFromRepositoryOnInitialState() {
+    fun shouldGetCommentsLiveDataFromRepositoryOnInitialState() {
         postDetailsViewModel.viewState().observeForever {
             assertEquals(
-                PostDetailsViewState.buildSuccessState(comments),
+                PostDetailsViewState(isLoading = false, comments = comments),
                 it
             )
         }
     }
 
     @Test
-    fun shouldEmitNoInternetEventWhenThereIsNoInternet() {
+    fun shouldFetchCommentsFromRepositoryWithoutErrorWhenFetchingCommentsIsSuccessful() {
         var errorFlag = false
-        whenever(connectionChecker.isOnline()).thenReturn(false)
+        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.complete())
         postDetailsViewModel.viewState().observeForever {
-            if (it.throwable?.peekContent() is NoConnectionException) {
+            if (it.errorEvent?.peekContent() != null) {
                 errorFlag = true
             }
         }
 
         postDetailsViewModel.updateCommentsFromPost(1)
 
-        assertTrue(errorFlag)
+        assertFalse(errorFlag)
     }
 
     @Test
-    fun shouldEmitErrorEventWhenCommentsFetchingFinishesWithUnexpectedError() {
+    fun shouldEmitNoInternetStateWhenThereIsNoInternet() {
+        var onInternetFlag = false
+        whenever(connectionChecker.isOnline()).thenReturn(false)
+        postDetailsViewModel.viewState().observeForever {
+            if (it.errorEvent?.peekContent() is NoConnectionException) {
+                onInternetFlag = true
+            }
+        }
+
+        postDetailsViewModel.updateCommentsFromPost(1)
+
+        assertTrue(onInternetFlag)
+    }
+
+    @Test
+    fun shouldEmitErrorStateWhenCommentsFetchingFinishesWithUnexpectedError() {
         var errorFlag = false
         whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.error(Exception()))
         postDetailsViewModel.viewState().observeForever {
-            if (it.throwable?.peekContent() is Exception) {
+            if (it.errorEvent?.peekContent() is Exception) {
                 errorFlag = true
             }
         }
@@ -110,11 +123,11 @@ class PostDetailsViewModelTest {
     }
 
     @Test
-    fun shouldEmitLoadingEventWhenStartCommentsFetching() {
+    fun shouldEmitLoadingStateWhenStartFetchingComments() {
         var loadingFlag = false
         whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.error(Throwable()))
         postDetailsViewModel.viewState().observeForever {
-            if (it.viewState == ViewState.LOADING) {
+            if (it.isLoading) {
                 loadingFlag = true
             }
         }
