@@ -26,13 +26,10 @@ class PostDetailsViewModel(
     private val commentsLiveData = postDetailsRepository.getCommentsFromPost(postId)
 
     init {
-        viewState.value = PostDetailsViewState(
-            isLoading = false,
-            comments = emptyList()
-        )
+        viewState.value = PostDetailsViewState()
 
         viewState.addSource(commentsLiveData) { comments ->
-            viewState.value = viewState.value?.copy(isLoading = false, comments = comments)
+            viewState.value = viewState.value?.copy(comments = comments)
         }
     }
 
@@ -42,7 +39,7 @@ class PostDetailsViewModel(
         if (connectionChecker.isOnline()) {
             fetchCommentsFromPost(postId)
         } else {
-            viewState.value = viewState.value?.copy(isLoading = false, errorEvent = Event(NoConnectionException()))
+            viewState.value = viewState.value?.copy(errorEvent = Event(NoConnectionException()))
         }
     }
 
@@ -56,6 +53,9 @@ class PostDetailsViewModel(
                 viewState.value = viewState.value?.copy(isLoading = true)
             }
             .subscribeBy(
+                onComplete = {
+                    viewState.value = viewState.value?.copy(isLoading = false)
+                },
                 onError = {
                     viewState.value = viewState.value?.copy(isLoading = false, errorEvent = Event(it))
                 }

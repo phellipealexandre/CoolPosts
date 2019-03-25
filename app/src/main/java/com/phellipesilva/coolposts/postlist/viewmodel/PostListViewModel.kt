@@ -25,13 +25,10 @@ class PostListViewModel(
     private val postsLiveData = postListRepository.getPosts()
 
     init {
-        viewState.value = PostListViewState(
-            isLoading = false,
-            posts = emptyList()
-        )
+        viewState.value = PostListViewState()
 
         viewState.addSource(postsLiveData) { posts ->
-            viewState.value = viewState.value?.copy(isLoading = false, posts = posts)
+            viewState.value = viewState.value?.copy(posts = posts)
         }
     }
 
@@ -41,7 +38,7 @@ class PostListViewModel(
         if (connectionChecker.isOnline()) {
             updatePostsFromServer()
         } else {
-            viewState.value = viewState.value?.copy(isLoading = false, errorEvent = Event(NoConnectionException()))
+            viewState.value = viewState.value?.copy(errorEvent = Event(NoConnectionException()))
         }
     }
 
@@ -55,6 +52,9 @@ class PostListViewModel(
                 viewState.value = viewState.value?.copy(isLoading = true)
             }
             .subscribeBy(
+                onComplete = {
+                    viewState.value = viewState.value?.copy(isLoading = false)
+                },
                 onError = {
                     viewState.value = viewState.value?.copy(isLoading = false, errorEvent = Event(it))
                 }
