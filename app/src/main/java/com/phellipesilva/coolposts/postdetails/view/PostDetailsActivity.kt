@@ -8,7 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
@@ -26,11 +26,11 @@ class PostDetailsActivity : AppCompatActivity() {
 
     private val filterVisibilityId = "FilterVisibility"
 
-    private val post by lazy { intent.getParcelableExtra<Post>(PostDetailsActivity.postId) }
+    private val post by lazy { intent.getParcelableExtra<Post>(postId)!! }
 
     private val postDetailsViewModel by lazy {
         val postDetailsViewModelFactory = injector.with(PostDetailsModule(post.id)).getPostDetailsViewModelFactory()
-        ViewModelProviders.of(this, postDetailsViewModelFactory).get(PostDetailsViewModel::class.java)
+        ViewModelProvider(this, postDetailsViewModelFactory).get(PostDetailsViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +46,8 @@ class PostDetailsActivity : AppCompatActivity() {
             postDetailsViewModel.updateCommentsFromPost(post.id)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             android.R.id.home -> {
                 leaveActivityWithSceneTransition()
                 true
@@ -65,8 +65,8 @@ class PostDetailsActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        filter.visibility = savedInstanceState?.getInt(filterVisibilityId) ?: View.VISIBLE
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        filter.visibility = savedInstanceState.getInt(filterVisibilityId)
         super.onRestoreInstanceState(savedInstanceState)
     }
 

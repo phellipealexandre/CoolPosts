@@ -14,13 +14,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 object ServiceTestModule {
 
     @Provides
-    @JvmStatic
     fun providesOkHttpClientService(): OkHttpClient = OkHttpClient.Builder()
         .sslSocketFactory(RESTMockServer.getSSLSocketFactory(), RESTMockServer.getTrustManager())
         .build()
 
     @Provides
-    @JvmStatic
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(RESTMockServer.getUrl())
         .client(okHttpClient)
@@ -29,10 +27,8 @@ object ServiceTestModule {
         .build()
 
     @Provides
-    @JvmStatic
     fun providesPostService(retrofit: Retrofit): PostService = retrofit.create(PostService::class.java)
 
     @Provides
-    @JvmStatic
     fun providesCommentService(retrofit: Retrofit): CommentService = retrofit.create(CommentService::class.java)
 }

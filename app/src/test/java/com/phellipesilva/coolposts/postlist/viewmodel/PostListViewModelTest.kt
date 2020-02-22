@@ -2,38 +2,35 @@ package com.phellipesilva.coolposts.postlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
 import com.phellipesilva.coolposts.postlist.view.PostListViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
 import com.phellipesilva.coolposts.utils.RxUtils
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
 class PostListViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    @Mock
+    @MockK
     private lateinit var postListRepository: PostListRepository
 
-    @Mock
+    @MockK
     private lateinit var connectionChecker: ConnectionChecker
 
-    @Mock
+    @MockK
     private lateinit var compositeDisposable: CompositeDisposable
 
     private lateinit var postListViewModel: PostListViewModel
@@ -50,13 +47,15 @@ class PostListViewModelTest {
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
+
         val initialLiveDataFromRepository = MutableLiveData<List<Post>>()
         initialLiveDataFromRepository.value = posts
-        whenever(postListRepository.getPosts()).thenReturn(initialLiveDataFromRepository)
+        every { postListRepository.getPosts() } returns initialLiveDataFromRepository
 
         postListViewModel = PostListViewModel(postListRepository, connectionChecker, compositeDisposable)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
-        whenever(connectionChecker.isOnline()).thenReturn(true)
+        every { connectionChecker.isOnline() } returns true
     }
 
     @After
@@ -77,7 +76,7 @@ class PostListViewModelTest {
     @Test
     fun shouldFetchPostsFromRepositoryWithoutErrorWhenFetchingPostsIsSuccessful() {
         var errorFlag = false
-        whenever(postListRepository.updatePosts()).thenReturn(Completable.complete())
+        every { postListRepository.updatePosts() } returns Completable.complete()
         postListViewModel.viewState().observeForever {
             if (it.errorEvent?.peekContent() != null) {
                 errorFlag = true
@@ -92,7 +91,7 @@ class PostListViewModelTest {
     @Test
     fun shouldEmitNoInternetStateWhenThereIsNoInternet() {
         var errorFlag = false
-        whenever(connectionChecker.isOnline()).thenReturn(false)
+        every { connectionChecker.isOnline() } returns false
         postListViewModel.viewState().observeForever {
             if (it.errorEvent?.peekContent() is NoConnectionException) {
                 errorFlag = true
@@ -107,7 +106,7 @@ class PostListViewModelTest {
     @Test
     fun shouldEmitErrorStateWhenPostFetchingFinishesWithUnexpectedError() {
         var errorFlag = false
-        whenever(postListRepository.updatePosts()).thenReturn(Completable.error(Exception()))
+        every { postListRepository.updatePosts() } returns Completable.error(Exception())
         postListViewModel.viewState().observeForever {
             if (it.errorEvent?.peekContent() is Exception) {
                 errorFlag = true
@@ -122,7 +121,7 @@ class PostListViewModelTest {
     @Test
     fun shouldEmitLoadingStateWhenStartPostsFetching() {
         var loadingFlag = false
-        whenever(postListRepository.updatePosts()).thenReturn(Completable.error(Throwable()))
+        every { postListRepository.updatePosts() } returns Completable.error(Throwable())
         postListViewModel.viewState().observeForever {
             if (it.isLoading) {
                 loadingFlag = true
@@ -136,10 +135,10 @@ class PostListViewModelTest {
 
     @Test
     fun shouldAddDisposableToCompositeDisposableWhenFetchingPosts() {
-        whenever(postListRepository.updatePosts()).thenReturn(Completable.complete())
+        every { postListRepository.updatePosts() } returns Completable.complete()
 
         postListViewModel.updatePosts()
 
-        verify(compositeDisposable).add(any())
+        verify { compositeDisposable.add(any()) }
     }
 }

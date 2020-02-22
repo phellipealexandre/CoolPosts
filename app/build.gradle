@@ -4,29 +4,39 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
+    buildToolsVersion = '29.0.3'
+
     defaultConfig {
         applicationId "com.phellipesilva.coolposts"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.phellipesilva.coolposts.TestInstrumentationRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     androidExtensions {
         experimental = true
     }
+
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
@@ -39,64 +49,64 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //AppCompat
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation "androidx.appcompat:appcompat:1.1.0"
 
     //KTX
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation "androidx.core:core-ktx:1.2.0"
 
     //Layout
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation "androidx.constraintlayout:constraintlayout:1.1.3"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "com.google.android.material:material:1.2.0-alpha05"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
-    kapt 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation "com.github.bumptech.glide:glide:4.11.0"
+    kapt "com.github.bumptech.glide:compiler:4.9.0"
 
     //Architecture Components
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
-    implementation "androidx.room:room-runtime:2.2.2"
-    implementation "androidx.room:room-rxjava2:2.2.2"
-    kapt "androidx.room:room-compiler:2.2.2"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.room:room-runtime:2.2.4"
+    implementation "androidx.room:room-rxjava2:2.2.4"
+    kapt "androidx.room:room-compiler:2.2.4"
 
     //RX
     implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
     implementation "io.reactivex.rxjava2:rxjava:2.2.9"
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-    implementation 'com.jakewharton.rxbinding:rxbinding-kotlin:1.0.1'
+    implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
+    implementation "com.jakewharton.rxbinding:rxbinding-kotlin:1.0.1"
 
     //Dagger
-    kapt "com.google.dagger:dagger-compiler:2.20"
-    implementation "com.google.dagger:dagger:2.20"
+    kapt "com.google.dagger:dagger-compiler:2.26"
+    implementation "com.google.dagger:dagger:2.26"
 
     //Retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.5.0"
+    implementation "com.squareup.retrofit2:retrofit:2.7.1"
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.5.0"
-    implementation 'com.squareup.retrofit2:converter-moshi:2.5.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
+    implementation "com.squareup.retrofit2:converter-moshi:2.7.1"
+    implementation "com.squareup.okhttp3:okhttp:4.3.1"
 
     //Logging
     implementation "com.jakewharton.timber:timber:4.7.1"
 
     //Unit testing
-    testImplementation 'junit:junit:4.12'
-    testImplementation "com.squareup.okhttp3:mockwebserver:3.13.1"
-    testImplementation "org.mockito:mockito-core:2.25.0"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "junit:junit:4.12"
+    testImplementation "com.squareup.okhttp3:mockwebserver:4.3.1"
+    testImplementation "io.mockk:mockk:1.9.3"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
 
     //Instrumentation testing
     androidTestImplementation "androidx.test:core:1.2.0"
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestImplementation "androidx.test:runner:1.2.0"
     androidTestImplementation "androidx.test:rules:1.2.0"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:3.2.0"
-    androidTestImplementation 'com.github.andrzejchm.RESTMock:android:0.3.3'
-    androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
-    androidTestUtil 'androidx.test:orchestrator:1.2.0'
-    kaptAndroidTest "com.google.dagger:dagger-compiler:2.20"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.3.1"
+    androidTestImplementation "com.github.andrzejchm.RESTMock:android:0.4.1"
+    androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
+    androidTestUtil "androidx.test:orchestrator:1.2.0"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:2.26"
 }

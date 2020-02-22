@@ -12,16 +12,13 @@ import dagger.Provides
 object DatabaseTestModule {
 
     @Provides
-    @JvmStatic
     fun providesDatabase(context: Context): MainDatabase = Room
         .inMemoryDatabaseBuilder(context, MainDatabase::class.java)
         .build()
 
     @Provides
-    @JvmStatic
     fun providesPostDao(mainDatabase: MainDatabase): PostDao = mainDatabase.getPostDao()
 
     @Provides
-    @JvmStatic
     fun providesCommentDao(mainDatabase: MainDatabase): CommentDao = mainDatabase.getCommentDao()
 }

@@ -15,7 +15,6 @@ object ServiceModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun providesRetrofit(): Retrofit = Retrofit.Builder()
         .baseUrl("https://jsonplaceholder.typicode.com")
         .client(OkHttpClient.Builder().build())
@@ -25,11 +24,9 @@ object ServiceModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun providesPostService(retrofit: Retrofit): PostService = retrofit.create(PostService::class.java)
 
     @Provides
     @Singleton
-    @JvmStatic
     fun providesCommentService(retrofit: Retrofit): CommentService = retrofit.create(CommentService::class.java)
 }

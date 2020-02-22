@@ -2,15 +2,16 @@ package com.phellipesilva.coolposts.postdetails.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
 import com.phellipesilva.coolposts.utils.RxUtils
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -19,23 +20,19 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
 class PostDetailsViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    @Mock
+    @MockK
     private lateinit var postDetailsRepository: PostDetailsRepository
 
-    @Mock
+    @MockK
     private lateinit var connectionChecker: ConnectionChecker
 
-    @Mock
+    @MockK
     private lateinit var compositeDisposable: CompositeDisposable
 
     private lateinit var postDetailsViewModel: PostDetailsViewModel
@@ -53,13 +50,15 @@ class PostDetailsViewModelTest {
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
+
         val initialLiveDataFromRepository = MutableLiveData<List<Comment>>()
         initialLiveDataFromRepository.value = comments
-        whenever(postDetailsRepository.getCommentsFromPost(postId)).thenReturn(initialLiveDataFromRepository)
+        every { postDetailsRepository.getCommentsFromPost(postId) } returns initialLiveDataFromRepository
 
         postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionChecker, compositeDisposable, postId)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
-        whenever(connectionChecker.isOnline()).thenReturn(true)
+        every { connectionChecker.isOnline() } returns true
     }
 
     @After
@@ -80,7 +79,7 @@ class PostDetailsViewModelTest {
     @Test
     fun shouldFetchCommentsFromRepositoryWithoutErrorWhenFetchingCommentsIsSuccessful() {
         var errorFlag = false
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.complete())
+        every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.complete()
         postDetailsViewModel.viewState().observeForever {
             if (it.errorEvent?.peekContent() != null) {
                 errorFlag = true
@@ -95,7 +94,7 @@ class PostDetailsViewModelTest {
     @Test
     fun shouldEmitNoInternetStateWhenThereIsNoInternet() {
         var onInternetFlag = false
-        whenever(connectionChecker.isOnline()).thenReturn(false)
+        every { connectionChecker.isOnline() } returns false
         postDetailsViewModel.viewState().observeForever {
             if (it.errorEvent?.peekContent() is NoConnectionException) {
                 onInternetFlag = true
@@ -110,7 +109,7 @@ class PostDetailsViewModelTest {
     @Test
     fun shouldEmitErrorStateWhenCommentsFetchingFinishesWithUnexpectedError() {
         var errorFlag = false
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.error(Exception()))
+        every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.error(Exception())
         postDetailsViewModel.viewState().observeForever {
             if (it.errorEvent?.peekContent() is Exception) {
                 errorFlag = true
@@ -125,7 +124,7 @@ class PostDetailsViewModelTest {
     @Test
     fun shouldEmitLoadingStateWhenStartFetchingComments() {
         var loadingFlag = false
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.error(Throwable()))
+        every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.error(Throwable())
         postDetailsViewModel.viewState().observeForever {
             if (it.isLoading) {
                 loadingFlag = true
@@ -139,10 +138,10 @@ class PostDetailsViewModelTest {
 
     @Test
     fun shouldAddDisposableToCompositeDisposableWhenFetchingComments() {
-        whenever(postDetailsRepository.updateCommentsFromPost(1)).thenReturn(Completable.complete())
+        every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.complete()
 
         postDetailsViewModel.updateCommentsFromPost(1)
 
-        verify(compositeDisposable).add(any())
+        verify { compositeDisposable.add(any()) }
     }
 }

@@ -2,13 +2,14 @@ package com.phellipesilva.coolposts.postdetails.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.database.CommentDao
 import com.phellipesilva.coolposts.postdetails.service.CommentService
 import com.phellipesilva.coolposts.utils.RxUtils
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
@@ -18,27 +19,23 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
 class PostDetailsRepositoryTest {
-
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Mock
+    @MockK
     private lateinit var commentService: CommentService
 
-    @Mock
+    @MockK
     private lateinit var commentDao: CommentDao
 
     private lateinit var postDetailsRepository: PostDetailsRepository
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true)
         postDetailsRepository = PostDetailsRepository(commentService, commentDao)
         RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
     }
@@ -67,13 +64,13 @@ class PostDetailsRepositoryTest {
             )
         )
         val commentsSingle = Single.just(comments)
-        whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
-        whenever(commentDao.saveComments(any())).thenReturn(Completable.complete())
+        every { commentService.fetchCommentsFromPost(1) } returns commentsSingle
+        every { commentDao.saveComments(any()) } returns Completable.complete()
 
         val testObserver = TestObserver<Unit>()
         postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
 
-        verify(commentService).fetchCommentsFromPost(1)
+        verify { commentService.fetchCommentsFromPost(1) }
         testObserver.assertComplete()
     }
 
@@ -96,13 +93,13 @@ class PostDetailsRepositoryTest {
             )
         )
         val commentsSingle = Single.just(comments)
-        whenever(commentService.fetchCommentsFromPost(1)).thenReturn(commentsSingle)
-        whenever(commentDao.saveComments(any())).thenReturn(Completable.complete())
+        every { commentService.fetchCommentsFromPost(1) } returns commentsSingle
+        every { commentDao.saveComments(any()) } returns Completable.complete()
 
         val testObserver = TestObserver<Unit>()
         postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
 
-        verify(commentDao).saveComments(comments)
+        verify { commentDao.saveComments(comments) }
         testObserver.assertComplete()
     }
 
@@ -126,7 +123,7 @@ class PostDetailsRepositoryTest {
             )
         )
         expectedLiveData.value = comments
-        whenever(commentDao.getCommentsFromPost(1)).thenReturn(expectedLiveData)
+        every { commentDao.getCommentsFromPost(1) } returns expectedLiveData
 
         val commentsLiveData = postDetailsRepository.getCommentsFromPost(1)
 

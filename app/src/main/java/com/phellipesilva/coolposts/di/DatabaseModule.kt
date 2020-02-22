@@ -15,17 +15,14 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun providesDatabase(context: Context): MainDatabase =
         Room.databaseBuilder(context, MainDatabase::class.java, "MainDatabase").build()
 
     @Provides
     @Reusable
-    @JvmStatic
     fun providesPostDao(mainDatabase: MainDatabase): PostDao = mainDatabase.getPostDao()
 
     @Provides
     @Reusable
-    @JvmStatic
     fun providesCommentDao(mainDatabase: MainDatabase): CommentDao = mainDatabase.getCommentDao()
 }

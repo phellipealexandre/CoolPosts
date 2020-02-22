@@ -6,7 +6,7 @@ import android.view.View
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_post_list.*
 class PostListActivity : AppCompatActivity() {
 
     private val postListViewModel by lazy {
-        ViewModelProviders.of(this, injector.getPostListViewModelFactory()).get(PostListViewModel::class.java)
+        ViewModelProvider(this, injector.getPostListViewModelFactory()).get(PostListViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

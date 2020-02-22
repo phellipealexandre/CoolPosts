@@ -17,8 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity
-            android:name=".postdetails.view.PostDetailsActivity" />
+        <activity android:name=".postdetails.view.PostDetailsActivity" />
 
         <activity android:name=".postlist.view.PostListActivity">
             <intent-filter>

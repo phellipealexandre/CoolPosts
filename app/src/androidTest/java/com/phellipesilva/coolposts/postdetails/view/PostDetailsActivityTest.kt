@@ -43,6 +43,7 @@ class PostDetailsActivityTest {
     fun setUp() {
         RESTMockServer.reset()
         injector.inject(this)
+
         okHttp3IdlingResource = OkHttp3IdlingResource.create("OkHttp", okHttpClient)
         IdlingRegistry.getInstance().register(okHttp3IdlingResource)
     }
