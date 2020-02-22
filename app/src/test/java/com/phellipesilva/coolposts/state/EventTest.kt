@@ -36,13 +36,4 @@ class EventTest {
 
         assertNull(event.getContentIfNotHandled())
     }
-
-    @Test
-    fun shouldNotHandleEventWhenPeekContentIsRequested() {
-        assertEquals("Test", event.peekContent())
-        assertEquals("Test", event.peekContent())
-        assertEquals("Test", event.peekContent())
-        assertEquals("Test", event.getContentIfNotHandled())
-        assertNull(event.getContentIfNotHandled())
-    }
 }

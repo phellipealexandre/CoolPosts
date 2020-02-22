@@ -78,7 +78,7 @@ class PostListViewModelTest {
         var errorFlag = false
         every { postListRepository.updatePosts() } returns Completable.complete()
         postListViewModel.viewState().observeForever {
-            if (it.errorEvent?.peekContent() != null) {
+            if (it.errorEvent?.getContentIfNotHandled() != null) {
                 errorFlag = true
             }
         }
@@ -93,7 +93,7 @@ class PostListViewModelTest {
         var errorFlag = false
         every { connectionChecker.isOnline() } returns false
         postListViewModel.viewState().observeForever {
-            if (it.errorEvent?.peekContent() is NoConnectionException) {
+            if (it.errorEvent?.getContentIfNotHandled() is NoConnectionException) {
                 errorFlag = true
             }
         }
@@ -108,7 +108,7 @@ class PostListViewModelTest {
         var errorFlag = false
         every { postListRepository.updatePosts() } returns Completable.error(Exception())
         postListViewModel.viewState().observeForever {
-            if (it.errorEvent?.peekContent() is Exception) {
+            if (it.errorEvent?.getContentIfNotHandled() is Exception) {
                 errorFlag = true
             }
         }

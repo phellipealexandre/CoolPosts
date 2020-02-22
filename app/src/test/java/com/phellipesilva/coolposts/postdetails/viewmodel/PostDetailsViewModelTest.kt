@@ -81,7 +81,7 @@ class PostDetailsViewModelTest {
         var errorFlag = false
         every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.complete()
         postDetailsViewModel.viewState().observeForever {
-            if (it.errorEvent?.peekContent() != null) {
+            if (it.errorEvent?.getContentIfNotHandled() != null) {
                 errorFlag = true
             }
         }
@@ -96,7 +96,7 @@ class PostDetailsViewModelTest {
         var onInternetFlag = false
         every { connectionChecker.isOnline() } returns false
         postDetailsViewModel.viewState().observeForever {
-            if (it.errorEvent?.peekContent() is NoConnectionException) {
+            if (it.errorEvent?.getContentIfNotHandled() is NoConnectionException) {
                 onInternetFlag = true
             }
         }
@@ -111,7 +111,7 @@ class PostDetailsViewModelTest {
         var errorFlag = false
         every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.error(Exception())
         postDetailsViewModel.viewState().observeForever {
-            if (it.errorEvent?.peekContent() is Exception) {
+            if (it.errorEvent?.getContentIfNotHandled() is Exception) {
                 errorFlag = true
             }
         }
