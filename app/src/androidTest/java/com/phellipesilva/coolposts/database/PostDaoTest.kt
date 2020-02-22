@@ -1,9 +1,10 @@
 package com.phellipesilva.coolposts.database
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.phellipesilva.coolposts.postlist.data.Post
 import com.phellipesilva.coolposts.postlist.database.PostDao
 import org.junit.Assert.assertEquals
@@ -24,7 +25,7 @@ class PostDaoTest {
 
     @Before
     fun setUp() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = getApplicationContext<Context>()
         database = Room.inMemoryDatabaseBuilder(context, MainDatabase::class.java).build()
         postDao = database.getPostDao()
     }

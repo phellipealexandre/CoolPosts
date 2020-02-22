@@ -54,7 +54,7 @@ class PostListViewModelTest {
         every { postListRepository.getPosts() } returns initialLiveDataFromRepository
 
         postListViewModel = PostListViewModel(postListRepository, connectionChecker, compositeDisposable)
-        RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
+        RxUtils.overridesRXSchedulers(Schedulers.trampoline())
         every { connectionChecker.isOnline() } returns true
     }
 

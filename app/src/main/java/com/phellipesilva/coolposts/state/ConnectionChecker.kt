@@ -11,7 +11,7 @@ class ConnectionChecker @Inject constructor(context: Context) {
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     fun isOnline(): Boolean =
-        if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork).hasInternetConnection()
         } else {
             @Suppress("DEPRECATION")

@@ -57,7 +57,7 @@ class PostDetailsViewModelTest {
         every { postDetailsRepository.getCommentsFromPost(postId) } returns initialLiveDataFromRepository
 
         postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionChecker, compositeDisposable, postId)
-        RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
+        RxUtils.overridesRXSchedulers(Schedulers.trampoline())
         every { connectionChecker.isOnline() } returns true
     }
 

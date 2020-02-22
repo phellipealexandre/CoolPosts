@@ -6,7 +6,7 @@ import io.reactivex.plugins.RxJavaPlugins
 
 object RxUtils {
 
-    fun overridesEnvironmentToCustomScheduler(scheduler: Scheduler) {
+    fun overridesRXSchedulers(scheduler: Scheduler) {
         RxJavaPlugins.setIoSchedulerHandler { scheduler }
         RxJavaPlugins.setComputationSchedulerHandler { scheduler }
         RxJavaPlugins.setNewThreadSchedulerHandler { scheduler }

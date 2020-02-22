@@ -37,7 +37,7 @@ class PostDetailsRepositoryTest {
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         postDetailsRepository = PostDetailsRepository(commentService, commentDao)
-        RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
+        RxUtils.overridesRXSchedulers(Schedulers.trampoline())
     }
 
     @After

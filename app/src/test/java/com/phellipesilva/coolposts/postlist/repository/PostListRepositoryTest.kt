@@ -40,7 +40,7 @@ class PostListRepositoryTest {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
 
         postListRepository = PostListRepository(postService, postDao)
-        RxUtils.overridesEnvironmentToCustomScheduler(Schedulers.trampoline())
+        RxUtils.overridesRXSchedulers(Schedulers.trampoline())
     }
 
     @After

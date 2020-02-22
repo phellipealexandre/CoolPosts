@@ -14,24 +14,24 @@ class EventTest {
     }
 
     @Test
-    fun shouldNotHandleEventWhenContentIsNotRequested() {
+    fun `Event should not be handled when content is not requested`() {
         assertFalse(event.hasBeenHandled)
     }
 
     @Test
-    fun shouldHandleEventWhenContentIsRequested() {
+    fun `Event should be handled when content is requested`() {
         event.getContentIfNotHandled()
 
         assertTrue(event.hasBeenHandled)
     }
 
     @Test
-    fun shouldReturnContentWhenRequested() {
+    fun `Should return content when requested`() {
         assertEquals("Test", event.getContentIfNotHandled())
     }
 
     @Test
-    fun shouldReturnNullIfContentHasAlreadyBeenHandled() {
+    fun `Should return null when requesting content that has been already handled`() {
         event.getContentIfNotHandled()
 
         assertNull(event.getContentIfNotHandled())

@@ -3,6 +3,7 @@ package com.phellipesilva.coolposts.postdetails.view
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.swipeDown
@@ -10,7 +11,6 @@ import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
@@ -37,8 +37,6 @@ class PostDetailsActivityTest {
 
     private lateinit var okHttp3IdlingResource: OkHttp3IdlingResource
 
-    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-
     @Before
     fun setUp() {
         RESTMockServer.reset()
@@ -59,7 +57,7 @@ class PostDetailsActivityTest {
 
     @Test
     fun shouldShowPostInformationAccordingToIntentThatWasPassedInExtras() {
-        val intent = Intent(targetContext, PostDetailsActivity::class.java)
+        val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
             "com.phellipesilva.coolposts.post",
             Post(
@@ -85,7 +83,7 @@ class PostDetailsActivityTest {
             .thenReturnFile(200, "json/comments_response.json")
             .delay(TimeUnit.SECONDS, 5)
 
-        val intent = Intent(targetContext, PostDetailsActivity::class.java)
+        val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
             "com.phellipesilva.coolposts.post",
             Post(
@@ -108,7 +106,7 @@ class PostDetailsActivityTest {
     fun shouldFetchCommentsFromSpecificPostWhenStartActivity() {
         RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1")).thenReturnFile(200, "json/comments_response.json")
 
-        val intent = Intent(targetContext, PostDetailsActivity::class.java)
+        val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
             "com.phellipesilva.coolposts.post",
             Post(
@@ -134,7 +132,7 @@ class PostDetailsActivityTest {
         RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1"))
             .thenReturnFile(200, "json/comments_response.json")
 
-        val intent = Intent(targetContext, PostDetailsActivity::class.java)
+        val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
             "com.phellipesilva.coolposts.post",
             Post(
@@ -164,7 +162,7 @@ class PostDetailsActivityTest {
         RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1"))
             .thenReturnFile(200, "json/comments_response.json", "json/comments_updated_response.json")
 
-        val intent = Intent(targetContext, PostDetailsActivity::class.java)
+        val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
             "com.phellipesilva.coolposts.post",
             Post(
@@ -193,7 +191,7 @@ class PostDetailsActivityTest {
     fun shouldScrollToLastCommentAndSeeContent() {
         RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1")).thenReturnFile(200, "json/comments_response.json")
 
-        val intent = Intent(targetContext, PostDetailsActivity::class.java)
+        val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
             "com.phellipesilva.coolposts.post",
             Post(
@@ -218,7 +216,7 @@ class PostDetailsActivityTest {
     fun shouldMaintainCollapsingToolbarStateAfterRotationWhenItIsCollapsed() {
         RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1")).thenReturnFile(200, "json/comments_response.json")
 
-        val intent = Intent(targetContext, PostDetailsActivity::class.java)
+        val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
             "com.phellipesilva.coolposts.post",
             Post(
