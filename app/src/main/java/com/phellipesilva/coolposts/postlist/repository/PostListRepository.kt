@@ -6,7 +6,6 @@ import com.phellipesilva.coolposts.postlist.database.PostDao
 import com.phellipesilva.coolposts.postlist.service.PostService
 import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
-import dagger.Reusable
 import io.reactivex.Completable
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
@@ -14,7 +13,6 @@ import javax.inject.Inject
 private typealias PostUserPairListFunction = BiFunction<List<PostRemoteEntity>, List<UserRemoteEntity>, Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>>
 private typealias PostUserPair = Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>
 
-@Reusable
 class PostListRepository @Inject constructor(
     private val postService: PostService,
     private val postDao: PostDao

@@ -10,9 +10,7 @@ import timber.log.Timber
 class CoolPostsApplication : Application(), DaggerComponentProvider {
 
     override val component: ApplicationComponent by lazy {
-        DaggerApplicationComponent.builder()
-            .applicationContext(applicationContext)
-            .build()
+        DaggerApplicationComponent.factory().create(this)
     }
 
     override fun onCreate() {

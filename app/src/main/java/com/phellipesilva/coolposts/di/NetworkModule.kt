@@ -11,7 +11,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
-object ServiceModule {
+object NetworkModule {
 
     @Provides
     @Singleton

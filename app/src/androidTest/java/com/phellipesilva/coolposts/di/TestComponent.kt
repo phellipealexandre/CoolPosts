@@ -6,8 +6,8 @@ import dagger.Component
 @Component(modules = [ServiceTestModule::class, DatabaseTestModule::class])
 interface TestComponent : ApplicationComponent {
 
-    @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    @Component.Factory
+    interface Factory : ApplicationComponent.Factory
 
     fun inject(test: PostDetailsActivityTest)
 }

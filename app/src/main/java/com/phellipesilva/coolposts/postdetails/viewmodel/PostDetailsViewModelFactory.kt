@@ -10,7 +10,7 @@ import javax.inject.Inject
 class PostDetailsViewModelFactory @Inject constructor(
     private val postDetailsRepository: PostDetailsRepository,
     private val connectionChecker: ConnectionChecker,
-    val postId: Int
+    private val postId: Int
     ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

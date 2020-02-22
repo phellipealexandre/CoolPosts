@@ -9,14 +9,12 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DatabaseModule::class, ServiceModule::class])
+@Component(modules = [DatabaseModule::class, NetworkModule::class])
 interface ApplicationComponent {
 
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun applicationContext(applicationContext: Context): Builder
-        fun build(): ApplicationComponent
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance applicationContext: Context): ApplicationComponent
     }
 
     fun getPostListViewModelFactory(): PostListViewModelFactory

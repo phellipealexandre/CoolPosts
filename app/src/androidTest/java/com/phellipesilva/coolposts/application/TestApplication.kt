@@ -6,8 +6,5 @@ import com.phellipesilva.coolposts.di.DaggerComponentProvider
 import com.phellipesilva.coolposts.di.DaggerTestComponent
 
 class TestApplication : Application(), DaggerComponentProvider {
-    override val component: ApplicationComponent = DaggerTestComponent
-        .builder()
-        .applicationContext(this)
-        .build()
+    override val component: ApplicationComponent = DaggerTestComponent.factory().create(this)
 }

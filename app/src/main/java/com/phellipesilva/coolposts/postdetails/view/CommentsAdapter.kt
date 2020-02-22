@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.comment_list_item.view.*
 class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(CommentsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        return CommentsAdapter.CommentViewHolder(
+        return CommentViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.comment_list_item, parent, false)
         )
     }
