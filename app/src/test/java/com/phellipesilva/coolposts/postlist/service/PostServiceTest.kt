@@ -19,7 +19,7 @@ class PostServiceTest {
     private lateinit var postService: PostService
 
     @Before
-    fun setUp() {
+    fun `Set Up`() {
         server = MockWebServer()
         server.start(4040)
         server.url("/latest?base=EUR")
@@ -34,64 +34,60 @@ class PostServiceTest {
     }
 
     @After
-    fun tearDown() {
+    fun `Tear Down`() {
         server.shutdown()
     }
 
     @Test
-    fun shouldParsePostsCorrectlyWhenRequestingAllPostsFromService() {
-        val testObserver = TestObserver<List<PostRemoteEntity>>()
+    fun `Should serialize posts to remote entities when requesting posts from service`() {
         val json = readJsonFromResources("json/posts_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
 
-        val postsSingle = postService.fetchPosts()
-        postsSingle.subscribe(testObserver)
-
-        testObserver.assertNoErrors()
-        testObserver.assertValue { it.size == 2 }
-        testObserver.assertValue {
-            it[0] == PostRemoteEntity(
-                userId = 1,
-                id = 1,
-                title = "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-                body = "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-            )
-        }
-        testObserver.assertValue {
-            it[1] == PostRemoteEntity(
-                userId = 1,
-                id = 2,
-                title = "qui est esse",
-                body = "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-            )
-        }
+        postService.fetchPosts().test()
+            .assertNoErrors()
+            .assertValue { it.size == 2 }
+            .assertValue {
+                it[0] == PostRemoteEntity(
+                    userId = 1,
+                    id = 1,
+                    title = "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+                    body = "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+                )
+            }
+            .assertValue {
+                it[1] == PostRemoteEntity(
+                    userId = 1,
+                    id = 2,
+                    title = "qui est esse",
+                    body = "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
+                )
+            }
+            .assertComplete()
     }
 
     @Test
-    fun shouldParseUsersCorrectlyWhenRequestingAllUsersFromService() {
-        val testObserver = TestObserver<List<UserRemoteEntity>>()
+    fun `Should serialize users to remote entities when requesting users from service`() {
         val json = readJsonFromResources("json/users_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
 
-        val usersSingle = postService.fetchUsers()
-        usersSingle.subscribe(testObserver)
-
-        testObserver.assertNoErrors()
-        testObserver.assertValue { it.size == 2 }
-        testObserver.assertValue {
-            it[0] == UserRemoteEntity(
-                id = 1,
-                name = "Leanne Graham"
-            )
-        }
-        testObserver.assertValue {
-            it[1] == UserRemoteEntity(
-                id = 2,
-                name = "Ervin Howell"
-            )
-        }
+        postService.fetchUsers().test()
+            .assertNoErrors()
+            .assertValue { it.size == 2 }
+            .assertValue {
+                it[0] == UserRemoteEntity(
+                    id = 1,
+                    name = "Leanne Graham"
+                )
+            }
+            .assertValue {
+                it[1] == UserRemoteEntity(
+                    id = 2,
+                    name = "Ervin Howell"
+                )
+            }
+            .assertComplete()
     }
 
     private fun readJsonFromResources(filePath: String): String {

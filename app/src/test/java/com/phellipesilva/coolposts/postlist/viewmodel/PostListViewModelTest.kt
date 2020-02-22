@@ -16,8 +16,7 @@ import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.junit.*
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 
 class PostListViewModelTest {
 
@@ -35,93 +34,77 @@ class PostListViewModelTest {
 
     private lateinit var postListViewModel: PostListViewModel
 
-    private val posts = listOf(
-        Post(
-            id = 1,
-            title = "Title",
-            body = "Body",
-            userId = 2,
-            userName = "User name"
-        )
-    )
-
     @Before
-    fun setUp() {
+    fun `Set Up`() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-
-        val initialLiveDataFromRepository = MutableLiveData<List<Post>>()
-        initialLiveDataFromRepository.value = posts
-        every { postListRepository.getPosts() } returns initialLiveDataFromRepository
-
-        postListViewModel = PostListViewModel(postListRepository, connectionChecker, compositeDisposable)
         RxUtils.overridesRXSchedulers(Schedulers.trampoline())
-        every { connectionChecker.isOnline() } returns true
     }
 
     @After
-    fun tearDown() {
+    fun `Tear Down`() {
         RxUtils.resetSchedulers()
     }
 
     @Test
-    fun shouldGetPostLiveDataFromRepositoryOnInitialState() {
-        postListViewModel.viewState().observeForever {
-            assertEquals(
-                PostListViewState(isLoading = false, posts = posts),
-                it
+    fun `Should get posts LiveData from repository with initial state`() {
+        val posts = listOf(
+            Post(
+                id = 1,
+                title = "Title",
+                body = "Body",
+                userId = 2,
+                userName = "User name"
             )
+        )
+
+        initViewModel(initialStatePosts = posts, isOnline = true)
+
+        postListViewModel.viewState().observeForever {
+            assertEquals(PostListViewState(isLoading = false, posts = posts), it)
         }
     }
 
     @Test
-    fun shouldFetchPostsFromRepositoryWithoutErrorWhenFetchingPostsIsSuccessful() {
-        var errorFlag = false
+    fun `Should emit no internet state when there is no internet`() {
+        initViewModel(initialStatePosts = listOf(), isOnline = false)
+
+        postListViewModel.updatePosts()
+
+        postListViewModel.viewState().observeForever {
+            assertTrue("Error event should be NoConnectionException", it.errorEvent?.getContentIfNotHandled() is NoConnectionException)
+        }
+    }
+
+    @Test
+    fun `Should fetch posts from repository without error when update posts operation is successful`() {
+        initViewModel(initialStatePosts = listOf(), isOnline = true)
         every { postListRepository.updatePosts() } returns Completable.complete()
-        postListViewModel.viewState().observeForever {
-            if (it.errorEvent?.getContentIfNotHandled() != null) {
-                errorFlag = true
-            }
-        }
 
         postListViewModel.updatePosts()
 
-        Assert.assertFalse(errorFlag)
-    }
-
-    @Test
-    fun shouldEmitNoInternetStateWhenThereIsNoInternet() {
-        var errorFlag = false
-        every { connectionChecker.isOnline() } returns false
         postListViewModel.viewState().observeForever {
-            if (it.errorEvent?.getContentIfNotHandled() is NoConnectionException) {
-                errorFlag = true
-            }
+            assertNull("Error event should be null", it.errorEvent?.getContentIfNotHandled())
         }
-
-        postListViewModel.updatePosts()
-
-        assertTrue(errorFlag)
     }
 
     @Test
-    fun shouldEmitErrorStateWhenPostFetchingFinishesWithUnexpectedError() {
-        var errorFlag = false
+    fun `Should emit error state when update posts operation fails`() {
+        initViewModel(initialStatePosts = listOf(), isOnline = true)
         every { postListRepository.updatePosts() } returns Completable.error(Exception())
-        postListViewModel.viewState().observeForever {
-            if (it.errorEvent?.getContentIfNotHandled() is Exception) {
-                errorFlag = true
-            }
-        }
 
         postListViewModel.updatePosts()
 
-        assertTrue(errorFlag)
+        postListViewModel.viewState().observeForever {
+            assertTrue("Error event should be Exception", it.errorEvent?.getContentIfNotHandled() is Exception)
+        }
     }
 
     @Test
-    fun shouldEmitLoadingStateWhenStartPostsFetching() {
+    fun `Should emit loading state when start fetching posts`() {
+        initViewModel(initialStatePosts = listOf(), isOnline = true)
+        every { postListRepository.updatePosts() } returns Completable.complete()
+
         var loadingFlag = false
-        every { postListRepository.updatePosts() } returns Completable.error(Throwable())
         postListViewModel.viewState().observeForever {
             if (it.isLoading) {
                 loadingFlag = true
@@ -134,11 +117,21 @@ class PostListViewModelTest {
     }
 
     @Test
-    fun shouldAddDisposableToCompositeDisposableWhenFetchingPosts() {
+    fun `Should add disposable to CompositeDisposable when fetching posts`() {
+        initViewModel(initialStatePosts = listOf(), isOnline = true)
         every { postListRepository.updatePosts() } returns Completable.complete()
 
         postListViewModel.updatePosts()
 
         verify { compositeDisposable.add(any()) }
+    }
+
+    private fun initViewModel(initialStatePosts: List<Post>, isOnline: Boolean) {
+        val initialLiveDataFromRepository = MutableLiveData<List<Post>>(initialStatePosts)
+        every { postListRepository.getPosts() } returns initialLiveDataFromRepository
+        every { connectionChecker.isOnline() } returns isOnline
+
+        postListViewModel = PostListViewModel(postListRepository, connectionChecker, compositeDisposable)
+
     }
 }

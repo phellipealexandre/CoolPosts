@@ -9,7 +9,7 @@ class EventTest {
     private lateinit var event: Event<String>
 
     @Before
-    fun setUp() {
+    fun `Set Up`() {
         event = Event("Test")
     }
 

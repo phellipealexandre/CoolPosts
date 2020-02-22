@@ -21,7 +21,7 @@ class ConnectionCheckerTest {
     private lateinit var connectionChecker: ConnectionChecker
 
     @Before
-    fun setUp() {
+    fun `Set Up`() {
         connectionChecker = ConnectionChecker(getApplicationContext<Context>())
     }
 
