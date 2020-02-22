@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.database.entity.PostEntity
 import com.phellipesilva.coolposts.postlist.database.PostDao
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -42,8 +42,8 @@ class PostDaoTest {
 
     @Test
     fun shouldReturnSamePostListValueWhenThereWasAPreviouslyStoredPostList() {
-        val post1 = Post(1, "Title", "body", 1, "Name")
-        val post2 = Post(2, "Title2", "body2", 1, "Name")
+        val post1 = PostEntity(1, "Title", "body", 1, "Name")
+        val post2 = PostEntity(2, "Title2", "body2", 1, "Name")
         val postList = listOf(post1, post2)
 
         postDao.savePosts(postList).subscribe()
@@ -58,13 +58,13 @@ class PostDaoTest {
 
     @Test
     fun shouldReplacePostsWithSameIdWhenThereIsConflictInStoredPostList() {
-        val post1 = Post(1, "Title", "body", 1, "Name")
-        val post2 = Post(2, "Title2", "body2", 1, "Name")
+        val post1 = PostEntity(1, "Title", "body", 1, "Name")
+        val post2 = PostEntity(2, "Title2", "body2", 1, "Name")
         val postList = listOf(post1, post2)
 
         postDao.savePosts(postList).subscribe()
 
-        val post1New = Post(1, "TitleNew", "bodyNew", 1, "Name")
+        val post1New = PostEntity(1, "TitleNew", "bodyNew", 1, "Name")
         val newPostList = listOf(post1New, post2)
 
         postDao.savePosts(newPostList).subscribe()

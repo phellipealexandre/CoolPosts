@@ -1,7 +1,7 @@
 package com.phellipesilva.coolposts.postlist.service
 
-import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
-import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.entity.PostRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.entity.UserRemoteEntity
 import io.reactivex.observers.TestObserver
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse

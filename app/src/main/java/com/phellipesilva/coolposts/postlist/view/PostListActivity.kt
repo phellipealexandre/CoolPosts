@@ -13,7 +13,7 @@ import com.phellipesilva.coolposts.di.injector
 import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.extensions.AndroidTransitionPair
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
-import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.domain.Post
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
 import kotlinx.android.synthetic.main.activity_post_list.*
 
@@ -87,7 +87,7 @@ class PostListActivity : AppCompatActivity() {
             mutableList.add(AndroidTransitionPair(it, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME))
         }
 
-        val intent = PostDetailsActivity.newIntent(this, post = post)
+        val intent = PostDetailsActivity.newNavigationIntent(this, post = post)
         val options = ActivityOptions.makeSceneTransitionAnimation(this, *mutableList.toTypedArray())
         startActivity(intent, options.toBundle())
     }

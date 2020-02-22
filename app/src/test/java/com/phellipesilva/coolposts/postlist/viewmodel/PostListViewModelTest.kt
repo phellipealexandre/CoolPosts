@@ -3,7 +3,7 @@ package com.phellipesilva.coolposts.postlist.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.phellipesilva.coolposts.exceptions.NoConnectionException
-import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.domain.Post
 import com.phellipesilva.coolposts.postlist.repository.PostListRepository
 import com.phellipesilva.coolposts.postlist.view.PostListViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker

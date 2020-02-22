@@ -1,47 +1,54 @@
 package com.phellipesilva.coolposts.postlist.repository
 
 import androidx.lifecycle.LiveData
-import com.phellipesilva.coolposts.postlist.data.Post
+import androidx.lifecycle.Transformations
+import com.phellipesilva.coolposts.postlist.database.entity.PostEntity
 import com.phellipesilva.coolposts.postlist.database.PostDao
+import com.phellipesilva.coolposts.postlist.domain.Post
 import com.phellipesilva.coolposts.postlist.service.PostService
-import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
-import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.entity.PostRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.entity.UserRemoteEntity
 import io.reactivex.Completable
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
-private typealias PostUserPairListFunction = BiFunction<List<PostRemoteEntity>, List<UserRemoteEntity>, Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>>
-private typealias PostUserPair = Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>
+private typealias RemotePostUserPair = Pair<List<PostRemoteEntity>, List<UserRemoteEntity>>
+private typealias RemotePostUserPairListFunction = BiFunction<List<PostRemoteEntity>, List<UserRemoteEntity>, RemotePostUserPair>
 
 class PostListRepository @Inject constructor(
     private val postService: PostService,
     private val postDao: PostDao
 ) {
 
-    fun getPosts(): LiveData<List<Post>> {
-        return postDao.getPosts()
-    }
+    fun getPosts(): LiveData<List<Post>> = Transformations.map(postDao.getPosts(), ::mapPostsDatabaseEntitiesToDomainEntities)
 
     fun updatePosts(): Completable {
         return postService.fetchPosts()
             .zipWith(
                 postService.fetchUsers(),
-                PostUserPairListFunction { posts, users ->
-                    Pair(
-                        posts,
-                        users
-                    )
-                }
+                RemotePostUserPairListFunction { posts, users -> Pair(posts, users) }
             )
-            .map(::mapPostAndUserEntitiesInPostDomainList)
+            .map(::mapPostAndUserRemoteEntitiesToDatabaseEntities)
             .flatMapCompletable(postDao::savePosts)
     }
 
-    private fun mapPostAndUserEntitiesInPostDomainList(pair: PostUserPair): List<Post> {
+    private fun mapPostsDatabaseEntitiesToDomainEntities(databasePosts: List<PostEntity>): List<Post> {
+        return databasePosts.map { databaseEntity ->
+            Post(
+                id = databaseEntity.id,
+                body = databaseEntity.body,
+                title = databaseEntity.title,
+                userId = databaseEntity.userId,
+                userName = databaseEntity.userName
+            )
+        }
+    }
+
+    private fun mapPostAndUserRemoteEntitiesToDatabaseEntities(pair: RemotePostUserPair): List<PostEntity> {
         return pair.first.map { postEntity ->
             val user = pair.second.first { userEntity -> postEntity.userId == userEntity.id }
 
-            Post(
+            PostEntity(
                 id = postEntity.id,
                 title = postEntity.title,
                 body = postEntity.body,

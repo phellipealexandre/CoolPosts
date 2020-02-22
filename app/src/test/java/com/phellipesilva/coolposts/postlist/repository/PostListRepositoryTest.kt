@@ -3,10 +3,11 @@ package com.phellipesilva.coolposts.postlist.repository
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.phellipesilva.coolposts.postlist.database.PostDao
-import com.phellipesilva.coolposts.postlist.data.Post
-import com.phellipesilva.coolposts.postlist.service.remote.PostRemoteEntity
-import com.phellipesilva.coolposts.postlist.service.remote.UserRemoteEntity
+import com.phellipesilva.coolposts.postlist.database.entity.PostEntity
+import com.phellipesilva.coolposts.postlist.domain.Post
 import com.phellipesilva.coolposts.postlist.service.PostService
+import com.phellipesilva.coolposts.postlist.service.entity.PostRemoteEntity
+import com.phellipesilva.coolposts.postlist.service.entity.UserRemoteEntity
 import com.phellipesilva.coolposts.utils.RxUtils
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -14,10 +15,9 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +36,7 @@ class PostListRepositoryTest {
     private lateinit var postListRepository: PostListRepository
 
     @Before
-    fun setUp() {
+    fun `Set Up`() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
 
         postListRepository = PostListRepository(postService, postDao)
@@ -44,28 +44,114 @@ class PostListRepositoryTest {
     }
 
     @After
-    fun tearDown() {
+    fun `Tear Down`() {
         RxUtils.resetSchedulers()
     }
 
     @Test
-    fun shouldTryToSavePostsOnDatabaseWhenPostAndUserRequestsAreSuccessful() {
-        val expectedPosts = listOf<PostRemoteEntity>()
-        val postsSingle = Single.just(expectedPosts)
-        every { postService.fetchPosts() } returns postsSingle
+    fun `Should return empty post list when nothing is stored on database`() {
+        every { postDao.getPosts() } returns MutableLiveData<List<PostEntity>>()
 
-        val expectedUsers = listOf<UserRemoteEntity>()
-        val usersSingle = Single.just(expectedUsers)
-        every { postService.fetchUsers() } returns usersSingle
-
-        val testObserver = TestObserver<Unit>()
-        postListRepository.updatePosts().subscribe(testObserver)
-
-        verify { postDao.savePosts(listOf()) }
+        postListRepository.getPosts().observeForever {
+            assertEquals(0, it.size)
+        }
     }
 
     @Test
-    fun shouldThrowErrorOnCompletionWhenPostRequestsHasError() {
+    fun `Should return one post domain entity when one database entity is stored on database`() {
+        val singlePostEntity = listOf(
+            PostEntity(
+                id = 1,
+                title = "Title",
+                body = "Body",
+                userId = 99,
+                userName = "User Name"
+            )
+        )
+        every { postDao.getPosts() } returns MutableLiveData<List<PostEntity>>(singlePostEntity)
+
+        postListRepository.getPosts().observeForever {
+            assertEquals(1, it.size)
+            assertEquals(
+                Post(
+                    id = 1,
+                    title = "Title",
+                    body = "Body",
+                    userId = 99,
+                    userName = "User Name"
+                ), it.first()
+            )
+        }
+    }
+
+    @Test
+    fun `Should return multiple post domain entities when multiple database entities are stored on database`() {
+        val multiplePostEntity = listOf(
+            PostEntity(
+                id = 1,
+                title = "Title",
+                body = "Body",
+                userId = 99,
+                userName = "User Name"
+            ),
+            PostEntity(
+                id = 2,
+                title = "Title2",
+                body = "Body2",
+                userId = 98,
+                userName = "User Name2"
+            )
+        )
+        every { postDao.getPosts() } returns MutableLiveData<List<PostEntity>>(multiplePostEntity)
+
+        postListRepository.getPosts().observeForever {
+            assertEquals(2, it.size)
+            assertEquals(
+                listOf(
+                    Post(
+                        id = 1,
+                        title = "Title",
+                        body = "Body",
+                        userId = 99,
+                        userName = "User Name"
+                    ),
+                    Post(
+                        id = 2,
+                        title = "Title2",
+                        body = "Body2",
+                        userId = 98,
+                        userName = "User Name2"
+                    )
+                ), it
+            )
+        }
+    }
+
+    @Test
+    fun `Should save posts on database when posts and users requests are successful`() {
+        val postsSingle = Single.just(listOf<PostRemoteEntity>())
+        val usersSingle = Single.just(listOf<UserRemoteEntity>())
+        every { postService.fetchPosts() } returns postsSingle
+        every { postService.fetchUsers() } returns usersSingle
+
+        postListRepository.updatePosts().test()
+
+        verify { postDao.savePosts(any()) }
+    }
+
+    @Test
+    fun `Should complete operation when posts and users requests are successful`() {
+        val postsSingle = Single.just(listOf<PostRemoteEntity>())
+        val usersSingle = Single.just(listOf<UserRemoteEntity>())
+        every { postService.fetchPosts() } returns postsSingle
+        every { postService.fetchUsers() } returns usersSingle
+        every { postDao.savePosts(any()) } returns Completable.complete()
+
+        postListRepository.updatePosts().test().assertComplete()
+    }
+
+    @Test
+    fun `Should throw error when post request is not successful`() {
         val expectedError = Throwable("Error")
         val postsSingle = Single.error<List<PostRemoteEntity>>(expectedError)
         every { postService.fetchPosts() } returns postsSingle
@@ -74,16 +160,15 @@ class PostListRepositoryTest {
         val usersSingle = Single.just(expectedUsers)
         every { postService.fetchUsers() } returns usersSingle
 
-        val testObserver = TestObserver<Unit>()
-        postListRepository.updatePosts().subscribe(testObserver)
+        postListRepository.updatePosts().test()
+            .assertNotComplete()
+            .assertError { it == expectedError }
 
-        testObserver.assertNotComplete()
-        testObserver.assertError { it == expectedError }
         verify(exactly = 0) { postDao.savePosts(any()) }
     }
 
     @Test
-    fun shouldThrowErrorOnCompletionWhenUserRequestsHasError() {
+    fun `Should throw error when user request is not successful`() {
         val expectedPosts = listOf<PostRemoteEntity>()
         val postsSingle = Single.just(expectedPosts)
         every { postService.fetchPosts() } returns postsSingle
@@ -92,33 +177,17 @@ class PostListRepositoryTest {
         val usersSingle = Single.error<List<UserRemoteEntity>>(expectedError)
         every { postService.fetchUsers() } returns usersSingle
 
-        val testObserver = TestObserver<Unit>()
-        postListRepository.updatePosts().subscribe(testObserver)
+        postListRepository.updatePosts().test()
+            .assertNotComplete()
+            .assertError { it == expectedError }
 
-        testObserver.assertNotComplete()
-        testObserver.assertError { it == expectedError }
         verify(exactly = 0) { postDao.savePosts(any()) }
     }
 
-    @Test
-    fun shouldReturnEmptyPostListWhenNothingIsStoredOnDatabase() {
-        every { postDao.getPosts() } returns MutableLiveData<List<Post>>()
 
-        postListRepository.getPosts().observeForever {
-            assertEquals(0, it.size)
-        }
-    }
 
     @Test
-    fun shouldMapPostAndUserEntitiesWithOneElementToLiveDataWithSinglePost() {
-        val expectedPost = Post(
-            id = 1,
-            title = "Title",
-            body = "Body",
-            userId = 99,
-            userName = "User Name"
-        )
-
+    fun `Should map post and user remote entities to single post database entity`() {
         every { postService.fetchPosts() } returns Single.just(
             listOf(
                 PostRemoteEntity(
@@ -129,7 +198,6 @@ class PostListRepositoryTest {
                 )
             )
         )
-
         every { postService.fetchUsers() } returns Single.just(
             listOf(
                 UserRemoteEntity(
@@ -139,38 +207,25 @@ class PostListRepositoryTest {
             )
         )
 
-        every { postDao.savePosts(listOf(expectedPost)) } returns Completable.complete()
+        postListRepository.updatePosts().test()
 
-        val testObserver = TestObserver<Unit>()
-        postListRepository.updatePosts().subscribe(testObserver)
-
-        verify { postDao.savePosts(listOf(expectedPost)) }
-        testObserver.assertComplete()
+        verify {
+            postDao.savePosts(
+                listOf(
+                    PostEntity(
+                        id = 1,
+                        title = "Title",
+                        body = "Body",
+                        userId = 99,
+                        userName = "User Name"
+                    )
+                )
+            )
+        }
     }
 
     @Test
-    fun shouldMapLiveDataEntitiesWithManyElementsToLiveDataWithManyPost() {
-        val expectedPost1 = Post(
-            id = 1,
-            title = "Title",
-            body = "Body",
-            userId = 99,
-            userName = "User Name"
-        )
-        val expectedPost2 = Post(
-            id = 2,
-            title = "Title2",
-            body = "Body2",
-            userId = 99,
-            userName = "User Name"
-        )
-        val expectedPost3 = Post(
-            id = 3,
-            title = "Title3",
-            body = "Body3",
-            userId = 98,
-            userName = "User Name 2"
-        )
+    fun `Should map post and user remote entities to multiple post database entities`() {
         every { postService.fetchPosts() } returns Single.just(
             listOf(
                 PostRemoteEntity(
@@ -193,8 +248,7 @@ class PostListRepositoryTest {
                 )
             )
         )
-
-        every { postService.fetchUsers() } returns  Single.just(
+        every { postService.fetchUsers() } returns Single.just(
             listOf(
                 UserRemoteEntity(
                     id = 99,
@@ -207,12 +261,34 @@ class PostListRepositoryTest {
             )
         )
 
-        every { postDao.savePosts(listOf(expectedPost1, expectedPost2, expectedPost3)) } returns Completable.complete()
+        postListRepository.updatePosts().test()
 
-        val testObserver = TestObserver<Unit>()
-        postListRepository.updatePosts().subscribe(testObserver)
-
-        verify { postDao.savePosts(listOf(expectedPost1, expectedPost2, expectedPost3)) }
-        testObserver.assertComplete()
+        verify {
+            postDao.savePosts(
+                listOf(
+                    PostEntity(
+                        id = 1,
+                        title = "Title",
+                        body = "Body",
+                        userId = 99,
+                        userName = "User Name"
+                    ),
+                    PostEntity(
+                        id = 2,
+                        title = "Title2",
+                        body = "Body2",
+                        userId = 99,
+                        userName = "User Name"
+                    ),
+                    PostEntity(
+                        id = 3,
+                        title = "Title3",
+                        body = "Body3",
+                        userId = 98,
+                        userName = "User Name 2"
+                    )
+                )
+            )
+        }
     }
 }

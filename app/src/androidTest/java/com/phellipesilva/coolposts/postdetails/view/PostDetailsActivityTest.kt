@@ -14,7 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
-import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.domain.Post
 import com.phellipesilva.coolposts.utils.SwipeLayoutRefreshingIdlingResource
 import io.appflate.restmock.RESTMockServer
 import io.appflate.restmock.utils.RequestMatchers

@@ -19,7 +19,7 @@ import com.phellipesilva.coolposts.extensions.loadThumbnail
 import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
-import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.domain.Post
 import kotlinx.android.synthetic.main.activity_post_details.*
 
 class PostDetailsActivity : AppCompatActivity() {
@@ -151,7 +151,7 @@ class PostDetailsActivity : AppCompatActivity() {
     companion object {
         private const val postId =  "com.phellipesilva.coolposts.post"
 
-        fun newIntent(context: Context, post: Post): Intent {
+        fun newNavigationIntent(context: Context, post: Post): Intent {
             val intent = Intent(context, PostDetailsActivity::class.java)
             intent.putExtra(postId, post)
 

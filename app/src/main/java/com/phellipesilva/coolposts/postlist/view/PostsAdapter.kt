@@ -13,7 +13,7 @@ import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.extensions.AndroidTransitionPair
 import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
 import com.phellipesilva.coolposts.extensions.loadThumbnail
-import com.phellipesilva.coolposts.postlist.data.Post
+import com.phellipesilva.coolposts.postlist.domain.Post
 import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
 

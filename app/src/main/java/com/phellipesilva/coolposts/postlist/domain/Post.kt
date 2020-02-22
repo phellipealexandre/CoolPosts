@@ -1,14 +1,11 @@
-package com.phellipesilva.coolposts.postlist.data
+package com.phellipesilva.coolposts.postlist.domain
 
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity
 data class Post(
-    @PrimaryKey val id: Int,
+    val id: Int,
     val title: String,
     val body: String,
     val userId: Int,
