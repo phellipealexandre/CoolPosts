@@ -15,6 +15,9 @@ build-install-app:
 clear-app-data:
 	adb shell pm clear com.phellipesilva.coolposts
 
+lint:
+	./gradlew lint
+
 disable-animations:
 	adb shell settings put global window_animation_scale 0
 	adb shell settings put global transition_animation_scale 0
