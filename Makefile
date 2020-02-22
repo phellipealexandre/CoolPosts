@@ -1,10 +1,13 @@
+run-all-tests: run-unit-tests build-install-app run-instrumented-tests
+
 run-unit-tests:
 	./gradlew test
 
 run-instrumented-tests: clear-app-data disable-animations
 	./gradlew connectedAndroidTest
 
-run-all-tests: run-unit-tests build-install-app run-instrumented-tests
+clean-build:
+	./gradlew clean cleanBuildCache build
 
 build-install-app:
 	./gradlew installDebug
