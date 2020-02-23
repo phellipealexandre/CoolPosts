@@ -51,12 +51,14 @@ class PostsAdapter : ListAdapter<Post, PostsAdapter.PostViewHolder>(PostsDiffCal
             RxView.clicks(itemView)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe {
-                    val transitionElements = arrayOf(
-                        AndroidTransitionPair(authorAvatarImageView, itemView.context.getString(R.string.user_avatar_transition_id)),
-                        AndroidTransitionPair(thumbnailImageView, itemView.context.getString(R.string.thumbnail_transition_id))
-                    )
+                    onItemClickListener?.let { listener ->
+                        val transitionElements = arrayOf(
+                            AndroidTransitionPair(authorAvatarImageView, itemView.context.getString(R.string.user_avatar_transition_id)),
+                            AndroidTransitionPair(thumbnailImageView, itemView.context.getString(R.string.thumbnail_transition_id))
+                        )
 
-                    onItemClickListener?.invoke(transitionElements, post)
+                        listener(transitionElements, post)
+                    }
                 }
         }
     }

@@ -76,19 +76,19 @@ class PostListActivity : AppCompatActivity() {
     }
 
     private fun navigateToPostDetailsWithTransition(transitionElements: Array<AndroidTransitionPair>, post: Post) {
-        val mutableList = transitionElements.toMutableList()
-        mutableList.add(AndroidTransitionPair(postListAppBarLayout, getString(R.string.post_list_appbarlayout_transition_id)))
+        val transitionElementsMutableList = transitionElements.toMutableList()
+        transitionElementsMutableList.add(AndroidTransitionPair(postListAppBarLayout, getString(R.string.post_list_appbarlayout_transition_id)))
 
         findViewById<View>(android.R.id.navigationBarBackground)?.let {
-            mutableList.add(AndroidTransitionPair(it, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME))
+            transitionElementsMutableList.add(AndroidTransitionPair(it, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME))
         }
 
         findViewById<View>(android.R.id.statusBarBackground)?.let {
-            mutableList.add(AndroidTransitionPair(it, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME))
+            transitionElementsMutableList.add(AndroidTransitionPair(it, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME))
         }
 
         val intent = PostDetailsActivity.newNavigationIntent(this, post = post)
-        val options = ActivityOptions.makeSceneTransitionAnimation(this, *mutableList.toTypedArray())
+        val options = ActivityOptions.makeSceneTransitionAnimation(this, *transitionElementsMutableList.toTypedArray())
         startActivity(intent, options.toBundle())
     }
 }
