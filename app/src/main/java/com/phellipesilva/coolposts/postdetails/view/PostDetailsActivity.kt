@@ -16,8 +16,8 @@ import com.phellipesilva.coolposts.exceptions.NoConnectionException
 import com.phellipesilva.coolposts.extensions.fadeIn
 import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
 import com.phellipesilva.coolposts.extensions.loadThumbnail
-import com.phellipesilva.coolposts.postdetails.data.Comment
 import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
+import com.phellipesilva.coolposts.postdetails.domain.Comment
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
 import com.phellipesilva.coolposts.postlist.domain.Post
 import kotlinx.android.synthetic.main.activity_post_details.*

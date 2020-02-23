@@ -1,10 +1,10 @@
-package com.phellipesilva.coolposts.postdetails.data
+package com.phellipesilva.coolposts.postdetails.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Comment(
+data class CommentEntity(
     @PrimaryKey val id: Int,
     val postId: Int,
     val name: String,

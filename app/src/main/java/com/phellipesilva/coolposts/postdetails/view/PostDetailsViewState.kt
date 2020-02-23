@@ -1,6 +1,6 @@
 package com.phellipesilva.coolposts.postdetails.view
 
-import com.phellipesilva.coolposts.postdetails.data.Comment
+import com.phellipesilva.coolposts.postdetails.domain.Comment
 import com.phellipesilva.coolposts.state.Event
 
 data class PostDetailsViewState(

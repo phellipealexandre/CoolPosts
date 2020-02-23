@@ -1,9 +1,11 @@
 package com.phellipesilva.coolposts.postdetails.repository
 
 import androidx.lifecycle.LiveData
-import com.phellipesilva.coolposts.postdetails.data.Comment
-import com.phellipesilva.coolposts.postdetails.database.CommentDao
-import com.phellipesilva.coolposts.postdetails.service.CommentService
+import androidx.lifecycle.Transformations
+import com.phellipesilva.coolposts.postdetails.data.database.CommentDao
+import com.phellipesilva.coolposts.postdetails.data.entity.CommentEntity
+import com.phellipesilva.coolposts.postdetails.domain.Comment
+import com.phellipesilva.coolposts.postdetails.data.service.CommentService
 import io.reactivex.Completable
 import javax.inject.Inject
 
@@ -13,11 +15,20 @@ class PostDetailsRepository @Inject constructor(
 ) {
 
     fun getCommentsFromPost(postId: Int): LiveData<List<Comment>> {
-        return commentDao.getCommentsFromPost(postId)
+        return Transformations.map(commentDao.getCommentsFromPost(postId), ::mapCommentDatabaseEntitiesToDomainEntities)
     }
 
     fun updateCommentsFromPost(postId: Int): Completable {
-        return commentService.fetchCommentsFromPost(postId)
-            .flatMapCompletable(commentDao::saveComments)
+        return commentService.fetchCommentsFromPost(postId).flatMapCompletable(commentDao::saveComments)
+    }
+
+    private fun mapCommentDatabaseEntitiesToDomainEntities(databaseComments: List<CommentEntity>): List<Comment> {
+        return databaseComments.map { databaseEntity ->
+            Comment(
+                id = databaseEntity.id,
+                body = databaseEntity.body,
+                userEmail = databaseEntity.email
+            )
+        }
     }
 }

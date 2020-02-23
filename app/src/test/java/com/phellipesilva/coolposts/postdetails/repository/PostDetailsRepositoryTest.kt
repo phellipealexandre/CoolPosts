@@ -2,9 +2,10 @@ package com.phellipesilva.coolposts.postdetails.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.phellipesilva.coolposts.postdetails.data.Comment
-import com.phellipesilva.coolposts.postdetails.database.CommentDao
-import com.phellipesilva.coolposts.postdetails.service.CommentService
+import com.phellipesilva.coolposts.postdetails.data.entity.CommentEntity
+import com.phellipesilva.coolposts.postdetails.data.database.CommentDao
+import com.phellipesilva.coolposts.postdetails.data.service.CommentService
+import com.phellipesilva.coolposts.postdetails.domain.Comment
 import com.phellipesilva.coolposts.utils.RxUtils
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -12,7 +13,6 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -34,28 +34,28 @@ class PostDetailsRepositoryTest {
     private lateinit var postDetailsRepository: PostDetailsRepository
 
     @Before
-    fun setUp() {
+    fun `Set Up`() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         postDetailsRepository = PostDetailsRepository(commentService, commentDao)
         RxUtils.overridesRXSchedulers(Schedulers.trampoline())
     }
 
     @After
-    fun tearDown() {
+    fun `Tear down`() {
         RxUtils.resetSchedulers()
     }
 
     @Test
-    fun shouldFetchCommentsWithGivenPostId() {
+    fun `Should fetch comments with given post id`() {
         val comments = listOf(
-            Comment(
+            CommentEntity(
                 id = 1,
                 postId = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
-            Comment(
+            CommentEntity(
                 id = 2,
                 postId = 2,
                 name = "Name2",
@@ -63,28 +63,25 @@ class PostDetailsRepositoryTest {
                 body = "body2"
             )
         )
-        val commentsSingle = Single.just(comments)
-        every { commentService.fetchCommentsFromPost(1) } returns commentsSingle
+        every { commentService.fetchCommentsFromPost(1) } returns Single.just(comments)
         every { commentDao.saveComments(any()) } returns Completable.complete()
 
-        val testObserver = TestObserver<Unit>()
-        postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
+        postDetailsRepository.updateCommentsFromPost(1).test()
 
         verify { commentService.fetchCommentsFromPost(1) }
-        testObserver.assertComplete()
     }
 
     @Test
-    fun shouldSaveCommentsOnDatabaseWhenFetchingIsSuccessful() {
+    fun `Should save fetched comments on database when request from service is successful`() {
         val comments = listOf(
-            Comment(
+            CommentEntity(
                 id = 1,
                 postId = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
-            Comment(
+            CommentEntity(
                 id = 2,
                 postId = 2,
                 name = "Name2",
@@ -92,29 +89,26 @@ class PostDetailsRepositoryTest {
                 body = "body2"
             )
         )
-        val commentsSingle = Single.just(comments)
-        every { commentService.fetchCommentsFromPost(1) } returns commentsSingle
+        every { commentService.fetchCommentsFromPost(1) } returns Single.just(comments)
         every { commentDao.saveComments(any()) } returns Completable.complete()
 
-        val testObserver = TestObserver<Unit>()
-        postDetailsRepository.updateCommentsFromPost(1).subscribe(testObserver)
+        postDetailsRepository.updateCommentsFromPost(1).test()
+            .assertComplete()
 
         verify { commentDao.saveComments(comments) }
-        testObserver.assertComplete()
     }
 
     @Test
-    fun shouldReturnCommentsLiveDataFromDatabaseForGivenPostId() {
-        val expectedLiveData = MutableLiveData<List<Comment>>()
+    fun `should return mapped comments from database when requesting from post id`() {
         val comments = listOf(
-            Comment(
+            CommentEntity(
                 id = 1,
                 postId = 1,
                 name = "Name",
                 email = "Email",
                 body = "body"
             ),
-            Comment(
+            CommentEntity(
                 id = 2,
                 postId = 2,
                 name = "Name2",
@@ -122,11 +116,25 @@ class PostDetailsRepositoryTest {
                 body = "body2"
             )
         )
-        expectedLiveData.value = comments
-        every { commentDao.getCommentsFromPost(1) } returns expectedLiveData
+        every { commentDao.getCommentsFromPost(1) } returns MutableLiveData<List<CommentEntity>>(comments)
 
         val commentsLiveData = postDetailsRepository.getCommentsFromPost(1)
 
-        assertEquals(expectedLiveData, commentsLiveData)
+        commentsLiveData.observeForever {
+            assertEquals(
+                listOf(
+                    Comment(
+                        id = 1,
+                        userEmail = "Email",
+                        body = "body"
+                    ),
+                    Comment(
+                        id = 2,
+                        userEmail = "Email2",
+                        body = "body2"
+                    )
+                ), it
+            )
+        }
     }
 }

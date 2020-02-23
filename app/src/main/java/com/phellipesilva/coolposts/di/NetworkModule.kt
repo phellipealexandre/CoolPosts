@@ -1,6 +1,6 @@
 package com.phellipesilva.coolposts.di
 
-import com.phellipesilva.coolposts.postdetails.service.CommentService
+import com.phellipesilva.coolposts.postdetails.data.service.CommentService
 import com.phellipesilva.coolposts.postlist.service.PostService
 import dagger.Module
 import dagger.Provides

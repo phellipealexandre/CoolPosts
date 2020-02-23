@@ -3,7 +3,7 @@ package com.phellipesilva.coolposts.postdetails.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.phellipesilva.coolposts.exceptions.NoConnectionException
-import com.phellipesilva.coolposts.postdetails.data.Comment
+import com.phellipesilva.coolposts.postdetails.domain.Comment
 import com.phellipesilva.coolposts.postdetails.repository.PostDetailsRepository
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsViewState
 import com.phellipesilva.coolposts.state.ConnectionChecker
@@ -37,37 +37,29 @@ class PostDetailsViewModelTest {
 
     private lateinit var postDetailsViewModel: PostDetailsViewModel
 
-    private val postId = 1
-    private val comments = listOf(
-        Comment(
-            id = 1,
-            postId = 2,
-            name = "Name",
-            email = "Email",
-            body = "Body"
-        )
-    )
-
     @Before
-    fun setUp() {
+    fun `Set Up`() {
         MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-
-        val initialLiveDataFromRepository = MutableLiveData<List<Comment>>()
-        initialLiveDataFromRepository.value = comments
-        every { postDetailsRepository.getCommentsFromPost(postId) } returns initialLiveDataFromRepository
-
-        postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionChecker, compositeDisposable, postId)
         RxUtils.overridesRXSchedulers(Schedulers.trampoline())
-        every { connectionChecker.isOnline() } returns true
     }
 
     @After
-    fun tearDown() {
+    fun `Tear Down`() {
         RxUtils.resetSchedulers()
     }
 
     @Test
-    fun shouldGetCommentsLiveDataFromRepositoryOnInitialState() {
+    fun `Should get comments LiveData from repository with initial state`() {
+        val comments = listOf(
+            Comment(
+                id = 1,
+                userEmail = "Email",
+                body = "Body"
+            )
+        )
+
+        initViewModel(comments = comments, isOnline = true, postId = 1)
+
         postDetailsViewModel.viewState().observeForever {
             assertEquals(
                 PostDetailsViewState(isLoading = false, comments = comments),
@@ -77,54 +69,46 @@ class PostDetailsViewModelTest {
     }
 
     @Test
-    fun shouldFetchCommentsFromRepositoryWithoutErrorWhenFetchingCommentsIsSuccessful() {
-        var errorFlag = false
+    fun `Should emit no internet state when there is no internet`() {
+        initViewModel(comments = listOf(), isOnline = false, postId = 1)
+
+        postDetailsViewModel.updateCommentsFromPost(1)
+
+        postDetailsViewModel.viewState().observeForever {
+            assertTrue("Error event should be NoConnectionException", it.errorEvent?.getContentIfNotHandled() is NoConnectionException)
+        }
+    }
+
+    @Test
+    fun `Should fetch comments from repository without error when update comments from post operation is successful`() {
+        initViewModel(comments = listOf(), isOnline = true, postId = 1)
         every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.complete()
-        postDetailsViewModel.viewState().observeForever {
-            if (it.errorEvent?.getContentIfNotHandled() != null) {
-                errorFlag = true
-            }
-        }
 
         postDetailsViewModel.updateCommentsFromPost(1)
 
-        assertFalse(errorFlag)
-    }
-
-    @Test
-    fun shouldEmitNoInternetStateWhenThereIsNoInternet() {
-        var onInternetFlag = false
-        every { connectionChecker.isOnline() } returns false
         postDetailsViewModel.viewState().observeForever {
-            if (it.errorEvent?.getContentIfNotHandled() is NoConnectionException) {
-                onInternetFlag = true
-            }
+            assertNull("Error event should be null", it.errorEvent?.getContentIfNotHandled())
         }
-
-        postDetailsViewModel.updateCommentsFromPost(1)
-
-        assertTrue(onInternetFlag)
     }
 
     @Test
-    fun shouldEmitErrorStateWhenCommentsFetchingFinishesWithUnexpectedError() {
-        var errorFlag = false
+    fun `Should emit error state when update comments operation fails`() {
+        initViewModel(comments = listOf(), isOnline = true, postId = 1)
         every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.error(Exception())
-        postDetailsViewModel.viewState().observeForever {
-            if (it.errorEvent?.getContentIfNotHandled() is Exception) {
-                errorFlag = true
-            }
-        }
 
         postDetailsViewModel.updateCommentsFromPost(1)
 
-        assertTrue(errorFlag)
+        postDetailsViewModel.viewState().observeForever {
+            assertTrue("Error event should be Exception", it.errorEvent?.getContentIfNotHandled() is Exception)
+        }
     }
 
     @Test
-    fun shouldEmitLoadingStateWhenStartFetchingComments() {
+    fun `Should emit loading state when start fetching comments`() {
+        initViewModel(comments = listOf(), isOnline = true, postId = 1)
+        every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.complete()
+
         var loadingFlag = false
-        every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.error(Throwable())
         postDetailsViewModel.viewState().observeForever {
             if (it.isLoading) {
                 loadingFlag = true
@@ -137,11 +121,19 @@ class PostDetailsViewModelTest {
     }
 
     @Test
-    fun shouldAddDisposableToCompositeDisposableWhenFetchingComments() {
+    fun `Should add disposable to CompositeDisposable when fetching comments`() {
+        initViewModel(comments = listOf(), isOnline = true, postId = 1)
         every { postDetailsRepository.updateCommentsFromPost(1) } returns Completable.complete()
 
         postDetailsViewModel.updateCommentsFromPost(1)
 
         verify { compositeDisposable.add(any()) }
+    }
+
+    private fun initViewModel(comments: List<Comment>, isOnline: Boolean, postId: Int) {
+        every { postDetailsRepository.getCommentsFromPost(postId) } returns MutableLiveData<List<Comment>>(comments)
+        every { connectionChecker.isOnline() } returns isOnline
+
+        postDetailsViewModel = PostDetailsViewModel(postDetailsRepository, connectionChecker, compositeDisposable, postId)
     }
 }

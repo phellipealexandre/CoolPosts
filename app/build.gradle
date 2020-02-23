@@ -91,7 +91,7 @@ dependencies {
     //Logging
     implementation "com.jakewharton.timber:timber:4.7.1"
 
-    //Unit testing
+    //Non-instrumented testing
     testImplementation "junit:junit:4.12"
     testImplementation "androidx.test:core:1.2.0"
     testImplementation 'org.robolectric:robolectric:4.3'

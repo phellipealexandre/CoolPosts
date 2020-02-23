@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.phellipesilva.coolposts.R
-import com.phellipesilva.coolposts.postdetails.data.Comment
+import com.phellipesilva.coolposts.postdetails.domain.Comment
 import kotlinx.android.synthetic.main.comment_list_item.view.*
 
 class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(CommentsDiffCallback()) {
@@ -29,7 +29,7 @@ class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(
 
         fun bind(comment: Comment) {
             commentBodyTextView.text = comment.body
-            commentEmailTextView.text = comment.email
+            commentEmailTextView.text = comment.userEmail
         }
     }
 
@@ -39,7 +39,7 @@ class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(
         }
 
         override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-            return oldItem.body == newItem.body && oldItem.email == newItem.email
+            return oldItem.body == newItem.body && oldItem.userEmail == newItem.userEmail
         }
     }
 

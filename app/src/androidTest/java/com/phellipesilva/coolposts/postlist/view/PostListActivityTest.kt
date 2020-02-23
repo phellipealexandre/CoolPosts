@@ -183,12 +183,12 @@ class PostListActivityTest {
         }
 
         onView(withId(R.id.postListRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<PostsAdapter.PostViewHolder>(0, click()))
-        onView(withId(R.id.filter)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+        onView(withId(R.id.filter)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
         scenario.onActivity {
             it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
 
-        onView(withId(R.id.filter)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+        onView(withId(R.id.filter)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 }
