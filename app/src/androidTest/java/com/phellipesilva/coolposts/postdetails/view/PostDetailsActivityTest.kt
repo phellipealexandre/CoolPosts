@@ -79,9 +79,10 @@ class PostDetailsActivityTest {
 
     @Test
     fun shouldShowLoadingIndicatorWhenOpenActivityForTheFirstTimeWithLongWaitTime() {
-        RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1"))
+        RESTMockServer
+            .whenGET(RequestMatchers.pathContains("comments?postId=1"))
             .thenReturnFile(200, "json/comments_response.json")
-            .delay(TimeUnit.SECONDS, 5)
+            .delayBody(TimeUnit.SECONDS, 5)
 
         val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
@@ -104,7 +105,9 @@ class PostDetailsActivityTest {
 
     @Test
     fun shouldFetchCommentsFromSpecificPostWhenStartActivity() {
-        RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1")).thenReturnFile(200, "json/comments_response.json")
+        RESTMockServer
+            .whenGET(RequestMatchers.pathContains("comments?postId=1"))
+            .thenReturnFile(200, "json/comments_response.json")
 
         val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
@@ -129,7 +132,8 @@ class PostDetailsActivityTest {
 
     @Test
     fun shouldLoadCommentsFromDatabaseWhenOpenActivityForTheSecondTimeAndServiceIsUnavailable() {
-        RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1"))
+        RESTMockServer
+            .whenGET(RequestMatchers.pathContains("comments?postId=1"))
             .thenReturnFile(200, "json/comments_response.json")
 
         val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
@@ -145,8 +149,7 @@ class PostDetailsActivityTest {
         )
 
         val scenario = launch<PostDetailsActivity>(intent).onActivity {
-            val idlingResource =
-                SwipeLayoutRefreshingIdlingResource(it.postDetailsSwipeRefreshLayout)
+            val idlingResource = SwipeLayoutRefreshingIdlingResource(it.postDetailsSwipeRefreshLayout)
             IdlingRegistry.getInstance().register(idlingResource)
         }
 
@@ -159,7 +162,8 @@ class PostDetailsActivityTest {
 
     @Test
     fun shouldUpdateCommentsFromSpecificPostWhenSwipeToRefresh() {
-        RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1"))
+        RESTMockServer
+            .whenGET(RequestMatchers.pathContains("comments?postId=1"))
             .thenReturnFile(200, "json/comments_response.json", "json/comments_updated_response.json")
 
         val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
@@ -189,7 +193,9 @@ class PostDetailsActivityTest {
 
     @Test
     fun shouldScrollToLastCommentAndSeeContent() {
-        RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1")).thenReturnFile(200, "json/comments_response.json")
+        RESTMockServer
+            .whenGET(RequestMatchers.pathContains("comments?postId=1"))
+            .thenReturnFile(200, "json/comments_response.json")
 
         val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(
@@ -214,7 +220,9 @@ class PostDetailsActivityTest {
 
     @Test
     fun shouldMaintainCollapsingToolbarStateAfterRotationWhenItIsCollapsed() {
-        RESTMockServer.whenGET(RequestMatchers.pathContains("comments?postId=1")).thenReturnFile(200, "json/comments_response.json")
+        RESTMockServer
+            .whenGET(RequestMatchers.pathContains("comments?postId=1"))
+            .thenReturnFile(200, "json/comments_response.json")
 
         val intent = Intent(getApplicationContext(), PostDetailsActivity::class.java)
         intent.putExtra(

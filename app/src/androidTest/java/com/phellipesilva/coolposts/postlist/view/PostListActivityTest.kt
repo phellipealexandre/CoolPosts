@@ -44,8 +44,12 @@ class PostListActivityTest {
 
     @Test
     fun shouldFetchPostsWhenOpenActivityForTheFirstTime() {
-        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
-        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+        RESTMockServer
+            .whenGET(pathContains("posts"))
+            .thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer
+            .whenGET(pathContains("users"))
+            .thenReturnFile(200, "json/users_response.json")
 
         launch(PostListActivity::class.java).onActivity {
             val idlingResource = SwipeLayoutRefreshingIdlingResource(it.postListSwipeRefreshLayout)
@@ -63,7 +67,8 @@ class PostListActivityTest {
     @Test
     fun shouldShowLoadingIndicatorWhenOpenActivityForTheFirstTimeWithLongWaitTime() {
         RESTMockServer.whenGET(pathContains("posts"))
-            .thenReturnFile(200, "json/posts_response.json").delay(TimeUnit.SECONDS, 5)
+            .thenReturnFile(200, "json/posts_response.json")
+            .delayBody(TimeUnit.SECONDS, 5)
         RESTMockServer.whenGET(pathContains("users"))
             .thenReturnFile(200, "json/users_response.json")
 
@@ -76,9 +81,11 @@ class PostListActivityTest {
 
     @Test
     fun shouldLoadPostsFromDatabaseWhenOpenActivityForTheSecondTimeAndServiceIsUnavailable() {
-        RESTMockServer.whenGET(pathContains("posts"))
+        RESTMockServer
+            .whenGET(pathContains("posts"))
             .thenReturnFile(200, "json/posts_response.json")
-        RESTMockServer.whenGET(pathContains("users"))
+        RESTMockServer
+            .whenGET(pathContains("users"))
             .thenReturnFile(200, "json/users_response.json")
 
         val scenario = launch(PostListActivity::class.java).onActivity {
@@ -99,10 +106,12 @@ class PostListActivityTest {
 
     @Test
     fun shouldUpdateSecondPostTitleWhenOpenActivityAndRefreshAgain() {
-        RESTMockServer.whenGET(pathContains("posts"))
+        RESTMockServer
+            .whenGET(pathContains("posts"))
             .thenReturnFile(200, "json/posts_response.json")
             .thenReturnFile(200, "json/posts_updated_response.json")
-        RESTMockServer.whenGET(pathContains("users"))
+        RESTMockServer
+            .whenGET(pathContains("users"))
             .thenReturnFile(200, "json/users_response.json")
 
         launch(PostListActivity::class.java).onActivity {
@@ -112,15 +121,20 @@ class PostListActivityTest {
 
         onView(withText("sunt aut facere repellat provident occaecati excepturi optio reprehenderit")).check(matches(isDisplayed()))
 
-        onView(withId(com.phellipesilva.coolposts.R.id.postListSwipeRefreshLayout)).perform(swipeDown())
+        onView(withId(R.id.postListSwipeRefreshLayout)).perform(swipeDown())
+
         onView(withText("sunt aut facere repellat provident occaecati excepturi optio reprehenderit")).check(doesNotExist())
         onView(withText("Updated Title")).check(matches(isDisplayed()))
     }
 
     @Test
     fun shouldScrollToBottomPosition() {
-        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
-        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+        RESTMockServer
+            .whenGET(pathContains("posts"))
+            .thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer
+            .whenGET(pathContains("users"))
+            .thenReturnFile(200, "json/users_response.json")
 
         launch(PostListActivity::class.java).onActivity {
             val idlingResource = SwipeLayoutRefreshingIdlingResource(it.postListSwipeRefreshLayout)
@@ -133,8 +147,12 @@ class PostListActivityTest {
 
     @Test
     fun shouldMaintainScrollPositionAfterScreenOrientationChanges() {
-        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
-        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+        RESTMockServer
+            .whenGET(pathContains("posts"))
+            .thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer
+            .whenGET(pathContains("users"))
+            .thenReturnFile(200, "json/users_response.json")
 
         val scenario = launch(PostListActivity::class.java).onActivity {
             val idlingResource = SwipeLayoutRefreshingIdlingResource(it.postListSwipeRefreshLayout)
@@ -158,8 +176,12 @@ class PostListActivityTest {
 
     @Test
     fun shouldSeePostDescriptionWithBodyWhenClickingOnItem() {
-        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
-        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+        RESTMockServer
+            .whenGET(pathContains("posts"))
+            .thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer
+            .whenGET(pathContains("users"))
+            .thenReturnFile(200, "json/users_response.json")
 
         launch(PostListActivity::class.java).onActivity {
             val idlingResource = SwipeLayoutRefreshingIdlingResource(it.postListSwipeRefreshLayout)
@@ -174,8 +196,12 @@ class PostListActivityTest {
 
     @Test
     fun shouldMaintainThumbnailFilterAfterRotationInDetailsScreen() {
-        RESTMockServer.whenGET(pathContains("posts")).thenReturnFile(200, "json/posts_response.json")
-        RESTMockServer.whenGET(pathContains("users")).thenReturnFile(200, "json/users_response.json")
+        RESTMockServer
+            .whenGET(pathContains("posts"))
+            .thenReturnFile(200, "json/posts_response.json")
+        RESTMockServer
+            .whenGET(pathContains("users"))
+            .thenReturnFile(200, "json/users_response.json")
 
         val scenario = launch(PostListActivity::class.java).onActivity {
             val idlingResource = SwipeLayoutRefreshingIdlingResource(it.postListSwipeRefreshLayout)
