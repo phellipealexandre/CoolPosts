@@ -2,9 +2,9 @@ package com.phellipesilva.coolposts.di
 
 import androidx.test.core.app.ApplicationProvider
 import com.phellipesilva.coolposts.application.TestApplication
-import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivityTest
+import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivityUITest
 
-val PostDetailsActivityTest.injector get(): TestComponent  {
+val PostDetailsActivityUITest.injector get(): TestComponent  {
     val testApplication = ApplicationProvider.getApplicationContext<TestApplication>()
     return testApplication.component as TestComponent
 }

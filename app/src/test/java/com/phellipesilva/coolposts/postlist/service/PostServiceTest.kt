@@ -2,7 +2,7 @@ package com.phellipesilva.coolposts.postlist.service
 
 import com.phellipesilva.coolposts.postlist.service.entity.PostRemoteEntity
 import com.phellipesilva.coolposts.postlist.service.entity.UserRemoteEntity
-import io.reactivex.observers.TestObserver
+import com.phellipesilva.coolposts.utils.ResourcesUtils
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -22,7 +22,6 @@ class PostServiceTest {
     fun `Set Up`() {
         server = MockWebServer()
         server.start(4040)
-        server.url("/latest?base=EUR")
 
          postService = Retrofit.Builder()
             .baseUrl("http://localhost:4040")
@@ -40,7 +39,7 @@ class PostServiceTest {
 
     @Test
     fun `Should serialize posts to remote entities when requesting posts from service`() {
-        val json = readJsonFromResources("json/posts_response.json")
+        val json = ResourcesUtils.readJsonFromResources("json/posts_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
 
@@ -68,7 +67,7 @@ class PostServiceTest {
 
     @Test
     fun `Should serialize users to remote entities when requesting users from service`() {
-        val json = readJsonFromResources("json/users_response.json")
+        val json = ResourcesUtils.readJsonFromResources("json/users_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
 
@@ -88,12 +87,5 @@ class PostServiceTest {
                 )
             }
             .assertComplete()
-    }
-
-    private fun readJsonFromResources(filePath: String): String {
-        return this.javaClass
-            .classLoader
-            ?.getResourceAsStream(filePath)
-            ?.bufferedReader().use { it!!.readText() }
     }
 }

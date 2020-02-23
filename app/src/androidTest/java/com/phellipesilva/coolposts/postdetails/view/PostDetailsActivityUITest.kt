@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
-class PostDetailsActivityTest {
+class PostDetailsActivityUITest {
 
     @Inject
     lateinit var okHttpClient: OkHttpClient

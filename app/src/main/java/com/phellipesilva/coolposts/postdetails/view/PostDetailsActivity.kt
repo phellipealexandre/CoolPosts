@@ -26,7 +26,7 @@ class PostDetailsActivity : AppCompatActivity() {
 
     private val filterVisibilityId = "FilterVisibility"
 
-    private val post by lazy { intent.getParcelableExtra<Post>(postId)!! }
+    private val post by lazy { intent.getParcelableExtra<Post>(postIdIntentKey)!! }
 
     private val postDetailsViewModel by lazy {
         val postDetailsViewModelFactory = injector.with(PostDetailsModule(post.id)).getPostDetailsViewModelFactory()
@@ -149,11 +149,11 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val postId =  "com.phellipesilva.coolposts.post"
+        private const val postIdIntentKey =  "com.phellipesilva.coolposts.post"
 
         fun newNavigationIntent(context: Context, post: Post): Intent {
             val intent = Intent(context, PostDetailsActivity::class.java)
-            intent.putExtra(postId, post)
+            intent.putExtra(postIdIntentKey, post)
 
             return intent
         }

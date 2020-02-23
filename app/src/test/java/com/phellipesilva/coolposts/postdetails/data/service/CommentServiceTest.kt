@@ -1,6 +1,7 @@
 package com.phellipesilva.coolposts.postdetails.data.service
 
 import com.phellipesilva.coolposts.postdetails.data.entity.CommentEntity
+import com.phellipesilva.coolposts.utils.ResourcesUtils
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -20,7 +21,6 @@ class CommentServiceTest {
     fun `Set Up`() {
         server = MockWebServer()
         server.start(4040)
-        server.url("/latest?base=EUR")
 
         commentService = Retrofit.Builder()
             .baseUrl("http://localhost:4040")
@@ -38,7 +38,7 @@ class CommentServiceTest {
 
     @Test
     fun `Should serialize comments when requesting comments from service`() {
-        val json = readJsonFromResources("json/comments_response.json")
+        val json = ResourcesUtils.readJsonFromResources("json/comments_response.json")
         val mockResponse = MockResponse().setBody(json)
         server.enqueue(mockResponse)
 
@@ -63,12 +63,5 @@ class CommentServiceTest {
                     body = "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et"
                 )
             }
-    }
-
-    private fun readJsonFromResources(filePath: String): String {
-        return this.javaClass
-            .classLoader
-            ?.getResourceAsStream(filePath)
-            ?.bufferedReader().use { it!!.readText() }
     }
 }
