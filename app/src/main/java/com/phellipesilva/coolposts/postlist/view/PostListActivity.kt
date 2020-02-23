@@ -54,9 +54,9 @@ class PostListActivity : AppCompatActivity() {
         state.errorEvent?.getContentIfNotHandled()?.let(::renderError)
     }
 
-    private fun renderPosts(posts: List<Post>?) {
+    private fun renderPosts(posts: List<Post>) {
         val postListAdapter = postListRecyclerView.adapter as PostsAdapter
-        posts?.let(postListAdapter::submitList)
+        postListAdapter.submitList(posts)
     }
 
     private fun renderError(throwable: Throwable?) {

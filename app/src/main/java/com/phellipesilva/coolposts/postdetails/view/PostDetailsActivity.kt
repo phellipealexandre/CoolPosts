@@ -125,9 +125,9 @@ class PostDetailsActivity : AppCompatActivity() {
         state.errorEvent?.getContentIfNotHandled()?.let(::renderError)
     }
 
-    private fun renderComments(comments: List<Comment>?) {
+    private fun renderComments(comments: List<Comment>) {
         val commentsAdapter = postDetailsRecyclerView.adapter as CommentsAdapter
-        comments?.let(commentsAdapter::submitList)
+        commentsAdapter.submitList(comments)
     }
 
     private fun renderError(throwable: Throwable?) {
