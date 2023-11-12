@@ -12,8 +12,7 @@ class PostListViewModelFactory @Inject constructor(
     private val connectionChecker: ConnectionChecker
 ) : ViewModelProvider.Factory {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return PostListViewModel(postListRepository, connectionChecker, CompositeDisposable()) as T
     }
 }

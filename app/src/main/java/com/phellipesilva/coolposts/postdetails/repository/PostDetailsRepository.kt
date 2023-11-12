@@ -1,7 +1,7 @@
 package com.phellipesilva.coolposts.postdetails.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import com.phellipesilva.coolposts.postdetails.data.database.CommentDao
 import com.phellipesilva.coolposts.postdetails.data.entity.CommentEntity
 import com.phellipesilva.coolposts.postdetails.domain.Comment
@@ -15,7 +15,9 @@ class PostDetailsRepository @Inject constructor(
 ) {
 
     fun getCommentsFromPost(postId: Int): LiveData<List<Comment>> {
-        return Transformations.map(commentDao.getCommentsFromPost(postId), ::mapCommentDatabaseEntitiesToDomainEntities)
+        return commentDao.getCommentsFromPost(postId).map {
+            mapCommentDatabaseEntitiesToDomainEntities(it)
+        }
     }
 
     fun updateCommentsFromPost(postId: Int): Completable {

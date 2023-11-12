@@ -13,8 +13,7 @@ class PostDetailsViewModelFactory @Inject constructor(
     private val postId: Int
     ) : ViewModelProvider.Factory {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return PostDetailsViewModel(postDetailsRepository, connectionChecker, CompositeDisposable(), postId) as T
     }
 }

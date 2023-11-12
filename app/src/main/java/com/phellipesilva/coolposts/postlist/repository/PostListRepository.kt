@@ -1,7 +1,7 @@
 package com.phellipesilva.coolposts.postlist.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import com.phellipesilva.coolposts.postlist.database.entity.PostEntity
 import com.phellipesilva.coolposts.postlist.database.PostDao
 import com.phellipesilva.coolposts.postlist.domain.Post
@@ -20,7 +20,9 @@ class PostListRepository @Inject constructor(
     private val postDao: PostDao
 ) {
 
-    fun getPosts(): LiveData<List<Post>> = Transformations.map(postDao.getPosts(), ::mapPostsDatabaseEntitiesToDomainEntities)
+    fun getPosts(): LiveData<List<Post>> = postDao.getPosts().map {
+        mapPostsDatabaseEntitiesToDomainEntities(it)
+    }
 
     fun updatePosts(): Completable {
         return postService.fetchPosts()

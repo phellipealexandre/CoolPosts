@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.postdetails.domain.Comment
-import kotlinx.android.synthetic.main.comment_list_item.view.*
 
 class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(CommentsDiffCallback()) {
 
@@ -24,8 +23,8 @@ class CommentsAdapter : ListAdapter<Comment, CommentsAdapter.CommentViewHolder>(
     }
 
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val commentBodyTextView: TextView = itemView.commentBody
-        private val commentEmailTextView: TextView = itemView.commentEmail
+        private val commentBodyTextView: TextView = itemView.findViewById(R.id.commentBody)
+        private val commentEmailTextView: TextView = itemView.findViewById(R.id.commentEmail)
 
         fun bind(comment: Comment) {
             commentBodyTextView.text = comment.body

@@ -14,7 +14,6 @@ import com.phellipesilva.coolposts.extensions.AndroidTransitionPair
 import com.phellipesilva.coolposts.extensions.loadRoundedAvatar
 import com.phellipesilva.coolposts.extensions.loadThumbnail
 import com.phellipesilva.coolposts.postlist.domain.Post
-import kotlinx.android.synthetic.main.post_list_item.view.*
 import java.util.concurrent.TimeUnit
 
 class PostsAdapter : ListAdapter<Post, PostsAdapter.PostViewHolder>(PostsDiffCallback()) {
@@ -36,10 +35,10 @@ class PostsAdapter : ListAdapter<Post, PostsAdapter.PostViewHolder>(PostsDiffCal
     }
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val postTitleTextView: TextView = itemView.postTitleTextView
-        private val postAuthorTextView: TextView = itemView.postAuthorTextView
-        private val authorAvatarImageView: ImageView = itemView.authorAvatarImageView
-        private val thumbnailImageView: ImageView = itemView.thumbnailImageView
+        private val postTitleTextView: TextView = itemView.findViewById(R.id.postTitleTextView)
+        private val postAuthorTextView: TextView = itemView.findViewById(R.id.postAuthorTextView)
+        private val authorAvatarImageView: ImageView = itemView.findViewById(R.id.authorAvatarImageView)
+        private val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnailImageView)
 
         fun bind(post: Post, onItemClickListener: ((Array<AndroidTransitionPair>, Post) -> Unit)?) {
             postTitleTextView.text = post.title

@@ -65,13 +65,24 @@ private fun ImageView.load(
 ) {
 
     val listener = object : RequestListener<Drawable> {
-        override fun onLoadFailed(glideException: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-            Timber.e(glideException)
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable>,
+            isFirstResource: Boolean
+        ): Boolean {
+            Timber.e(e)
             onLoadingFinished()
             return false
         }
 
-        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+        override fun onResourceReady(
+            resource: Drawable,
+            model: Any,
+            target: Target<Drawable>?,
+            dataSource: DataSource,
+            isFirstResource: Boolean
+        ): Boolean {
             onLoadingFinished()
             return false
         }

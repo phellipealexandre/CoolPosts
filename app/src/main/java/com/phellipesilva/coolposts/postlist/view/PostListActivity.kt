@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
@@ -15,9 +18,13 @@ import com.phellipesilva.coolposts.extensions.AndroidTransitionPair
 import com.phellipesilva.coolposts.postdetails.view.PostDetailsActivity
 import com.phellipesilva.coolposts.postlist.domain.Post
 import com.phellipesilva.coolposts.postlist.viewmodel.PostListViewModel
-import kotlinx.android.synthetic.main.activity_post_list.*
 
 class PostListActivity : AppCompatActivity() {
+
+    private val postListRecyclerView: RecyclerView by lazy { findViewById(R.id.postListRecyclerView) }
+    private val postListSwipeRefreshLayout: SwipeRefreshLayout by lazy { findViewById(R.id.postListSwipeRefreshLayout) }
+    private val postListCoordinatorLayout: CoordinatorLayout by lazy { findViewById(R.id.postListCoordinatorLayout) }
+    private val postListAppBarLayout: View by lazy { findViewById(R.id.postListAppBarLayout) }
 
     private val postListViewModel by lazy {
         ViewModelProvider(this, injector.getPostListViewModelFactory()).get(PostListViewModel::class.java)

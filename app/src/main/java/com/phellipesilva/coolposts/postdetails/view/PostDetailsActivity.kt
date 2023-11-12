@@ -5,10 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.transition.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.phellipesilva.coolposts.R
 import com.phellipesilva.coolposts.di.injector
@@ -20,13 +26,22 @@ import com.phellipesilva.coolposts.postdetails.di.PostDetailsModule
 import com.phellipesilva.coolposts.postdetails.domain.Comment
 import com.phellipesilva.coolposts.postdetails.viewmodel.PostDetailsViewModel
 import com.phellipesilva.coolposts.postlist.domain.Post
-import kotlinx.android.synthetic.main.activity_post_details.*
 
 class PostDetailsActivity : AppCompatActivity() {
 
     private val filterVisibilityId = "FilterVisibility"
 
     private val post by lazy { intent.getParcelableExtra<Post>(postIdIntentKey)!! }
+
+    private val filter: View by lazy { findViewById(R.id.filter) }
+    private val postBodyTextView: TextView by lazy { findViewById(R.id.postBodyTextView) }
+    private val postTitleTextView: TextView by lazy { findViewById(R.id.postTitleTextView) }
+    private val postDetailsToolbar: Toolbar by lazy { findViewById(R.id.postDetailsToolbar) }
+    private val postDetailsThumbnailImageView: ImageView by lazy { findViewById(R.id.postDetailsThumbnailImageView) }
+    private val authorAvatarImageView: ImageView by lazy { findViewById(R.id.authorAvatarImageView) }
+    private val postDetailsRecyclerView: RecyclerView by lazy { findViewById(R.id.postDetailsRecyclerView) }
+    private val postDetailsSwipeRefreshLayout: SwipeRefreshLayout by lazy { findViewById(R.id.postDetailsSwipeRefreshLayout) }
+    private val postDetailsCoordinatorLayout: CoordinatorLayout by lazy { findViewById(R.id.postDetailsCoordinatorLayout) }
 
     private val postDetailsViewModel by lazy {
         val postDetailsViewModelFactory = injector.with(PostDetailsModule(post.id)).getPostDetailsViewModelFactory()
@@ -57,6 +72,7 @@ class PostDetailsActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
         leaveActivityWithSceneTransition()
     }
 
